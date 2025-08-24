@@ -95,7 +95,7 @@ return [
         /**
          * Will be used only if the teams functionality is enabled.
          */
-        'team' => \App\Models\Team::class,
+        'team' => \App\Models\team::class,
     ],
 
     /*
@@ -280,7 +280,7 @@ return [
         |
         */
         'domain' => env('LARATRUST_PANEL_DOMAIN', env('LARATRUST_PANEL_DOMAIN', (app()->runningInConsole() === false) ? request()->getHost() : 'localhost')),
-        
+
         /*
         |--------------------------------------------------------------------------
         | Laratrust Panel Path

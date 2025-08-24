@@ -22,6 +22,8 @@ class ProductFactory extends Factory
             'photo' => fake()->imageUrl(300,400),
             'discription'=> fake()->sentence(6 ,false),
             'price'=> fake()->randomFloat(10,2),
+            'Quantity'=> fake()->numberBetween(10,20),
+            'sell_price'=> fake()->randomFloat(10,2),
             'status' =>fake()->randomElement([1,0]),
             'categories_id'=>fake()->randomElement(Category::pluck('id')->toArray()),
             'slug'=> fake()->unique()->slug

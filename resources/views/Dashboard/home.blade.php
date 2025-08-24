@@ -23,6 +23,8 @@
                                             aria-controls="home{{ $index }}"
                                             aria-selected="{{ $index == 1 ? 'true' : 'fales' }}">
                                             {{ $category->name }} </button>
+
+
                                     </li>
                                 @endforeach
                             @endisset
@@ -39,20 +41,18 @@
                                         role="tabpanel" aria-labelledby="home-tab{{ $index }}">
 
 
-                                        <div
-                                        class="row gx-3 gx-lg-4 ">
-                                        @foreach ($Category->Product as $product)
-
-
+                                        <div class="row gx-3 gx-lg-4 ">
+                                            @foreach ($Category->Product as $product)
                                                 <div class="col-sm-12 col-md-3 col-xl-4 mb-5">
                                                     <div class="card ">
                                                         <!-- Product image-->
-                                                        <div class=" my-3" style="
+                                                        <div class=" my-3"
+                                                            style="
                                                         display: flex;
                                                         justify-content: center;
                                                     ">
                                                             <img class="card-img-top w-75 " height="170" width="140"
-                                                            src="{{ asset($product->photo) }}" alt="..." />
+                                                                src="{{ asset($product->photo) }}" alt="..." />
                                                         </div>
 
                                                         <!-- Product details-->
@@ -72,13 +72,14 @@
                                                                     data-img="{{ $product->photo }}"
                                                                     class="btn btn-dark my-0 py-0 add-product-btn px-4 "
                                                                     href="">+</a>
+
+
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                        @endforeach
-                                    </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 @endforeach
                             @endisset
@@ -142,7 +143,7 @@
                                                         @enderror
                                                     </div>
                                                 </div>
-                                                <div class="row mb-4">
+                                                {{-- <div class="row mb-4">
                                                     <label for="table" class="col-md-4 col-form-label text-md-end">رقم
                                                         الطازله </label>
 
@@ -156,7 +157,7 @@
                                                             </span>
                                                         @enderror
                                                     </div>
-                                                </div>
+                                                </div> --}}
 
                                                 <h5> الاجمالي</h5>
                                                 <hr>
@@ -171,6 +172,40 @@
                                                             class="btn w-100 btn-success my-3 disabled text-center">
                                                             تاكيد الطلب
                                                         </button>
+{{--
+                                                        <button type="button" class="btn btn-primary btn-lg"
+                                                            data-bs-toggle="modal" data-bs-target="#modalId">
+                                                            Launch
+                                                        </button>
+
+                                                        <!-- Modal Body-->
+                                                        <div class="modal fade" id="modalId" tabindex="-1"
+                                                            role="dialog" aria-labelledby="modalTitleId"
+                                                            aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div id="print-bill" class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="modalTitleId">
+                                                                            Modal title
+                                                                        </h5>
+                                                                        <button type="button" class="btn-close"
+                                                                            data-bs-dismiss="modal"
+                                                                            aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <div class="container-fluid">Add rows here</div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            data-bs-dismiss="modal">
+                                                                            خروج
+                                                                        </button>
+                                                                        <button type="button"
+                                                                            class="btn btn-primary print-order-bill">طباعه</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div> --}}
                                                     </div>
                                                     <div class="col-md-6">
 

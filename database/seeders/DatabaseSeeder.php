@@ -5,6 +5,8 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Product;
+use App\Models\stock;
+use App\Models\supplier;
 use Illuminate\Database\Seeder;
 use \App\Models\User;
 use Database\Seeders\UserTableSeeder;
@@ -23,6 +25,9 @@ class DatabaseSeeder extends Seeder
         $this ->call( UserTableSeeder::class);
         $this ->call( CategoriesTableSeeder::class);
         Product::factory(10)->create();
+        supplier::factory(10)->create();
+        stock::factory(10)->create();
+
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

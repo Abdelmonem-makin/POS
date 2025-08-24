@@ -1,4 +1,4 @@
-@extends('Master.adminMaster')
+{{-- @extends('Master.adminMaster')
 @section('title','اضافة مشرف')
 @section('content')
  <div class="card  ">
@@ -83,4 +83,4 @@
                 </form>
             </div>
         </div>
-@endsection
+@endsection --}}

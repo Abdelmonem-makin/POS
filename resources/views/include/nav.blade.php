@@ -4,12 +4,12 @@
         <div class="col-lg-4 col-md-12">
            <div class="my-2">
             <a class="nav-link text-dark header  p-2" href="">
-                
+
                 {{__('trans.E-Commaers')}}
-                 
+
             </a>
            </div>
-         
+
         </div>
         <div class="col-lg-4 col-md-12">
             <form class="d-flex my-lg-2">
@@ -18,12 +18,12 @@
             </form>
         </div>
         <div class="col-lg-4 px-0 col-md-12">
-            
+
 <nav class="navbar">
     <ul class="nav header p-0 me-auto">
-                 
+
         @if (Route::has('login'))
-       
+
         @auth
         @if (Auth::user()->type==0)
         <li class="nav-item dropdown">
@@ -42,7 +42,7 @@
             <a href="{{ route('profile.show') }}" class="  dropdown-item p-2 me-auto ">{{__('trans.profile')}}</a>
               <a class="dropdown-item p-2 me-auto" href="{{ route('Logout')}}">Sign out</a>
             </div>
-            
+
           </li>
             @endif
             @else
@@ -52,7 +52,7 @@
                 <a href="{{ route('register') }}" class=" text-sm text-dark  nav-link d-inline p-1 mx-2  ">{{__('trans.Register')}}</a>
             @endif
         @endauth
-    
+
         @endif
         <li class="nav-item dropdown">
          <a class="nav-link p-2 dropdown-toggle text-dark" href="#" id="dropdownId" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{__('trans.languages')}} </a>
@@ -68,7 +68,7 @@
     </li>
     </ul>
 
-            
+
 </nav>
         </div>
     </div>
@@ -76,12 +76,12 @@
 </div>
 <nav class="navbar navbar-expand-sm  navbar-dark bg-dark">
       <div class="container">
-        
+
         <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId"
             aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        
+
        <div class="collapse navbar-collapse" id="collapsibleNavId">
             <ul class="navbar-nav p-0 ">
                 <li class="nav-item">
@@ -90,10 +90,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">{{__('trans.Linke')}}  </a>
                 </li>
-                
+
             </ul>
         </div>
-    
-        
+
+
   </div>
 </nav>

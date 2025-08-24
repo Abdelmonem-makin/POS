@@ -63,11 +63,11 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <select class="form-select form-select-md @error('categories_id') is-invalid @enderror" name="categories_id" id="categories_id" data-placeholder=" اختار القسم ....." style="width:100%">
-                                    <option value="{{$editID->id}}" selected>{{$editID->Categorie->name}}</option>
+                                    <option value="{{$editID->id}}" > </option>
 
                                     @isset($Categorys)
                                     @foreach ($Categorys as $Category)
-                                        <option value="{{$Category->id}}">
+                                        <option value="{{$Category->id}}"  @if ($Category->id  == $editID->categories_id) selected @endif>
                                             {{ $Category->name}}
                                             </option>
                                         @endforeach
@@ -90,7 +90,7 @@
                         <label for="price" class="col-md-4 col-form-label text-md-start mx-5">السعر</label>
 
                         <div class="col-md-6">
-                            <input id="price" value="{{$editID->price}}" type="number" class="form-control @error('price') is-invalid @enderror" name="price"  autocomplete="price">
+                            <input id="price" value="{{$editID->price}}" type="number" class="form-control @error('price') is-invalid @enderror" name="price" >
                             @error('price')
                             <span class="text-danger">{{$message}}*</span>
                             @enderror
@@ -102,7 +102,7 @@
                         <label for="discription" class="col-md-4 col-form-label text-md-start mx-5">الوصف</label>
 
                         <div class="col-md-6">
-                                <textarea id="discription"   class="form-control @error('discription') is-invalid @enderror" name="discription" value="{{$editID->discription}}"  autocomplete="discription" autofocus rows="3"></textarea>
+                                <textarea id="discription"   class="form-control @error('discription') is-invalid @enderror" name="discription" value=""  autocomplete="discription" autofocus rows="3">{{$editID->discription}}</textarea>
                                 @error('discription')
                                 <span class="text-danger">{{$message}}*</span>
                                 @enderror
@@ -132,7 +132,7 @@
                     <div class="row mb-0">
                         <div class="col-md-6 offset-md-4 text-md-start me-2">
                             <button type="submit" class="btn btn-primary">
-                                {{ __('Register') }}
+                                {{ __('trans.updata') }}
                             </button>
                         </div>
                     </div>

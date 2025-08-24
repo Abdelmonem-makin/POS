@@ -121,7 +121,7 @@
                     <div class="row mb-0">
                         <div class="col-md-6 offset-md-4 text-md-start me-2">
                             <button type="submit" class="btn btn-primary">
-                                {{ __('Register') }}
+                                {{ __('trans.Register') }}
                             </button>
                         </div>
                     </div>

@@ -15,7 +15,8 @@
                         <form class="row g-3 h-25 mt-1  needs-validation" action="{{ route('Category.index') }}"
                             method="get">
                             <div class="col-md-6 m-0">
-                                <input type="text" class="form-control  " value="{{request()->search}}" id="validationCustom01" name="search">
+                                <input type="text" class="form-control  " value="{{ request()->search }}"
+                                    id="validationCustom01" name="search">
 
                             </div>
                             <div class="col-md-6 m-0">
@@ -40,7 +41,16 @@
                     </div>
 
                 </div>
-
+             @if(Session::has('error'))
+                <div class="alert alert-danger" role="alert">
+                    <p class="text-center ">{{Session::get('error')}}</p>
+                </div>
+                @endif
+                @if(Session::has('success'))
+                <div class="alert alert-success" role="alert">
+                    <p class="text-center ">{{Session::get('success')}}</p>
+                </div>
+                @endif
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered  text-center table-striped mg-b-0 p-0 text-md-nowrap">
@@ -85,7 +95,7 @@
                                                             class="fa fa-edit" aria-hidden="true"></i></a>
                                                 @endif
 
-                                                {{-- ########################## ##############################################--}}
+                                                {{-- ########################## ############################################## --}}
 
                                                 @if (auth()->user()->hasPermission('Category_delete'))
                                                     <form action="{{ route('Category.destroy', $Category->id) }}" method="post"
@@ -100,7 +110,7 @@
                                                         <i class="fa fa-trash mx-1" aria-hidden="true"></i> حذف </button>
                                                 @endif
 
-                                                {{-- ########################## ##############################################--}}
+                                                {{-- ########################## ############################################## --}}
 
                                                 @if (auth()->user()->hasPermission('Category_update'))
                                                     <a href="{{ route('Category_chaneg_Status', $Category->id) }}"
@@ -148,8 +158,8 @@
                             </tbody>
                         </table>
                     </div><!-- bd -->
-                {!! $Categores->appends(request()->search)->links() !!}
-            </div><!-- bd -->
+                    {!! $Categores->appends(request()->search)->links() !!}
+                </div><!-- bd -->
             </div><!-- bd -->
         </div>
         <!--/div-->

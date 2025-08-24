@@ -37,7 +37,16 @@
                     </div>
 
                 </div>
-
+        @if(Session::has('error'))
+                <div class="alert alert-danger" role="alert">
+                    <p class="text-center ">{{Session::get('error')}}</p>
+                </div>
+                @endif
+                @if(Session::has('success'))
+                <div class="alert alert-success" role="alert">
+                    <p class="text-center ">{{Session::get('success')}}</p>
+                </div>
+                @endif  
                 <div class="card-body">
                     <div class="table-responsive">
                         @if ($Products->count() > 0)
@@ -50,7 +59,9 @@
                                         <th>الصورة</th>
                                         <th>القسم</th>
                                         <th>الوصف</th>
-                                        <th>السعر</th>
+                                        <th>سعر الشراء</th>
+                                        <th>سعر البيع</th>
+                                        <th>الكميه </th>
                                         <th>الحاله</th>
                                         <th>الاجراءات</th>
                                     </tr>
@@ -66,8 +77,11 @@
                                                 <th scope="row"><img height="100" width="100"
                                                         src="{{ asset($Product->photo) }}"></th>
                                                 <th scope="row">{{ $Product->Categorie->name }}</th>
-                                                <th class="w-25 h-25" scope="row">{{ $Product->discription }}</th>
+                                                <th scope="row">{{ Str::words($Product->discription, 2, ' ...') }}</th>
+                                                <th scope="row">{{ $Product->sell_price }}</th>
                                                 <th scope="row">{{ $Product->price }}</th>
+                                                <th scope="row">{{ $Product->Quantity }}</th>
+
                                                 <th scope="row">
 
                                                     @if ($Product->status == 1)

@@ -59,7 +59,7 @@ class OrderController extends Controller
 
         $order = Order::create([
             'total_price' => $total_price,
-            'code' => $code,
+            'order_number' => $code,
             'name' => $request->name,
             'phone' => $request->phone,
             'tabel' => $request->tabel
@@ -69,14 +69,15 @@ class OrderController extends Controller
 
         foreach ($request->products as $id => $quanities) {
             $product = Product::FindOrFail($id);
-
-            $total_price += $product->price * $quanities['quantity'] ;
+            $total_price += $product->price * $quanities['quantity'];
+            $product->update([
+                'Quantity' => $product->Quantity - $quanities['quantity']
+            ]);
         }
-        $code = $order->count()+1;
-
+        $code = $order->count() + 1;
         $order->update([
             'total_price' => $total_price,
-            'code' => $code
+            'order_number' => $code
 
         ]);
         return redirect()->route('Home')->with('success', 'Resource deleted successfully.');
@@ -122,16 +123,16 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Order $order , $id)
+    public function destroy(Order $order, $id)
     {
         $orders = Order::with('products')->findOrFail($id);
         $orders_pro = $orders->products;
         foreach ($orders_pro as $sorder) {
             $sorder->pivot->delete();
-        //    dd($sorder);
+            //    dd($sorder);
         }
         $orders->delete();
         // dd('done');
-        return redirect()->route('Order.index')->with('success', 'Resource deleted successfully.');
+        return redirect()->route('Order.index')->with('success', 'تم الحذف بنجاح');
     }
 }

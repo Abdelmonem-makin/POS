@@ -11,7 +11,7 @@ class Order extends Model
     protected $guarded=[];
 
     protected $fillable = [
-        'total_price', 'code','name' , 'phone', 'tabel'
+        'total_price', 'order_number','name' , 'phone', 'tabel'
     ];
     function products(){
         return $this->belongsToMany(product::class , 'product_order')->withPivot('quantity');

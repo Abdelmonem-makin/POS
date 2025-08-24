@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\supplier;
+
 return [
     /**
      * Control if the seeder should create a user per role while seeding the data.
@@ -16,12 +18,11 @@ return [
             'users' => 'c,r,u,d',
             'Category' => 'c,r,u,d',
             'Product' => 'c,r,u,d',
-            'Order' => 'c,r,u,d'
-
+            'Order' => 'c,r,u,d',
+            'Stock' => 'c,r,u,d',
+            'supplier' => 'c,r,u,d'
         ],
-        'Admin' => [
-
-        ]
+        'Admin' => []
     ],
 
     'permissions_map' => [

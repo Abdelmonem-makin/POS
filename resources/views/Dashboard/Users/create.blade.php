@@ -18,12 +18,12 @@
                 </div>
             </div>
 
-            <div class="card-body w-75 mt-auto">
+            <div class="card-body   mt-auto">
                 <form method="POST" action="{{ route('User.store') }}">
                     @csrf
 
                     <div class="row mb-3">
-                        <label for="name" class="col-md-4 col-form-label text-md-end">اسم المشرف</label>
+                        <label for="name" class="col-md-2 col-form-label text-md-end">اسم المشرف</label>
 
                         <div class="col-md-6">
                             <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
@@ -37,7 +37,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label for="email" class="col-md-4 col-form-label text-md-end">البريد الاكتروني</label>
+                        <label for="email" class="col-md-2 col-form-label text-md-end">البريد الاكتروني</label>
 
                         <div class="col-md-6">
                             <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
@@ -51,7 +51,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label for="password" class="col-md-4 col-form-label text-md-end">كلمة السر</label>
+                        <label for="password" class="col-md-2 col-form-label text-md-end">كلمة السر</label>
 
                         <div class="col-md-6">
                             <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
@@ -65,7 +65,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label for="password-confirm" class="col-md-4 col-form-label text-md-end">تاكيد كلمة السر</label>
+                        <label for="password-confirm" class="col-md-2 col-form-label text-md-end">تاكيد كلمة السر</label>
 
                         <div class="col-md-6">
                             <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
@@ -73,12 +73,12 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label for="password-confirm" class="col-md-4 col-form-label text-md-end">الصلاحيات</label>
-                        <div class="col-md-6 p-0">
+                        <label for="password-confirm" class="col-md-2 ol-form-label text-md-end">الصلاحيات</label>
+                        <div class="col-md-9 p-0">
                             <!-- Nav tabs -->
                             <ul class="nav p-0 nav-tabs" id="myTab" role="tablist">
                                 @php
-                                    $permitions = ['users','Category' , 'Product', 'Order'   ];
+                                    $permitions = ['users','Category' , 'Product', 'Order' , 'stock' ,'supplier' ];
                                     $Roles = ['create' , 'read' , 'update' , 'delete'];
                                 @endphp
                                     @foreach ($permitions as $index => $permition)

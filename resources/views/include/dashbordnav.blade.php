@@ -3,8 +3,8 @@
         <header class="navbar navbar-light sticky-top flex-md-nowrap p-0 ">
             <nav class="navbar navbar-dark  bg-dark fixed-top  p-0">
                 <a class="navbar-brand col-md-3 col-lg-2 mx-3 col-4 mx-4 pe-4  me-5 my-2" href="#">
-                    <i class="fa fa-coffee"></i>
-                    كافيه</a>
+
+                    صيدلية عروس كردفان</a>
                 <div class=" ">
                     <ul class="nav mx-3">
                         @guest
@@ -73,46 +73,63 @@
                             الرئيسية
                         </a>
                     </li>
-                    @if ( auth()->user()->hasPermission('Category_read'))
-                    <li class="nav-item py-2">
-                        <a class="nav-link" href="{{ route('Category.index') }}">
-                            <span data-feather="users"></span>
-                            <i class="fa fa-th ms-2"></i>
-                            الاقسام
-                        </a>
-                    </li>
+                    @if (auth()->user()->hasPermission('Category_read'))
+                        <li class="nav-item py-2">
+                            <a class="nav-link" href="{{ route('Category.index') }}">
+                                <span data-feather="users"></span>
+                                <i class="fa fa-th ms-2"></i>
+                                الاقسام
+                            </a>
+                        </li>
                     @endif
 
 
-                   @if ( auth()->user()->hasPermission('Product_read'))
-                   <li class="nav-item py-2">
-                        <a class="nav-link" href="{{ Route('Product.index') }}">
-                            <span data-feather="shopping-cart"></span>
-                            <i class="fa fa-th ms-2"></i>
-                            المنتجات
-                        </a>
-                     </li>
-                   @endif
-                   @if ( auth()->user()->hasPermission('Order_read'))
-                   <li class="nav-item py-2">
-                    <a class="nav-link" href="{{ Route('Order.index') }}">
-                        <span data-feather="file"></span>
-                        <i class="fa fa-th ms-2"></i>
-                        الطلبات
-                    </a>
-                    </li>
-                   @endif
+                    @if (auth()->user()->hasPermission('Product_read'))
+                        <li class="nav-item py-2">
+                            <a class="nav-link" href="{{ Route('Product.index') }}">
+                                <span data-feather="shopping-cart"></span>
+                                <i class="fa fa-th ms-2"></i>
+                                المنتجات
+                            </a>
+                        </li>
+                    @endif
+                    @if (auth()->user()->hasPermission('Stock_read'))
+                        <li class="nav-item py-2">
+                            <a class="nav-link" href="{{ Route('Stock.index') }}">
+                                <span data-feather="shopping-cart"></span>
+                                <i class="fa fa-th ms-2"></i>
+                                المخزون
+                            </a>
+                        </li>
+                    @endif
+                    @if (auth()->user()->hasPermission('Order_read'))
+                        <li class="nav-item py-2">
+                            <a class="nav-link" href="{{ Route('Order.index') }}">
+                                <span data-feather="file"></span>
+                                <i class="fa fa-th ms-2"></i>
+                                الطلبات
+                            </a>
+                        </li>
+                    @endif
 
-                   @if ( auth()->user()->hasPermission('users_read'))
-
-                   <li class="nav-item py-2">
-                    <a class="nav-link" href="{{ route('User.index') }}">
-                        <span data-feather="users"></span>
-                        <i class="fa fa-th ms-2"></i>
-                        المشرفين
-                    </a>
-                </li>
-                   @endif
+                    @if (auth()->user()->hasPermission('users_read'))
+                        <li class="nav-item py-2">
+                            <a class="nav-link" href="{{ route('User.index') }}">
+                                <span data-feather="users"></span>
+                                <i class="fa fa-th ms-2"></i>
+                                المشرفين
+                            </a>
+                        </li>
+                    @endif
+                    @if (auth()->user()->hasPermission('users_read'))
+                        <li class="nav-item py-2">
+                            <a class="nav-link" href="{{ route('supplier.index') }}">
+                                <span data-feather="users"></span>
+                                <i class="fa fa-th ms-2"></i>
+                                الموردين
+                            </a>
+                        </li>
+                    @endif
 
                     <li class="nav-item py-2">
                         <div class="accordion  border-0" id="accordionExample">

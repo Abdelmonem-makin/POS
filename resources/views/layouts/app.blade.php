@@ -88,8 +88,9 @@
         </nav> --}}
         <nav class="navbar   navbar-dark bg-dark shadow-sm">
             <a class="navbar-brand col-md-3 col-lg-2 mx-3 col-4    me-5  " href="#">
-                <i class="fa fa-coffee"></i>
-                كافيه
+               <i class="fas fa-syringe"></i>
+               
+                صيدلية عروس كردفان
             </a>
             <div class=" ">
                 <ul class="nav header mx-5 p-0 me-auto">

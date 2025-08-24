@@ -12,6 +12,10 @@ return [
     'Order' => 'طلبات',
     'Product' => 'منتجات',
     'users' => 'مشرفين',
+    'stock'=>'مخزون',
+    'supplier'=>'الموردين',
+    'Register'=>'حفظ',
+    'updata'=>'تعديل '
 
 
 ];

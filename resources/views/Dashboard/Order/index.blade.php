@@ -22,12 +22,12 @@
                                         aria-hidden="true"></i>بحث</button>
 
 
-                                @if (auth()->user()->hasPermission('Category_create'))
+                                {{-- @if (auth()->user()->hasPermission('Category_create'))
                                     <a class="btn btn-primary my-0 ms-a"href="{{ route('Category.create') }}">اضافة قسم</a>
                                 @else
                                     <a class="disabled btn btn-primary my-0 ms-a"href="{{ route('Category.create') }}">اضافة
                                         قسم</a>
-                                @endif
+                                @endif --}}
 
                             </div>
                         </form>
@@ -48,8 +48,8 @@
                                     <th> اسم الزبون</th>
                                     <th> رقم الهاتق</th>
                                     <th>الرقم المتسلسل</th>
-                                    <th>رقم الطاوله</th>
                                     <th> عدد الطلبات  </th>
+                                    <th>   تاريخ الطلب  </th>
                                     <th> اجمالي المبلغ</th>
                                     {{-- <th> </th> --}}
                                     <th>الاجراءات</th>
@@ -61,9 +61,9 @@
                                         <tr>
                                             <th scope="row">{{ $order->name ? $order->name : '-' }}</th>
                                             <th scope="row">{{ $order->phone ? $order->phone : '-' }}</th>
-                                            <th scope="row">{{ $order->code }}</th>
-                                            <th scope="row">{{ $order->tabel ? $order->tabel : '-' }}</th>
+                                            <th scope="row">{{ $order->order_number }}</th>
                                             <th scope="row">{{ $order->products->count() }}</th>
+                                            <th scope="row">{{ $order->created_at }}</th>
                                             <th scope="row">{{ number_format($order->total_price, 2)}}</th>
 
                                             <th>

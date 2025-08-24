@@ -4,15 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
     use HasFactory;
     use HasFactory;
+    use SoftDeletes;
     protected $guarded=[];
 
     protected $fillable = [
-        'id','name','photo','descount','discription','add_by','price','status','categories_id','slug'
+        'id','name','photo','descount','discription','add_by','price','sell_prisce','Quantity','status','categories_id','slug'
     ];
 
     public function Categorie(){
@@ -27,4 +29,9 @@ class Product extends Model
     function orders(){
         return $this->belongsToMany(order::class ,'product_order');
     }
+       public function Stock()
+    {
+        return $this->hasMany(Stock::class, 'product_id', 'id');
+    }
+
 }
