@@ -14,7 +14,7 @@ class Product extends Model
     protected $guarded=[];
 
     protected $fillable = [
-        'id','name','photo','descount','discription','add_by','price','sell_prisce','Quantity','status','categories_id','slug'
+        'id','name','photo','descount','discription','add_by','price','sell_price','Quantity','status','categories_id','slug'
     ];
 
     public function Categorie(){
@@ -27,7 +27,7 @@ class Product extends Model
         return $this -> status == 1 ? 'مفعل' : 'غير مفعل';
     }
     function orders(){
-        return $this->belongsToMany(order::class ,'product_order');
+    return $this->belongsToMany(order::class ,'product_order')->withPivot('quantity', 'sell_price');
     }
        public function Stock()
     {

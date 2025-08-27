@@ -1,5 +1,15 @@
 @extends('layouts.app')
 @section('content')
+    @if (Session::has('error'))
+        <div id="alertBox" class="alert  alert-danger " role="alert">
+            <p class="text-center ">{{ Session::get('error') }}</p>
+        </div>
+    @endif
+    @if (Session::has('success'))
+        <div  id="alertBox" class="alert alert-success d-none " role="alert">
+            <p class="text-center ">{{ Session::get('success') }}</p>
+        </div>
+    @endif
     <div class="mx-5">
         <div class="card ">
             <div class="card-header py-0 ">
@@ -28,19 +38,13 @@
                                     </li>
                                 @endforeach
                             @endisset
-
                         </ul>
-
                         <!-- Tab panes -->
                         <div class="tab-content p-3">
-
-
                             @isset($Categorys)
                                 @foreach ($Categorys as $index => $Category)
                                     <div class="tab-pane {{ $index == 0 ? 'active' : '' }}  " id="home{{ $index }}"
                                         role="tabpanel" aria-labelledby="home-tab{{ $index }}">
-
-
                                         <div class="row gx-3 gx-lg-4 ">
                                             @foreach ($Category->Product as $product)
                                                 <div class="col-sm-12 col-md-3 col-xl-4 mb-5">
@@ -128,9 +132,29 @@
                                                         @enderror
                                                     </div>
                                                 </div>
+                                                <div class="row">
+                                                    <label for="compane_name"
+                                                        class="col-md-3 col-form-label text-md-start ">طريقة الدفع</label>
+
+                                                    <div class="col-md-9">
+                                                        <select id="payment_id"
+                                                            class="form-control @error('payment_id') is-invalid @enderror"
+                                                            name="payment_id">
+                                                            <option disabled selected value="">اختر طريقة الدفع
+                                                            </option>
+                                                            @foreach ($payment_methods as $payment)
+                                                                <option value="{{ $payment->id }}">
+                                                                    {{ $payment->method_name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('compane_name')
+                                                            <span class="text-danger">{{ $message }}*</span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
                                                 <div class="row mb-4">
                                                     <label for="phone" class="col-md-4 col-form-label text-md-end">رقم
-                                                        الهاتق </label>
+                                                        العمليه </label>
 
                                                     <div class="col-md-8">
                                                         <input id="phone" type="number" class="form-control  "
@@ -143,22 +167,6 @@
                                                         @enderror
                                                     </div>
                                                 </div>
-                                                {{-- <div class="row mb-4">
-                                                    <label for="table" class="col-md-4 col-form-label text-md-end">رقم
-                                                        الطازله </label>
-
-                                                    <div class="col-md-8">
-                                                        <input id="table" type="number" class="form-control  "
-                                                            name="tabel" autofocus>
-
-                                                        @error('table')
-                                                            <span class="invalid-feedback" role="alert">
-                                                                <strong>{{ $message }}</strong>
-                                                            </span>
-                                                        @enderror
-                                                    </div>
-                                                </div> --}}
-
                                                 <h5> الاجمالي</h5>
                                                 <hr>
                                                 <div class="d-flex justify-content-between">
@@ -172,40 +180,7 @@
                                                             class="btn w-100 btn-success my-3 disabled text-center">
                                                             تاكيد الطلب
                                                         </button>
-{{--
-                                                        <button type="button" class="btn btn-primary btn-lg"
-                                                            data-bs-toggle="modal" data-bs-target="#modalId">
-                                                            Launch
-                                                        </button>
-
-                                                        <!-- Modal Body-->
-                                                        <div class="modal fade" id="modalId" tabindex="-1"
-                                                            role="dialog" aria-labelledby="modalTitleId"
-                                                            aria-hidden="true">
-                                                            <div class="modal-dialog" role="document">
-                                                                <div id="print-bill" class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title" id="modalTitleId">
-                                                                            Modal title
-                                                                        </h5>
-                                                                        <button type="button" class="btn-close"
-                                                                            data-bs-dismiss="modal"
-                                                                            aria-label="Close"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <div class="container-fluid">Add rows here</div>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary"
-                                                                            data-bs-dismiss="modal">
-                                                                            خروج
-                                                                        </button>
-                                                                        <button type="button"
-                                                                            class="btn btn-primary print-order-bill">طباعه</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div> --}}
+                                                        {{-- div> --}}
                                                     </div>
                                                     <div class="col-md-6">
 

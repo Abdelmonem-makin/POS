@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SupplierRequest;
-use App\Models\supplier;
+use App\Http\Requests\ShiftRequest;
+use App\Models\Shift;
+use App\Models\User;
 use Illuminate\Http\Request;
 
-class SupplierController extends Controller
+class ShiftController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,12 +17,12 @@ class SupplierController extends Controller
      */
     public function index(Request $request)
     {
-        $suppliers = supplier::where(function ($q) use ($request) {
+        $Shifts = Shift::where(function ($q) use ($request) {
             return $q->when($request->filled('search'), function ($query) use ($request) {
                 return $query->where('name', 'like', '%' . $request->search . '%');
             });
         })->latest()->paginate(5);
-        return  view('Dashboard.suppliers.index', compact('suppliers'));
+        return  view('Dashboard.Shift.index', compact('Shifts'));
     }
 
     /**
@@ -31,7 +32,8 @@ class SupplierController extends Controller
      */
     public function create()
     {
-        return view('Dashboard.suppliers.create');
+        $Users = User::whereRoleIs('employe')->get();
+        return view('Dashboard.Shift.create', compact('Users'));
     }
 
     /**
@@ -40,12 +42,13 @@ class SupplierController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(SupplierRequest $SupplierRequest)
+    public function store(ShiftRequest $request)
     {
-        $dataRequest = $SupplierRequest->validated();
-        supplier::create($dataRequest);
+        $dataRequest = $request->validated();
 
-        return redirect()->route('supplier.index')->with('success', __('trans.Category Saved'));
+        Shift::create($dataRequest);
+
+        return redirect()->route('Shift.create')->with('success', __('trans.Category_Saved'));
     }
 
     /**
@@ -67,9 +70,10 @@ class SupplierController extends Controller
      */
     public function edit($id)
     {
-        $supplier = supplier::findOrFail($id);
+        $Shift = Shift::findOrFail($id);
+        $Users = User::whereRoleIs('employe')->get();
 
-        return view('Dashboard.suppliers.edit', compact('supplier'));
+        return view('Dashboard.Shift.edit', compact('Shift', 'Users'));
     }
 
     /**
@@ -79,16 +83,13 @@ class SupplierController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(SupplierRequest $SupplierRequest, $id)
+    public function update(ShiftRequest $request, $id)
     {
-        $supplier = supplier::find($id);
-        if (!$supplier) {
-            return redirect()->route('supplier.index')->with(['error' => 'هذا العنصور غير موجود']);
-        }
-        $dataRequest = $SupplierRequest->validated();
-        supplier::where('id', $id)->update($dataRequest);
+        $dataRequest = $request->validated();
 
-        return redirect()->route('supplier.edit')->with('success', __('trans.Category Saved'));
+        Shift::where('id', $id)->update($dataRequest);
+
+        return redirect()->route('Shift.edit', $id)->with('success', __('trans.updata'));
     }
 
     /**
@@ -99,9 +100,6 @@ class SupplierController extends Controller
      */
     public function destroy($id)
     {
-        $resource = supplier::findOrFail($id);
-        $resource->Stock()->delete();
-        // $resource->delete();
-        return redirect()->route('supplier.index')->with('success', __('trans.Category_deleted'));
+        //
     }
 }

@@ -42,12 +42,12 @@
 
                 </div>
              @if(Session::has('error'))
-                <div class="alert alert-danger" role="alert">
+                <div id="alertBox" class="alert  alert-danger " role="alert">
                     <p class="text-center ">{{Session::get('error')}}</p>
                 </div>
                 @endif
                 @if(Session::has('success'))
-                <div class="alert alert-success" role="alert">
+                <div class="alert alert-success d-none " role="alert">
                     <p class="text-center ">{{Session::get('success')}}</p>
                 </div>
                 @endif

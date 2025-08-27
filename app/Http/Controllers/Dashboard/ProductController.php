@@ -45,7 +45,9 @@ class ProductController extends Controller
             'categories_id' => $request->categories_id,
             'photo' => $photoPath,
             'price' => $request->price,
+            'sell_price' => $request->sell_price,
             'add_by' => 'Admin',
+            'Quantity'=>0,
             'status' => $request->status,
         ]);
         return  redirect()->route('Product.create')->with('success', 'تم الحفط بنجاح');

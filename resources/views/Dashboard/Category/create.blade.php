@@ -15,7 +15,7 @@
         </div>
         <div class="card-body w-50 mt-auto  mx-auto">
             @if (Session::has('success'))
-                <div class="alert alert-success" role="alert">
+                <div id="alertBox" class="alert   alert-success" role="alert">
                     <p class="text-center ">{{ Session::get('success') }}</p>
                 </div>
             @endif
@@ -55,7 +55,7 @@
                                     <span class="text-danger">{{ $message }}*</span>
                                 @enderror
                             </div>
-                            
+
                             @error('status')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>

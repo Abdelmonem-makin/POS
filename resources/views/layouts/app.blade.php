@@ -14,7 +14,7 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="" rel="stylesheet">
     <link href="{{ asset('/css/font-awesome.min.css') }}"rel="stylesheet">
-    <link href="{{asset("/css/bootstrap.min.css")}}" rel="stylesheet">
+    <link href="{{ asset('/css/bootstrap.min.css') }}" rel="stylesheet">
 
     {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
         integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous"> --}}
@@ -27,6 +27,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="app">
         {{-- <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
@@ -88,8 +89,8 @@
         </nav> --}}
         <nav class="navbar   navbar-dark bg-dark shadow-sm">
             <a class="navbar-brand col-md-3 col-lg-2 mx-3 col-4    me-5  " href="#">
-               <i class="fas fa-syringe"></i>
-               
+                <i class="fas fa-syringe"></i>
+
                 صيدلية عروس كردفان
             </a>
             <div class=" ">
@@ -128,20 +129,35 @@
                                 </li>
                             @else
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link p-2 dropdown-toggle text-dark" href="#" id="dropdownId"
+                                    <a class="nav-link p-2 dropdown-toggle text-light" href="#" id="dropdownId"
                                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
                                             class="fa fa-user" aria-hidden="true"></i> {{ Auth::user()->name }}</a>
                                     <div class="dropdown-menu" aria-labelledby="dropdownId">
-                                        <a href="{{ route('dashboard.index') }}" class="dropdown-item p-2 me-auto ">لوحة
-                                            التحكم</a>
+                                        <div class="az-dropdown-header d-sm-none">
+                                            <a href="" class="az-header-arrow"><i
+                                                    class="icon ion-md-arrow-back"></i></a>
+                                        </div>
+                                        <div class="me-3" style='text-align:center; '>
+                                            <div class="az-img-user" style="font-size: 30px;">
+                                                <i class="fa fa-user-secret"></i>
+                                            </div><!-- az-img-user -->
+                                            <a href="" class="dropdown-item  text-bold " style='text-align:right;'><i
+                                                    class="fa fa-user"></i> الملف الشخصي </a>
 
-                                        <a href="{{ route('profile.show') }}"
-                                            class="  dropdown-item p-2 me-auto ">{{ __('trans.profile') }}</a>
-                                        <a class="dropdown-item p-2 me-auto" href="{{ route('logout') }}">تسجيل خروج</a>
-                                    </div>
+                                            <a href="{{ route('logout') }}" class="dropdown-item " style='text-align:right;'
+                                                onclick="event.preventDefault();
+                                                document.getElementById('logout-form').submit();"><i
+                                                    class="fa fa-power-off">
+                                                </i> نسجيل الخروج </a>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                class="d-none">
+                                                @csrf
+                                            </form>
+                                        </div><!-- az-header-profile -->
+                                    </div><!-- dropdown-menu -->
                                 </li>
                             @endif
-                        {{-- @else
+                            {{-- @else
                             <a href="{{ route('login') }}" class="text-sm nav-link text-light   d-inline p-1">تسجيل
                                 دخول</a>
 
@@ -164,12 +180,22 @@
             @yield('content')
         </main>
     </div>
+  <script>
+    function showAlert() {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.classList.remove('d-none'); // Show the alert
+      setTimeout(() => {
+        alertBox.classList.add('d-none'); // Hide the alert after 3 seconds
+      }, 2000);
 
+    }
+    showAlert();
+  </script>
     {{-- <script src="{{asset("js/bootstrap.min.js")}}"></script> --}}
-    <script src="{{asset("js/jquery-3.5.1.min.js")}}"></script>
-    <script src="{{asset("js/order.js")}}"></script>
-    <script src="{{asset("js/printThis.js")}}"></script>
-    <script src="{{asset("js/jquery-number-master/jquery.number.min.js")}}"></script>
+    <script src="{{ asset('js/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ asset('js/order.js') }}"></script>
+    <script src="{{ asset('js/printThis.js') }}"></script>
+    <script src="{{ asset('js/jquery-number-master/jquery.number.min.js') }}"></script>
 
 </body>
 

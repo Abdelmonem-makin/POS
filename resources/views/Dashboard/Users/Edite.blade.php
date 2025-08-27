@@ -94,7 +94,7 @@
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs p-0" id="myTab" role="tablist">
                             @php
-                                $permitions = ['users', 'Category', 'Product', 'Order', 'stock','supplier'];
+                                $permitions = ['users', 'Category', 'Product', 'Order', 'stock','supplier','Shift','Payment','employe'];
                                 $Roles = ['create', 'read', 'update', 'delete'];
                             @endphp
                             @foreach ($permitions as $index => $permition)

@@ -51,7 +51,7 @@ class UsersController extends Controller
         $request_data  = $data->except(['password' ,'password_confirmation','permissions']);
         $request_data['password'] = bcrypt($data->password);
         $user = User::create($request_data);
-        $user->attachRole('Admin');
+        $user->attachRole( $request_data['type']);
         $user->syncPermissions($data->permissions);
         return redirect()->route('User.create')->with(['success'=>'تم الحفظ بنجاح']);
 
@@ -95,7 +95,7 @@ class UsersController extends Controller
          $request->validate([
         'name' => ['required', 'string', 'max:255'],
         'email' => ['required', 'string', 'email', 'max:255'],
-        
+
     ]);
         // return $data ;
         $request_data  = $request->except('permissions');

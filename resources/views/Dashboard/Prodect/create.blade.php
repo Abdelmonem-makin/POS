@@ -92,6 +92,19 @@
 
                     </div>
 
+                    
+                    <div class="row mb-3">
+
+                        <label for="sell_price" class="col-md-4 col-form-label text-md-start mx-5">سعر البيع</label>
+
+                        <div class="col-md-6">
+                            <input id="sell_price" type="number" class="form-control @error('sell_price') is-invalid @enderror" name="sell_price"  autocomplete="sell_price">
+                            @error('sell_price')
+                            <span class="text-danger">{{$message}}*</span>
+                            @enderror
+                     </div>
+
+                    </div>
                     <div class="row mb-3">
                         <label for="discription" class="col-md-4 col-form-label text-md-start mx-5">الوصف</label>
 

@@ -22,6 +22,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'type',
         'password',
 
     ];
@@ -47,5 +48,10 @@ class User extends Authenticatable
     public function Stock()
     {
         return $this->hasMany(Stock::class, 'user_id', 'id');
+    }
+
+      public function DailyRevenue()
+    {
+        return $this->hasMany(DailyRevenue::class, 'employee_id', 'id');
     }
 }

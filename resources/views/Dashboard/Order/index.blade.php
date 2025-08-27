@@ -14,7 +14,8 @@
                         <form class="row g-3 h-25 mt-1  needs-validation" action="{{ route('Category.index') }}"
                             method="get">
                             <div class="col-md-6 m-0">
-                                <input type="text" class="form-control  " value="{{request()->search}}" id="validationCustom01" name="search">
+                                <input type="text" class="form-control  " value="{{ request()->search }}"
+                                    id="validationCustom01" name="search">
 
                             </div>
                             <div class="col-md-6 m-0">
@@ -22,18 +23,14 @@
                                         aria-hidden="true"></i>بحث</button>
 
 
-                                {{-- @if (auth()->user()->hasPermission('Category_create'))
-                                    <a class="btn btn-primary my-0 ms-a"href="{{ route('Category.create') }}">اضافة قسم</a>
-                                @else
-                                    <a class="disabled btn btn-primary my-0 ms-a"href="{{ route('Category.create') }}">اضافة
-                                        قسم</a>
-                                @endif --}}
+
 
                             </div>
                         </form>
                         <ol class="breadcrumb my-2">
                             <li><a class="py-0 text-dark px-2 nav-link" href="{{ route('dashboard.index') }}"><i
-                                        class="fa fa-home " aria-hidden="true"></i> الرئيسيه</a></li><<li class="active mx-2"> الطلبات</a></li>
+                                        class="fa fa-home " aria-hidden="true"></i> الرئيسيه</a></li>
+                            <<li class="active mx-2"> الطلبات</a></li>
                         </ol>
                         {{-- <a class="btn btn-primary my-2 ms-a"href="{{ route('order.create') }}">   </a> --}}
                     </div>
@@ -41,15 +38,16 @@
                 </div>
 
                 <div class="card-body row ">
-                    <div class="table-responsive order col-xl-9">
+                    <div class="table-responsive order col-md-12">
                         <table class="table table-bordered  text-center table-striped mg-b-0 p-0 text-md-nowrap">
                             <thead>
                                 <tr>
+                                    <th> رقم الفاتوره</th>
                                     <th> اسم الزبون</th>
                                     <th> رقم الهاتق</th>
-                                    <th>الرقم المتسلسل</th>
-                                    <th> عدد الطلبات  </th>
-                                    <th>   تاريخ الطلب  </th>
+                                    <th>طريقة الدفع</th>
+                                    <th> عدد الطلبات</th>
+                                    <th> تاريخ الطلب </th>
                                     <th> اجمالي المبلغ</th>
                                     {{-- <th> </th> --}}
                                     <th>الاجراءات</th>
@@ -59,29 +57,75 @@
                                 @isset($orders)
                                     @foreach ($orders as $order)
                                         <tr>
+                                            <th scope="row">{{ $order->invoice_number ? $order->invoice_number : '-' }}</th>
                                             <th scope="row">{{ $order->name ? $order->name : '-' }}</th>
                                             <th scope="row">{{ $order->phone ? $order->phone : '-' }}</th>
-                                            <th scope="row">{{ $order->order_number }}</th>
+                                            <th scope="row">{{ $order->paymentMethod->method_name }}</th>
                                             <th scope="row">{{ $order->products->count() }}</th>
                                             <th scope="row">{{ $order->created_at }}</th>
-                                            <th scope="row">{{ number_format($order->total_price, 2)}}</th>
+                                            <th scope="row">{{ number_format($order->total_price, 2) }}</th>
 
                                             <th>
-                                                <button class="Show-product btn btn-sm  my-1 btn-outline-primary"
-                                                data-url="{{ route('show-product-order', $order->id) }}"
-                                                data-method="get"
-                                                >عرض الطلبات</button>
-                                                {{-- <a id="show-product" href="{{ route('show-product-order', $order->id) }}"
-                                                    class="btn btn-sm my-1 btn-outline-primary"> link<i class="fa fa-edit"
-                                                        aria-hidden="true"></i></a> --}}
+                                                <!-- Modal trigger button -->
+                                                {{-- <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
+                                                    data-url="{{ route('show-product-order', $order->id) }}" data-method="get"
+                                                    data-bs-target="#modalId">
+                                                    Launch
+                                                </button> --}}
+                                                <button class="Show-product btn btn-sm  my-1 btn-outline-primary"  data-bs-toggle="modal"
+                                                    data-url="{{ route('show-product-order', $order->id) }}"  data-bs-target="#modalId"
+                                                    data-method="get">عرض الطلب</button>
+                                                <!-- Modal Body -->
+                                                <!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
+                                                <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static"
+                                                    data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+                                                        role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="modalTitleId">
+                                                                    Modal title
+                                                                </h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                    aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="col-md-12">
+                                                                    <div class="list-order-product">
+
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">
+                                                                    Close
+                                                                </button>
+                                                                <button type="button" class="btn btn-primary">Save</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Optional: Place to the bottom of scripts -->
+                                                <script>
+                                                    const myModal = new bootstrap.Modal(
+                                                        document.getElementById("modalId"),
+                                                        options,
+                                                    );
+                                                </script>
+
+
+
                                                 @if (auth()->user()->hasPermission('Order_update'))
                                                     <a href="{{ route('Order.edit', $order->id) }}"
                                                         class="btn btn-sm my-1 btn-outline-primary"> تعديل<i class="fa fa-edit"
                                                             aria-hidden="true"></i></a>
                                                 @else
-                                                    <a href="#"
-                                                        class="btn btn-sm my-1 btn-outline-primary disabled"> تعديل<i
-                                                            class="fa fa-edit" aria-hidden="true"></i></a>
+                                                    <a href="#" class="btn btn-sm my-1 btn-outline-primary disabled">
+                                                        تعديل<i class="fa fa-edit" aria-hidden="true"></i></a>
                                                 @endif
 
                                                 {{-- ########################## ############################################## --}}
@@ -113,12 +157,7 @@
 
 
                     </div><!-- bd -->
-                    <div class="col-xl-3">
-                        <div  class="list-order-product">
 
-                        </div>
-
-                    </div>
                 </div><!-- bd -->
             </div><!-- bd -->
         </div>
@@ -127,7 +166,7 @@
 
         <!--div-->
 
-        {!!  $orders->appends(request()->search)->links() !!}
+        {!! $orders->appends(request()->search)->links() !!}
 
     </div>
 @stop

@@ -10,7 +10,12 @@
     left: 0px;
     padding-right: 34px;
 }
-
+    .custom-alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1050; /* Higher than most Bootstrap components */
+    }
 .bd-placeholder-img {
 
   text-anchor: middle;

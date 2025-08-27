@@ -20,9 +20,13 @@ return [
             'Product' => 'c,r,u,d',
             'Order' => 'c,r,u,d',
             'Stock' => 'c,r,u,d',
-            'supplier' => 'c,r,u,d'
+            'supplier' => 'c,r,u,d',
+            'Shift' => 'c,r,u,d',
+            'Payment' => 'c,r,u,d',
+            'employe'=>'c,r,u,d',
         ],
-        'Admin' => []
+        'Admin' => [],
+        'employe' => [],
     ],
 
     'permissions_map' => [

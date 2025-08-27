@@ -15,7 +15,10 @@ return [
     'stock'=>'مخزون',
     'supplier'=>'الموردين',
     'Register'=>'حفظ',
-    'updata'=>'تعديل '
+    'updata'=>'تعديل ',
+    'Shift'=>'الورديات ',
+    'employe'=>'الموظق ',
+    'Payment'=>'طرق الدفع '
 
 
 ];

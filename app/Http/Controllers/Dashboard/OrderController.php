@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\DailyRevenue;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Shift;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -34,6 +38,37 @@ class OrderController extends Controller
         //
     }
 
+    function Order_incame(Request $request)
+    {
+        // $orders = Order::where(function ($q) use ($request) {
+        //     return $q->when($request->search, function ($query) use ($request) {
+        //         return $query->where('name', 'like', '%' . $request->search . '%');
+        //     });
+        // })->with('products')->latest()->paginate(5);
+        // return view('Dashboard.Order.incame', compact('orders'));
+           $revenues1 = DailyRevenue::with(['employee', 'shift', 'paymentMethod'])
+        ->orderBy('revenue_date', 'desc')
+        ->get()
+        ->groupBy('shift_id');
+
+            $revenues = $revenues1->map(function ($group) {
+        $first = $group->first();
+        $cash = $group->where('payment_method_id', 1)->sum('total_net');
+        $bank = $group->where('payment_method_id', 2)->sum('total_net');
+
+        return [
+            'shift_name' => $first->shift->name,
+            'employee_name' => $first->employee->name ,
+            'revenue_date' => $first->revenue_date,
+            'cash_total' => $cash,
+            'bank_total' => $bank,
+            'total_revenue' => $cash + $bank
+        ];
+    })->values();
+
+        return view('Dashboard.Order.incame', compact('revenues'));
+
+    }
     public function show_product_order(Order $order, $id)
     {
         $orders = Order::with('products')->find($id);
@@ -50,37 +85,83 @@ class OrderController extends Controller
      */
     public function store(Request $request, Order $order)
     {
-
-        $request->validate([
-            'products' => 'required|array',
-        ]);
-        $total_price = 0;
-        $code = 0;
-
-        $order = Order::create([
-            'total_price' => $total_price,
-            'order_number' => $code,
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'tabel' => $request->tabel
-        ]);
-        $order->products()->attach($request->products);
-        // dd($request->products);
-
-        foreach ($request->products as $id => $quanities) {
-            $product = Product::FindOrFail($id);
-            $total_price += $product->price * $quanities['quantity'];
-            $product->update([
-                'Quantity' => $product->Quantity - $quanities['quantity']
+            $request->validate([
+                'products' => 'required|array',
             ]);
-        }
-        $code = $order->count() + 1;
-        $order->update([
-            'total_price' => $total_price,
-            'order_number' => $code
 
-        ]);
-        return redirect()->route('Home')->with('success', 'Resource deleted successfully.');
+            // Use DB transaction to keep data consistent
+            DB::beginTransaction();
+
+            $total_price = 0;
+            $code = 0;
+            $lastInvoice = Order::orderBy('id', 'desc')->first();
+            $nextId = $lastInvoice ? $lastInvoice->id + 1 : 1;
+            $invoiceNumber = 'INV-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+            $shift = Shift::where('user_id', auth()->id())->first();
+
+            $order = Order::create([
+                'invoice_number' => $invoiceNumber,
+                'payment_id' => $request->payment_id,
+                'shift_id' => $shift->id,
+                'total_price' => $total_price,
+                'order_number' => $code,
+                'name' => $request->name,
+                'phone' => $request->phone,
+            ]);
+
+            // Attach products with explicit pivot data (quantity and sell_price)
+            $attachData = [];
+            foreach ($request->products as $id => $quantities) {
+                $product = Product::findOrFail($id);
+
+                // validate available stock
+                if ($product->Quantity < $quantities['quantity']) {
+                    DB::rollBack();
+                    return redirect()->back()->withErrors(['quantity' => "الكمية المتاحة من المنتج {$product->name} أقل من المطلوب"])->withInput();
+                }
+
+                $lineTotal = $product->price * $quantities['quantity'];
+                $total_price += $lineTotal;
+
+                $attachData[$id] = [
+                    'quantity' => $quantities['quantity'],
+                    'sell_price' => $product->sell_price ?? 0,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+
+                // decrement stock
+                $product->decrement('Quantity', $quantities['quantity']);
+            }
+
+            $order->products()->attach($attachData);
+
+            $code = Order::count() + 1;
+            $order->update([
+                'total_price' => $total_price,
+            ]);
+            $today = Carbon::today();
+            // تحديث أو إنشاء الإيراد اليومي
+            $revenue = DailyRevenue::firstOrNew([
+                'shift_id' => $order->shift_id,
+                'employee_id' => $order->shift->user_id,
+                'payment_method_id' => $order->payment_id,
+                'revenue_date' => $today,
+            ]);
+
+            $revenue->order_count = ($revenue->order_count ?? 0) + 1;
+            $revenue->total_net = ($revenue->total_net ?? 0) + $total_price ;
+
+            // توليد رقم الإيراد إذا جديد
+            if (!$revenue->exists) {
+                $revenue->revenue_number = 'REV-' . str_pad(DailyRevenue::count() + 1, 5, '0', STR_PAD_LEFT);
+            }
+
+            $revenue->save();
+            return redirect()->route('Home')->with('success', 'تم الشراء بنجاح');
+        // } catch (\Exception $e) {
+        //     return redirect()->back()->with('error', 'حدث خطأ أثناء إنشاء الطلب');
+        // }
     }
 
     /**
@@ -89,10 +170,7 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show(Order $order)
-    {
-        //
-    }
+    public function show(Order $order) {}
 
     /**
      * Show the form for editing the specified resource.

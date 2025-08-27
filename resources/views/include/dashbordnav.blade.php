@@ -121,12 +121,40 @@
                             </a>
                         </li>
                     @endif
-                    @if (auth()->user()->hasPermission('users_read'))
+                    @if (auth()->user()->hasPermission('Shift_read'))
+                        <li class="nav-item py-2">
+                            <a class="nav-link" href="{{ route('Shift.index') }}">
+                                <span data-feather="Shift"></span>
+                                <i class="fa fa-th ms-2"></i>
+                                الورديات
+                            </a>
+                        </li>
+                    @endif
+                    @if (auth()->user()->hasPermission('Payment_read'))
+                        <li class="nav-item py-2">
+                            <a class="nav-link" href="{{ route('Payment.index') }}">
+                                <span data-feather="Payment"></span>
+                                <i class="fa fa-th ms-2"></i>
+                                طرق الدفع
+                            </a>
+                        </li>
+                    @endif
+                    @if (auth()->user()->hasPermission('supplier_read'))
                         <li class="nav-item py-2">
                             <a class="nav-link" href="{{ route('supplier.index') }}">
                                 <span data-feather="users"></span>
                                 <i class="fa fa-th ms-2"></i>
                                 الموردين
+                            </a>
+                        </li>
+                    @endif
+
+                    @if (auth()->user()->hasPermission('Order_read'))
+                        <li class="nav-item py-2">
+                            <a class="nav-link" href="{{ route('Order_incame') }}">
+                                <span data-feather="users"></span>
+                                <i class="fa fa-th ms-2"></i>
+                                الايرادات
                             </a>
                         </li>
                     @endif

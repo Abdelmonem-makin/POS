@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Dashboard;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Shift;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 
@@ -11,7 +13,7 @@ class DashboardController extends Controller
 {
     public function __construct()
     {
-       
+
     }
     /**
      * Display the dashboard.
@@ -19,9 +21,20 @@ class DashboardController extends Controller
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
-    {
-        // Logic to get data for the dashboard
-        return view('Dashboard.index');
+    {    $today = Carbon::today();
+
+    $summary = Shift::with(['employee', 'orders'])
+        ->get();
+
+    $summarys = $summary->map(function ($shift) {
+        return [
+            'shift_name' => $shift->name,
+            'employee' => $shift->employee->name ?? 'غير محدد',
+            'invoice_count' => $shift->orders->count(),
+            'total_net' => $shift->orders->sum('total_price')
+        ];
+    });
+        return view('Dashboard.index' ,compact('summary'));
     }
 
     /**

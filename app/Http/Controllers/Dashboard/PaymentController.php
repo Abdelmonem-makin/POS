@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SupplierRequest;
-use App\Models\supplier;
+use App\Http\Requests\PaymentRequest;
+use App\Models\payment_methods;
 use Illuminate\Http\Request;
 
-class SupplierController extends Controller
+class PaymentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,12 +16,12 @@ class SupplierController extends Controller
      */
     public function index(Request $request)
     {
-        $suppliers = supplier::where(function ($q) use ($request) {
+        $Payments = payment_methods::where(function ($q) use ($request) {
             return $q->when($request->filled('search'), function ($query) use ($request) {
                 return $query->where('name', 'like', '%' . $request->search . '%');
             });
         })->latest()->paginate(5);
-        return  view('Dashboard.suppliers.index', compact('suppliers'));
+        return  view('Dashboard.Payment.index', compact('Payments'));
     }
 
     /**
@@ -31,7 +31,7 @@ class SupplierController extends Controller
      */
     public function create()
     {
-        return view('Dashboard.suppliers.create');
+        return view('Dashboard.Payment.create');
     }
 
     /**
@@ -40,12 +40,12 @@ class SupplierController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(SupplierRequest $SupplierRequest)
+    public function store(PaymentRequest $PaymentRequest)
     {
-        $dataRequest = $SupplierRequest->validated();
-        supplier::create($dataRequest);
+        $dataRequest = $PaymentRequest->validated();
+        payment_methods::create($dataRequest);
 
-        return redirect()->route('supplier.index')->with('success', __('trans.Category Saved'));
+        return redirect()->route('Payment.index')->with('success', __('trans.Category_Saved'));
     }
 
     /**
@@ -67,9 +67,9 @@ class SupplierController extends Controller
      */
     public function edit($id)
     {
-        $supplier = supplier::findOrFail($id);
+        $Payment = payment_methods::findOrFail($id);
 
-        return view('Dashboard.suppliers.edit', compact('supplier'));
+        return view('Dashboard.Payment.edit', compact('Payment'));
     }
 
     /**
@@ -79,16 +79,16 @@ class SupplierController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(SupplierRequest $SupplierRequest, $id)
+    public function update(PaymentRequest $PaymentRequest, $id)
     {
-        $supplier = supplier::find($id);
-        if (!$supplier) {
-            return redirect()->route('supplier.index')->with(['error' => 'هذا العنصور غير موجود']);
+        $Payment = payment_methods::find($id);
+        if (!$Payment) {
+            return redirect()->route('stock.edite' ,$Payment->id)->with(['error' => 'هذا العنصور غير موجود']);
         }
-        $dataRequest = $SupplierRequest->validated();
-        supplier::where('id', $id)->update($dataRequest);
+        $dataRequest = $PaymentRequest->validated();
+        payment_methods::where('id', $id)->update($dataRequest);
 
-        return redirect()->route('supplier.edit')->with('success', __('trans.Category Saved'));
+        return redirect()->route('Payment.edit' ,$Payment->id)->with('success', __('trans.Category_edit'));
     }
 
     /**
@@ -99,9 +99,9 @@ class SupplierController extends Controller
      */
     public function destroy($id)
     {
-        $resource = supplier::findOrFail($id);
-        $resource->Stock()->delete();
-        // $resource->delete();
-        return redirect()->route('supplier.index')->with('success', __('trans.Category_deleted'));
+        $resource = payment_methods::findOrFail($id);
+        $resource->delete();
+
+        return redirect()->route('Payment.index')->with('success', __('trans.Category_deleted'));
     }
 }
