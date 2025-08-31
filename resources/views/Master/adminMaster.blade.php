@@ -38,17 +38,20 @@
         </div>
     </div>
 
-  <script>
-    function showAlert() {
-      const alertBox = document.getElementById('alertBox');
-      alertBox.classList.remove('d-none'); // Show the alert
-      setTimeout(() => {
-        alertBox.classList.add('d-none'); // Hide the alert after 3 seconds
-      }, 2000);
+    <script>
+        function showAlert() {
+            const alertBox = document.getElementById('alertBox');
+            if (!alertBox) return; // nothing to do
+            alertBox.classList.remove('d-none'); // Show the alert
+            setTimeout(() => {
+                alertBox.classList.add('d-none'); // Hide the alert after 3 seconds
+            }, 2000);
 
-    }
-    showAlert();
-  </script>
+        }
+        if (document.getElementById('alertBox')) {
+            showAlert();
+        }
+    </script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/jquery-3.5.1.min.js') }}"></script>
     <script src="{{ asset('js/order.js') }}"></script>

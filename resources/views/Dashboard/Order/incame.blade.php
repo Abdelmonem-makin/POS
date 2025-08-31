@@ -44,10 +44,12 @@
                                     {{-- <th> رقم الايراد</th> --}}
                                     <th> اسم الموظف </th>
                                     <th> الورديه</th>
+                                    <th> عدد الطلبات</th>
                                     {{-- <th> عدد الطلبات</th> --}}
+                                     <th>بنكك</th>
                                     <th>كاش</th>
-                                    <th>بنكك</th>
                                     <th>إجمالي الإيراد</th>
+                                    <th> الارباح </th>
                                     <th> التاريخ </th>
 
                                 </tr>
@@ -57,9 +59,11 @@
                                     <tr>
                                         <td>{{ $rev['employee_name'] }}</td>
                                         <td>{{ $rev['shift_name'] }}</td>
+                                        <td>{{ $rev['order_count'] }}</td>
                                         <td>{{ number_format($rev['cash_total'], 0) }} SDG</td>
                                         <td>{{ number_format($rev['bank_total'], 0) }} SDG</td>
                                         <td>{{ number_format($rev['total_revenue'], 0) }} SDG</td>
+                                        <td>{{ number_format($rev['profit'], 0) }} SDG</td>
                                         <td>{{ $rev['revenue_date'] }}</td>
 
                                     </tr>

@@ -26,8 +26,8 @@ class ShiftRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'user_id' => 'required|exists:users,id',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
+            // 'start_time' => 'required|date_format:H:i',
+            // 'end_time' => 'required|date_format:H:i|after:start_time',
         ];
     }
 }

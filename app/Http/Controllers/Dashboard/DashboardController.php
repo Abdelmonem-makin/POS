@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\DailyRevenue;
 use App\Models\Shift;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -11,30 +12,37 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function __construct()
-    {
-
-    }
+    public function __construct() {}
     /**
      * Display the dashboard.
      *
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
-    {    $today = Carbon::today();
+    {
+        $today = Carbon::today();
 
-    $summary = Shift::with(['employee', 'orders'])
-        ->get();
+        $summary = Shift::with(['employee', 'orders'])
+            ->get();
 
-    $summarys = $summary->map(function ($shift) {
-        return [
-            'shift_name' => $shift->name,
-            'employee' => $shift->employee->name ?? 'غير محدد',
-            'invoice_count' => $shift->orders->count(),
-            'total_net' => $shift->orders->sum('total_price')
-        ];
-    });
-        return view('Dashboard.index' ,compact('summary'));
+        $summarys = $summary->map(function ($shift) {
+            return [
+                'shift_name' => $shift->name,
+                'employee' => $shift->employee->name ?? 'غير محدد',
+                'invoice_count' => $shift->orders->count(),
+                'total_net' => $shift->orders->sum('total_price')
+            ];
+        });
+        $revenues1 = DailyRevenue::get();
+        $totalrevenues1 = $revenues1->map(function ($q) {
+            $profit = $q->profit;
+            return (object) [
+                'profit' => $profit,
+
+            ];
+        });
+        $totalprofit = $totalrevenues1->sum('profit');
+        return view('Dashboard.index', compact('summary', 'totalprofit'));
     }
 
     /**

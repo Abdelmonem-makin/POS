@@ -15,7 +15,7 @@ class CategoriesTableSeeder extends Seeder
     public function run()
     {
 
-        $Categorys = ['مشروبات' , 'مالكولات'];
+        $Categorys = [ ' أدوية شراب' , 'قطرات' , 'حبوب'];
         foreach ($Categorys as $Category) {
             $user = \App\Models\Category::create([
                 'name' => $Category,

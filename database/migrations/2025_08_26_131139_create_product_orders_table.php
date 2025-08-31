@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('order_id')->nullable();
             $table->foreign('order_id')->references('id')->on('orders')->ondelete('set null');
             $table->integer('quantity');
+            
             $table->timestamps();
         });
     }

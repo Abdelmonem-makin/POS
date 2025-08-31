@@ -1,21 +1,23 @@
 $(document).ready(function () {
 
 
-    $('.add-product-btn').on('click', function (e) {
+    // delegated handler so buttons added later still work
+    $(document).on('click', '.add-product-btn', function (e) {
         e.preventDefault();
-        var name = $(this).data('name');
-        var id = $(this).data('id');
-        var price = $(this).data('price');
+        var $btn = $(this);
+        var name = $btn.data('name');
+        var id = $btn.data('id');
+        var price = $btn.data('price');
 
-        var img = $(this).data('img');
+        var img = $btn.data('img');
 
-        var html = '   <div id="cart-box-' + id + '" class="cart-shop-item row"><div class="col-4 my-1 ">  <img src="' + img + '" class="w-100"src="fa" alt="Product 1"></div><div class="col-4"><div class="cart-item-title">' + name + '</div><div class="cart-item-price prodcut-price">' + $.number(price, 2) + '</div></div><div class="col-4 m-auto text-right"> <input data-price="' + price + '" name="products[' + id + '][quantity]" type="number" class="form-control text-center product-quanities m-auto p-0" value="1" min="1"><button type="submit" class="btn my-1 px-4 btn-sm remov-prodect-btn btn-danger " data-id="' + id + '"><i class="fa fa-trash mx-1" aria-hidden="true"></i></button></div><hr></div> ';
-        $('.cart-shoping').append(html);
-        // $('.modal-body').append(html);
-        calculat();
-
-
-        $(this).removeClass('btn-dark').addClass('btn-default disabled');
+        var html = '   <div id="cart-box-' + id + '" class="cart-shop-item row"> <div class="col-8"><div class="cart-item-title"><h4>' + name + '</h4></div><div class="cart-item-price prodcut-price">' + $.number(price, 2) + '</div></div><div class="col-4 m-auto text-right"> <input data-price="' + price + '" name="products[' + id + '][quantity]" type="number" class="form-control text-center product-quanities m-auto p-0" value="1" min="1"><button type="button" class="btn my-1 px-4 btn-sm remov-prodect-btn btn-danger " data-id="' + id + '"><i class="fa fa-trash mx-1" aria-hidden="true"></i></button></div><hr></div> ';
+        // avoid adding duplicate item if already in cart
+        if ($('#cart-box-' + id).length === 0) {
+            $('.cart-shoping').append(html);
+            calculat();
+            $btn.removeClass('btn-dark').addClass('btn-default disabled');
+        }
     });//اضافة المنتج الى السله
     $('body').on('click', '.disabled', function (e) {
         e.preventDefault();
@@ -47,8 +49,8 @@ $(document).ready(function () {
 
     });//حذف العنصر من السله
     $('body').on('click', '#add-order-btn', function () {
-
-        $('#add-order-btn').removeClass('disabled');
+    // When user clicks the visual button ensure it's enabled so the form can submit
+    $('#add-order-btn').removeClass('disabled').prop('disabled', false);
     });//حذف العنصر من السله
 
     $('body').on('change', '.product-quanities', function () {
@@ -81,10 +83,11 @@ function calculat() {
     // console.log($.number(price,2));
     $('.total-price').html($.number(price, 2));
     if (price > 0) {
-        $('#add-order-btn').removeClass('disabled')
-
+        // Ensure the button is both visually enabled and actually clickable
+        $('#add-order-btn').removeClass('disabled').prop('disabled', false);
     } else {
-        $('#add-order-btn').addClass('disabled');
+        // Visual disabled state and disable click
+        $('#add-order-btn').addClass('disabled').prop('disabled', true);
     }
 
 

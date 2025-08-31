@@ -12,6 +12,7 @@ class DailyRevenue extends Model
         'payment_method_id',
         'employee_id',
         'shift_id',
+        'profit',
         'revenue_date',
         'order_count',
         'total_net'

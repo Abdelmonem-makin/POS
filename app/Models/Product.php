@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Inventory;
 
 class Product extends Model
 {
@@ -32,6 +33,18 @@ class Product extends Model
        public function Stock()
     {
         return $this->hasMany(Stock::class, 'product_id', 'id');
+    }
+
+    /**
+     * آخر سجل جرد لهذا المنتج.
+     *
+     * نستخدم latestOfMany() للحصول على أحدث سجل (آخر إدخال) من
+     * جدول inventories مرتبط بهذا المنتج. هذا يسهل بناء تقارير
+     * الجرد باستخدام Eloquent بدلاً من استعلامات SQL المعقدة.
+     */
+    public function latestInventory()
+    {
+        return $this->hasOne(Inventory::class, 'product_id', 'id')->latestOfMany();
     }
 
 }

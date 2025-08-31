@@ -29,7 +29,7 @@
                     <tr>
                             <th scope="row">{{ $product->name }}</th>
                             <th scope="row">{{ $product->pivot->quantity }}</th>
-                            <th scope="row">{{ number_format($product->pivot->quantity * $product->price) }}</th>
+                            <th scope="row">{{ number_format($product->pivot->quantity * $product->sell_price) }}</th>
 
 
                         </tr>

@@ -22,7 +22,7 @@ class UsersController extends Controller
             return $q->when($request->search,function ($query) use ($request) {
                 return $query->where('name','like','%'.$request->search.'%');
             });
-        })->latest()->paginate(1);
+        })->latest()->paginate(10);
         return view('Dashboard.Users.index',compact('users'));
     }
 

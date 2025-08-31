@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('order_count')->default(0);
             $table->decimal('total_net', 12, 2)->default(0);
             $table->date('revenue_date');
+            $table->integer('profit')->default(0);
             $table->unsignedBigInteger('employee_id')->unsigned();
             $table->foreign('employee_id')->references('id')->on('users')->ondelete('cascade');
             $table->foreign('payment_method_id')->references('id')->on('payment_methods')->ondelete('cascade');

@@ -32,22 +32,22 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request)
     {
-        $photoPath = "";
-        if ($request->has('photo')) {
-            $photoPath = uploadImage('product', $request->photo);
-        }
+        // $photoPath = "";
+        // if ($request->has('photo')) {
+        //     $photoPath = uploadImage('product', $request->photo);
+        // }
         $slug =  Str::slug($request->name);
 
         $productID = Product::create([
             'slug' => $slug,
             'name' => $request->name,
-            'discription' => $request->discription,
+            // 'discription' => $request->discription,
             'categories_id' => $request->categories_id,
-            'photo' => $photoPath,
+            // 'photo' => $photoPath,
             'price' => $request->price,
             'sell_price' => $request->sell_price,
             'add_by' => 'Admin',
-            'Quantity'=>0,
+            'Quantity' => 0,
             'status' => $request->status,
         ]);
         return  redirect()->route('Product.create')->with('success', 'تم الحفط بنجاح');
@@ -106,20 +106,23 @@ class ProductController extends Controller
         } else {
             $request->request->add(['status' => 1]);
         }
+        $slug =  Str::slug($request->name);
         //get array of requset
         Product::where('id', $id)->update([
+            'slug' => $slug,
             'name' => $request->name,
             'categories_id' => $request->categories_id,
             'price' => $request->price,
-            'discription' => $request->discription,
+            'sell_price' => $request->sell_price,
+            // 'discription' => $request->discription,
             'status' => $request->status,
         ]);
         //add new photo if uploud one
         // $photoPath =$photoPath;
-        if ($request->has('photo')) {
-            $photoPath = uploadImage('product', $request->photo);
-            Product::where('id', $id)->update(['photo' => $photoPath]);
-        }
+        // if ($request->has('photo')) {
+        //     $photoPath = uploadImage('product', $request->photo);
+        //     Product::where('id', $id)->update(['photo' => $photoPath]);
+        // }
 
         DB::commit();
         return redirect()->route('Product.index')->with(['success' => 'تم التحديث بنجاح']);
@@ -141,6 +144,5 @@ class ProductController extends Controller
         $resource->Stock()->delete();
         $resource->delete();
         return redirect()->route('Product.index')->with('error',  'تم الحذف بنجاح');
-
     }
 }

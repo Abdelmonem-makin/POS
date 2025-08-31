@@ -19,11 +19,11 @@ class ProductFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'photo' => fake()->imageUrl(300,400),
-            'discription'=> fake()->sentence(6 ,false),
-            'price'=> fake()->randomFloat(10,2),
+            // 'photo' => fake()->imageUrl(300,400),
+            // 'discription'=> fake()->sentence(6 ,false),
+            'price'=> fake()->numberBetween(500,800),
             'Quantity'=> fake()->numberBetween(10,20),
-            'sell_price'=> fake()->randomFloat(10,2),
+            'sell_price'=> fake()->numberBetween(1000,2000),
             'status' =>fake()->randomElement([1,0]),
             'categories_id'=>fake()->randomElement(Category::pluck('id')->toArray()),
             'slug'=> fake()->unique()->slug

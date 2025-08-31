@@ -32,7 +32,7 @@ class ShiftController extends Controller
      */
     public function create()
     {
-        $Users = User::whereRoleIs('employe')->get();
+        $Users = User::get();
         return view('Dashboard.Shift.create', compact('Users'));
     }
 

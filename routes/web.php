@@ -19,3 +19,12 @@ use Illuminate\Support\Facades\Auth;
 Auth::routes(['register'=> false]);
 
 // Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+
+use App\Http\Controllers\InventoryController;
+
+Route::middleware(['auth'])->group(function () {
+	Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+	Route::get('/inventory/create', [InventoryController::class, 'create'])->name('inventory.create');
+	Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
+	Route::get('/inventory/report', [InventoryController::class, 'report'])->name('inventory.report');
+});

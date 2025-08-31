@@ -10,6 +10,7 @@ use App\Models\Shift;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
@@ -46,28 +47,30 @@ class OrderController extends Controller
         //     });
         // })->with('products')->latest()->paginate(5);
         // return view('Dashboard.Order.incame', compact('orders'));
-           $revenues1 = DailyRevenue::with(['employee', 'shift', 'paymentMethod'])
-        ->orderBy('revenue_date', 'desc')
-        ->get()
-        ->groupBy('shift_id');
+        $revenues1 = DailyRevenue::with(['employee', 'shift', 'paymentMethod'])
+            ->orderBy('revenue_date', 'desc')
+            ->get()
+            ->groupBy('shift_id');
 
-            $revenues = $revenues1->map(function ($group) {
-        $first = $group->first();
-        $cash = $group->where('payment_method_id', 1)->sum('total_net');
-        $bank = $group->where('payment_method_id', 2)->sum('total_net');
+        $revenues = $revenues1->map(function ($group) {
+            $first = $group->first();
+            $profit = $group->sum('profit');
+            $cash = $group->where('payment_method_id', 1)->sum('total_net');
+            $bank = $group->where('payment_method_id', 2)->sum('total_net');
 
-        return [
-            'shift_name' => $first->shift->name,
-            'employee_name' => $first->employee->name ,
-            'revenue_date' => $first->revenue_date,
-            'cash_total' => $cash,
-            'bank_total' => $bank,
-            'total_revenue' => $cash + $bank
-        ];
-    })->values();
+            return [
+                'order_count'=>$first->order_count,
+                'shift_name' => $first->shift->name,
+                'employee_name' => $first->employee->name,
+                'revenue_date' => $first->revenue_date,
+                'cash_total' => $cash,
+                'bank_total' => $bank,
+                'profit'=> $profit,
+                'total_revenue' => $cash + $bank
+            ];
+        })->values();
 
         return view('Dashboard.Order.incame', compact('revenues'));
-
     }
     public function show_product_order(Order $order, $id)
     {
@@ -85,15 +88,25 @@ class OrderController extends Controller
      */
     public function store(Request $request, Order $order)
     {
-            $request->validate([
-                'products' => 'required|array',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'transiction_no'=>'required',
+            'payment_id' => 'required|exists:payment_methods,id',
+            'products' => 'required|array|min:1',
+            'products.*.quantity' => 'required|integer|min:1',
+        ], [
+            'payment_id.required' => 'اختر طريقة الدفع',
+            'products.required' => 'لا توجد منتجات في الطلب',
+            'products.*.quantity.required' => 'الكمية مطلوبة لكل منتج',
+        ]);
 
-            // Use DB transaction to keep data consistent
-            DB::beginTransaction();
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => 'خطأ في بيانات الطلب', 'errors' => $validator->errors()], 422);
+        }
 
+        DB::beginTransaction();
+        try {
             $total_price = 0;
-            $code = 0;
+            $totalprofit = 0;
             $lastInvoice = Order::orderBy('id', 'desc')->first();
             $nextId = $lastInvoice ? $lastInvoice->id + 1 : 1;
             $invoiceNumber = 'INV-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
@@ -104,9 +117,8 @@ class OrderController extends Controller
                 'payment_id' => $request->payment_id,
                 'shift_id' => $shift->id,
                 'total_price' => $total_price,
-                'order_number' => $code,
                 'name' => $request->name,
-                'phone' => $request->phone,
+                'phone' => $request->transiction_no,
             ]);
 
             // Attach products with explicit pivot data (quantity and sell_price)
@@ -117,12 +129,13 @@ class OrderController extends Controller
                 // validate available stock
                 if ($product->Quantity < $quantities['quantity']) {
                     DB::rollBack();
-                    return redirect()->back()->withErrors(['quantity' => "الكمية المتاحة من المنتج {$product->name} أقل من المطلوب"])->withInput();
+                    return response()->json(['success' => false, 'message' => "الكمية المتاحة من المنتج {$product->name} أقل من المطلوب"], 422);
                 }
 
-                $lineTotal = $product->price * $quantities['quantity'];
+                $lineTotal = $product->sell_price * $quantities['quantity'];
                 $total_price += $lineTotal;
-
+                $profit = $product->sell_price - $product->price ;
+                $totalprofit += $profit * $quantities['quantity'];
                 $attachData[$id] = [
                     'quantity' => $quantities['quantity'],
                     'sell_price' => $product->sell_price ?? 0,
@@ -138,8 +151,10 @@ class OrderController extends Controller
 
             $code = Order::count() + 1;
             $order->update([
+                'profit' => $totalprofit,
                 'total_price' => $total_price,
             ]);
+
             $today = Carbon::today();
             // تحديث أو إنشاء الإيراد اليومي
             $revenue = DailyRevenue::firstOrNew([
@@ -150,7 +165,9 @@ class OrderController extends Controller
             ]);
 
             $revenue->order_count = ($revenue->order_count ?? 0) + 1;
-            $revenue->total_net = ($revenue->total_net ?? 0) + $total_price ;
+            $revenue->total_net = ($revenue->total_net ?? 0) + $total_price;
+            $revenue->profit = ($revenue->profit ?? 0) + $totalprofit;
+
 
             // توليد رقم الإيراد إذا جديد
             if (!$revenue->exists) {
@@ -158,10 +175,13 @@ class OrderController extends Controller
             }
 
             $revenue->save();
-            return redirect()->route('Home')->with('success', 'تم الشراء بنجاح');
-        // } catch (\Exception $e) {
-        //     return redirect()->back()->with('error', 'حدث خطأ أثناء إنشاء الطلب');
-        // }
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'تم الشراء بنجاح']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => 'حدث خطأ أثناء إنشاء الطلب', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**

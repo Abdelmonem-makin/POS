@@ -46,7 +46,7 @@
                 <div class="alert alert-success" role="alert">
                     <p class="text-center ">{{Session::get('success')}}</p>
                 </div>
-                @endif  
+                @endif
                 <div class="card-body">
                     <div class="table-responsive">
                         @if ($Products->count() > 0)
@@ -56,9 +56,9 @@
                                     <tr>
                                         <th> #</th>
                                         <th> الاسم</th>
-                                        <th>الصورة</th>
+                                        {{-- <th>الصورة</th> --}}
                                         <th>القسم</th>
-                                        <th>الوصف</th>
+                                        {{-- <th>الوصف</th> --}}
                                         <th>سعر الشراء</th>
                                         <th>سعر البيع</th>
                                         <th>الكميه </th>
@@ -74,12 +74,12 @@
 
                                                 <th class="pt-4" scope="row">{{ $index + 1 }}</th>
                                                 <th scope="row">{{ $Product->name }}</th>
-                                                <th scope="row"><img height="100" width="100"
-                                                        src="{{ asset($Product->photo) }}"></th>
+                                                {{-- <th scope="row"><img height="100" width="100"
+                                                        src="{{ asset($Product->photo) }}"></th> --}}
                                                 <th scope="row">{{ $Product->Categorie->name }}</th>
-                                                <th scope="row">{{ Str::words($Product->discription, 2, ' ...') }}</th>
-                                                <th scope="row">{{ $Product->sell_price }}</th>
+                                                {{-- <th scope="row">{{ Str::words($Product->discription, 2, ' ...') }}</th> --}}
                                                 <th scope="row">{{ $Product->price }}</th>
+                                                <th scope="row">{{ $Product->sell_price  }}</th>
                                                 <th scope="row">{{ $Product->Quantity }}</th>
 
                                                 <th scope="row">

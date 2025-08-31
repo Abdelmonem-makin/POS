@@ -43,12 +43,13 @@
                             <thead>
                                 <tr>
                                     <th> رقم الفاتوره</th>
-                                    <th> اسم الزبون</th>
-                                    <th> رقم الهاتق</th>
+                                    {{-- <th> اسم الزبون</th> --}}
+                                    <th>   رقم العمليه</th>
                                     <th>طريقة الدفع</th>
                                     <th> عدد الطلبات</th>
                                     <th> تاريخ الطلب </th>
                                     <th> اجمالي المبلغ</th>
+                                    <th>  الربح</th>
                                     {{-- <th> </th> --}}
                                     <th>الاجراءات</th>
                                 </tr>
@@ -58,12 +59,13 @@
                                     @foreach ($orders as $order)
                                         <tr>
                                             <th scope="row">{{ $order->invoice_number ? $order->invoice_number : '-' }}</th>
-                                            <th scope="row">{{ $order->name ? $order->name : '-' }}</th>
+                                            {{-- <th scope="row">{{ $order->name ? $order->name : '-' }}</th> --}}
                                             <th scope="row">{{ $order->phone ? $order->phone : '-' }}</th>
                                             <th scope="row">{{ $order->paymentMethod->method_name }}</th>
                                             <th scope="row">{{ $order->products->count() }}</th>
                                             <th scope="row">{{ $order->created_at }}</th>
                                             <th scope="row">{{ number_format($order->total_price, 2) }}</th>
+                                            <th scope="row">{{  $order->profit }}</th>
 
                                             <th>
                                                 <!-- Modal trigger button -->

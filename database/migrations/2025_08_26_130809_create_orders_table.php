@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('invoice_number')->nullable();
             $table->integer('phone')->nullable();
             $table->double('total_price');
+            $table->integer('profit')->default(0);
             $table->foreign('payment_id')->references('id')->on('payment_methods')->ondelete('cascade');
             $table->foreign('shift_id')->references('id')->on('shifts')->ondelete('cascade');
             $table->timestamps();

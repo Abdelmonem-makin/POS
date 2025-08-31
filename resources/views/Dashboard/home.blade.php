@@ -6,10 +6,12 @@
         </div>
     @endif
     @if (Session::has('success'))
-        <div  id="alertBox" class="alert alert-success d-none " role="alert">
+        <div id="alertBox" class="alert alert-success d-none " role="alert">
             <p class="text-center ">{{ Session::get('success') }}</p>
         </div>
     @endif
+
+    <div id="result"></div>
     <div class="mx-5">
         <div class="card ">
             <div class="card-header py-0 ">
@@ -55,8 +57,7 @@
                                                         display: flex;
                                                         justify-content: center;
                                                     ">
-                                                            <img class="card-img-top w-75 " height="170" width="140"
-                                                                src="{{ asset($product->photo) }}" alt="..." />
+
                                                         </div>
 
                                                         <!-- Product details-->
@@ -64,7 +65,7 @@
                                                             <!-- Product name-->
                                                             <h5 class="fw-bolder m-2 h-25">{{ $product->name }}</h5>
                                                             <!-- Product price-->
-                                                            <p class="m-0"> {{ number_format($product->price) }}</p>
+                                                            <p class="m-0"> {{ number_format($product->sell_price) }}</p>
                                                         </div>
                                                         <!-- Product actions-->
                                                         <div class="card-footer  pt-0 border-top-0 bg-transparent">
@@ -72,7 +73,7 @@
                                                                 <a id = "product-{{ $product->id }}"
                                                                     data-name="{{ $product->name }}"
                                                                     data-id="{{ $product->id }}"
-                                                                    data-price="{{ $product->price }}"
+                                                                    data-price="{{ $product->sell_price }}"
                                                                     data-img="{{ $product->photo }}"
                                                                     class="btn btn-dark my-0 py-0 add-product-btn px-4 "
                                                                     href="">+</a>
@@ -100,7 +101,7 @@
 
                                     <!-- Cart Item 1 -->
 
-                                    <form action="{{ route('Order.store') }}" method="post">
+                                    <form id="orderForm">
                                         {{ csrf_field() }}
                                         {{ method_field('post') }}
                                         <div class="cart-shoping row">
@@ -116,22 +117,6 @@
                                         <!-- Cart Summary -->
                                         <div class="col-12">
                                             <div class="cart-summary">
-                                                <div class="row mb-4">
-                                                    <label for="name" class="col-md-4 col-form-label text-md-end">اسم
-                                                        الزبون</label>
-
-                                                    <div class="col-md-8">
-                                                        <input id="name" type="text"
-                                                            class="form-control @error('name') is-invalid @enderror"
-                                                            name="name" autocomplete="name" autofocus>
-
-                                                        @error('name')
-                                                            <span class="invalid-feedback" role="alert">
-                                                                <strong>{{ $message }}</strong>
-                                                            </span>
-                                                        @enderror
-                                                    </div>
-                                                </div>
                                                 <div class="row">
                                                     <label for="compane_name"
                                                         class="col-md-3 col-form-label text-md-start ">طريقة الدفع</label>
@@ -153,14 +138,14 @@
                                                     </div>
                                                 </div>
                                                 <div class="row mb-4">
-                                                    <label for="phone" class="col-md-4 col-form-label text-md-end">رقم
+                                                    <label for="transiction_no" class="col-md-4 col-form-label text-md-end">رقم
                                                         العمليه </label>
 
                                                     <div class="col-md-8">
-                                                        <input id="phone" type="number" class="form-control  "
-                                                            name="phone" autofocus>
+                                                        <input id="transiction_no" type="number" class="form-control  "
+                                                            name="transiction_no" autofocus>
 
-                                                        @error('phone')
+                                                        @error('transiction_no')
                                                             <span class="invalid-feedback" role="alert">
                                                                 <strong>{{ $message }}</strong>
                                                             </span>
@@ -204,5 +189,59 @@
 
         </div>
 
+        <script>
+            (function() {
+                const form = document.getElementById('orderForm');
+                const submitBtn = document.getElementById('add-order-btn');
+
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    submitBtn.disabled = true;
+
+                    const formData = new FormData(form);
+
+                    try {
+                        const res = await fetch('{{ route('Order.store') }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: formData
+                        });
+
+                        const data = await res.json();
+
+                        if (data.success) {
+                            // Clear cart items
+                            var id = $(this).data('id');
+
+                            document.querySelectorAll('.cart-shoping').forEach(el => el.innerHTML = '');
+                            // Reset totals
+                            document.querySelectorAll('.total-price').forEach(el => el.textContent = '0');
+                            // Reset form fields (payment, transiction_no, etc.)
+                            form.reset();
+                            // Disable submit since cart is empty (visual + property)
+                            submitBtn.classList.add('disabled');
+                            submitBtn.disabled = true; // keep for direct DOM compatibility
+                            $(submitBtn).prop('disabled', true);
+                            // Optionally re-enable product buttons if you disabled them earlier
+                            $('.add-product-btn').removeClass('btn-default disabled').addClass('btn-dark');
+                            // ensure the global calculat() logic sees the button as disabled
+                            $('#add-order-btn').prop('disabled', true);
+
+                            // Show success feedback
+                            alert(data.message || 'تم الشراء بنجاح');
+                        } else {
+                            alert(data.message || 'حدث خطأ أثناء إنشاء الطلب');
+                            // Keep the submit button enabled so user can retry
+                            submitBtn.disabled = false;
+                        }
+                    } catch (err) {
+                        alert('خطأ في الاتصال بالخادم');
+                        submitBtn.disabled = false;
+                    }
+                });
+            })();
+        </script>
 
     @endsection
