@@ -30,7 +30,12 @@
             @foreach($report as $r)
             <tr>
                 <td>{{ $r->id }}</td>
-                <td>{{ $r->name }}</td>
+                <td>
+                    {{ $r->name }}
+                    @if(!empty($r->is_low))
+                        <span class="badge bg-danger ms-2">منتهي/منخفض</span>
+                    @endif
+                </td>
                 <td>{{ $r->system_qty }}</td>
                 <!-- إذا لم يوجد سجل جرد، نعرض 0 -->
                 <td>{{ $r->counted_qty ?? 0 }}</td>
