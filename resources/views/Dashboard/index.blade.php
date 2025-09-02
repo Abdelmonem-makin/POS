@@ -12,7 +12,7 @@
                         </ol>
                     </div>
                 </div>
-                <div class="row pt-3">
+                <div class="row m-0">
                     <!-- Earnings (Monthly) Card Example -->
                     <div class="col-xl-3 col-md-6 mb-4">
                         <div class="card border-left-primary h-100 py-2 shadow">
@@ -97,11 +97,9 @@
                     </div>
                 </div><hr>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <div>
-                            <div data-bs-spy="scroll" data-bs-target="#nav-example" data-bs-smooth-scroll="true"
-                                tabindex="0">
-                                <div id="div1" class="">
+      
+                      
+                          
                                     <div class="row py-4">
                                         <h2 class="mb-4 text-center">📦 تفاصيل الإيرادات اليومية حسب الورديات</h2>
 
@@ -174,16 +172,11 @@
                                         </div> --}}
 
                                     </div>
-                                </div>
-                                <div id="div2" class="bg-success" style="height: 100vh">
-                                    div2
-                                </div>
-                                <div id="div3" class="bg-light" style="height: 100vh">
-                                    div3
-                                </div>
-                            </div>
-                        </div>
-                    </div><!-- bd -->
+                              
+                          
+                            
+                       
+                   
                 </div><!-- bd -->
             </div><!-- bd -->
         </div>
