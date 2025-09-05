@@ -55,11 +55,11 @@
                                 <thead>
                                     <tr>
                                         <th> #</th>
-                                        <th> الاسم</th>
+                                        <th> اسم الدواء</th>
                                         {{-- <th>الصورة</th> --}}
                                         <th>القسم</th>
                                         {{-- <th>الوصف</th> --}}
-                                        <th>سعر الشراء</th>
+                                        {{-- <th>سعر الشراء</th> --}}
                                         <th>سعر البيع</th>
                                         <th>الكميه </th>
                                         <th>الحاله</th>
@@ -78,7 +78,7 @@
                                                         src="{{ asset($Product->photo) }}"></th> --}}
                                                 <th scope="row">{{ $Product->Categorie->name }}</th>
                                                 {{-- <th scope="row">{{ Str::words($Product->discription, 2, ' ...') }}</th> --}}
-                                                <th scope="row">{{ $Product->price }}</th>
+                                                {{-- <th scope="row">{{ $Product->price }}</th> --}}
                                                 <th scope="row">{{ $Product->sell_price  }}</th>
                                                 <th scope="row">{{ $Product->Quantity }}</th>
 

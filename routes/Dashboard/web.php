@@ -21,7 +21,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     route::group(['prefix' => 'dashboard'], function () {
         Route::get('Order/{id}/show_product_order', [OrderController::class, 'show_product_order'])->name('show-product-order');
         Route::resource('User', UsersController::class)->except(['show']);
-        Route::resource('Product', ProductController::class)->except(['show']);
+        Route::resource('Product', ProductController::class);
+        Route::get('/alertLowProduct',[ ProductController::class , 'getLowStockAlerts']);
         Route::resource('Order', OrderController::class)->except(['show']);
         Route::get('Order_incame', [OrderController::class,'Order_incame'])->name('Order_incame');
         Route::get('Product_chaneg_Status/{id}', [ProductController::class, 'chaneg_Status'])->name('Product_chaneg_Status');

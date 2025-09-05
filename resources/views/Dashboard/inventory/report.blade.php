@@ -16,13 +16,13 @@
                 <!-- الفرق المحسوب = كمية الجرد - كمية النظام -->
                 <th>الفرق</th>
                 <!-- قيمة الفرق بحسب سعر البيع (تأثير الإيراد) -->
-                <th>قيمة الفرق
+                {{-- <th>قيمة الفرق --}}
                     {{-- (سعر البيع) --}}
-                </th>
+                {{-- </th> --}}
                 <!-- هامش الربح للوحدة = sell_price - price -->
-                <th>ربح الوحدة (سعر البيع - التكلفة)</th>
+                {{-- <th>ربح الوحدة (سعر البيع - التكلفة)</th> --}}
                 <!-- إجمالي أثر الفرق على الربح = diff * هامش الربح -->
-                <th>إجمالي ربح الفرق</th>
+                <th>إجمالي   الفرق</th>
                 <th>تاريخ آخر جرد</th>
             </tr>
         </thead>
@@ -44,9 +44,9 @@
                 <!-- الفرق يمكن أن يكون موجب (زيادة) أو سالب (نقص) -->
                 <td>{{ $r->diff }}</td>
                 <!-- قيمة الفرق تعرض برقم عشري بثانيتين -->
-                <td>{{ number_format($r->value_diff, 2) }}</td>
+                {{-- <td>{{ number_format($r->value_diff, 2) }}</td> --}}
                 <!-- هامش الربح لكل وحدة -->
-                <td>{{ number_format($r->profit_per_unit, 2) }}</td>
+                {{-- <td>{{ number_format($r->profit_per_unit, 2) }}</td> --}}
                 <!-- إجمالي ربح/خسارة ناتجة عن الفرق -->
                 <td>{{ number_format($r->profit_diff, 2) }}</td>
                 <td>{{ $r->counted_at ? \Carbon\Carbon::parse($r->counted_at)->format('Y-m-d') : '-' }}</td>
@@ -57,16 +57,17 @@
             <tr>
                 <th colspan="2">الإجمالي</th>
                 <th>{{ $total_system_qty ?? 0 }}</th>
-                <th>{{ $total_counted_qty ?? 0 }}</th>
+                <th>{{ number_format($total_counted_value ?? 0, 2) }}</th>
                 <th>{{ $total_base ?? 0 }}</th>
+                {{-- <th></th>   --}}
+                {{-- <th>{{ number_format($total_value_diff ?? 0, 2) }}</th> --}}
                 <th></th>
-                <th>{{ number_format($total_value_diff ?? 0, 2) }}</th>
-                <th></th>
+                {{-- اجمالي الارباح --}}
                 <th>{{ number_format($total_profit_diff ?? 0, 2) }}</th>
                 <th></th>
             </tr>
             <tr>
-                <th colspan="9">قيمة إجمالية الادويه في النظام => {{ number_format($total_system_value ?? 0, 2) }} &nbsp; | &nbsp; قيمة إجمالية بعد الجرد: {{ number_format($total_counted_value ?? 0, 2) }}</th>
+                <th colspan="9"> إجمالية قيمة  الادويه في النظام => {{ number_format($total_system_value ?? 0, 2) }} &nbsp; | &nbsp;إجمالية قيمة الادويه بعد الجرد: {{ number_format($total_counted_value ?? 0, 2) }}</th>
             </tr>
         </tfoot>
     </table>

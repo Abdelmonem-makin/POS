@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\DailyRevenue;
+use App\Models\Product;
 use App\Models\Shift;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $today = Carbon::today();
+        $product = Product::count();
 
         $summary = Shift::with(['employee', 'orders'])
             ->get();
@@ -37,12 +39,12 @@ class DashboardController extends Controller
         $totalrevenues1 = $revenues1->map(function ($q) {
             $profit = $q->profit;
             return (object) [
-                'profit' => $profit,
+                'total_net' => $profit,
 
             ];
         });
         $totalprofit = $totalrevenues1->sum('profit');
-        return view('Dashboard.index', compact('summary', 'totalprofit'));
+        return view('Dashboard.index', compact('summary', 'totalprofit','product'));
     }
 
     /**

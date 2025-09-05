@@ -12,8 +12,10 @@ class InventoryController extends Controller
 {
     public function index(Request $request)
     {
+        $products = Product::orderBy('name')->get();
+
         $inventories = Inventory::with('product','user')->latest()->paginate(20);
-        return view('Dashboard.inventory.index', compact('inventories'));
+        return view('Dashboard.inventory.index', compact('inventories' ,'products'));
     }
 
     public function create()
@@ -65,10 +67,10 @@ class InventoryController extends Controller
             $diff = $counted - $systemQty; // counted - system
             $sell = (float) $p->sell_price;
             $cost = (float) $p->price;
-            $valueDiff = $diff * $cost; // قيمة الفرق بحسب سعر البيع
-            $base = $counted * $cost; //راس المال داخل الصيدليه
-            $profitPerUnit = $sell - $cost; // هامش الربح
-            $profitDiff = $diff * $profitPerUnit; // إجمالي أثر الفرق على الربح
+            $valueDiff = $diff * $sell; // قيمة الفرق بحسب سعر البيع
+            $base = $counted * $sell; //راس المال داخل الصيدليه
+            // $profitPerUnit = $sell - $cost; // هامش الربح
+            $profitDiff = $diff * $sell; // إجمالي أثر الفرق على الربح
 
             return (object) [
                 'id' => $p->id,
@@ -81,7 +83,7 @@ class InventoryController extends Controller
                 'diff' => $diff,
                 'base' => $base,
                 'value_diff' => $valueDiff,
-                'profit_per_unit' => $profitPerUnit,
+                // 'profit_per_unit' => $profitPerUnit,
                 'profit_diff' => $profitDiff,
             ];
         });
@@ -91,10 +93,10 @@ class InventoryController extends Controller
         $total_counted_qty = $report->sum('counted_qty');
         $total_base = $report->sum('base');
         $total_system_value = $report->sum(function ($r) {
-            return $r->system_qty * $r->cost_price;
+            return $r->system_qty * $r->sell_price;
         });
         $total_counted_value = $report->sum(function ($r) {
-            return $r->counted_qty * $r->cost_price;
+            return $r->counted_qty * $r->sell_price;
         });
         $total_value_diff = $report->sum('value_diff');
         $total_profit_diff = $report->sum('profit_diff');

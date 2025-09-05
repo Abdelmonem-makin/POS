@@ -23,6 +23,7 @@ class ProductFactory extends Factory
             // 'discription'=> fake()->sentence(6 ,false),
             'price'=> fake()->numberBetween(500,800),
             'Quantity'=> fake()->numberBetween(10,20),
+            'minimum_Quantity'=> fake()->numberBetween(5,10),
             'sell_price'=> fake()->numberBetween(1000,2000),
             'status' =>fake()->randomElement([1,0]),
             'categories_id'=>fake()->randomElement(Category::pluck('id')->toArray()),

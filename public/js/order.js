@@ -1,6 +1,24 @@
 $(document).ready(function () {
 
+    $(document).on('click', '.add-product_Stock-btn', function (e) {
+        e.preventDefault();
+        var $btn = $(this);
+        var name = $btn.data('name');
+        var id = $btn.data('id');
 
+        var html = '<div id="cart-stock-box-' + id +
+            '" class=" cart-shop-item row"> <div class="col-12"><div class="cart-item-title"><h4>' +
+            name +
+            '</h4></div> </div><div class="col-md-12 "><div class="row"> <label for="expir_data" class="col-md-4 my-2 px-0 "> انتهاءالصلاحيه</label> <div class="p-0  col-md-8 my-2"><input class="form-control    product-quanities   p-0" type="date" name="products_stock [' + id + '][expir_data]"></div> <label for="expir_data" class="col-md-4  ">الكميه </label><div class="col-md-8 p-0 "><input name="products_stock[' +
+            id +
+            '][quantity]" type="number" class="form-control col-md-8 product-stock-quanities  p-0" value="1" min="1"> </div></div><button type="button" class="btn my-1 px-4 btn-sm remov-prodect-stock-btn btn-danger " data-id="' +
+            id + '"><i class="fa fa-trash mx-1" aria-hidden="true"></i></button></div><hr></div> ';
+        // avoid adding duplicate item if already in cart
+        if ($('#cart-stock-box-' + id).length === 0) {
+            $('.cart-stock-shoping').append(html);
+            $btn.removeClass('btn-dark').addClass('btn-default disabled');
+        }
+    }); //اضافة المنتج الى السله المخزن
     // delegated handler so buttons added later still work
     $(document).on('click', '.add-product-btn', function (e) {
         e.preventDefault();
@@ -11,7 +29,11 @@ $(document).ready(function () {
 
         var img = $btn.data('img');
 
-        var html = '   <div id="cart-box-' + id + '" class="cart-shop-item row"> <div class="col-8"><div class="cart-item-title"><h4>' + name + '</h4></div><div class="cart-item-price prodcut-price">' + $.number(price, 2) + '</div></div><div class="col-4 m-auto text-right"> <input data-price="' + price + '" name="products[' + id + '][quantity]" type="number" class="form-control text-center product-quanities m-auto p-0" value="1" min="1"><button type="button" class="btn my-1 px-4 btn-sm remov-prodect-btn btn-danger " data-id="' + id + '"><i class="fa fa-trash mx-1" aria-hidden="true"></i></button></div><hr></div> ';
+        var html = '   <div id="cart-box-' + id + '" class="cart-shop-item row"> <div class="col-8"><div class="cart-item-title"><h4>' + name +
+            '</h4></div><div class="cart-item-price prodcut-price">' + $.number(price, 2) +
+            '</div></div><div class="col-4 m-auto text-right"> <input data-price="' + price +
+            '" name="products[' + id + '][quantity]" type="number" class="form-control text-center product-quanities m-auto p-0" value="1" min="1"><button type="button" class="btn my-1 px-4 btn-sm remov-prodect-btn btn-danger " data-id="'
+            + id + '"><i class="fa fa-trash mx-1" aria-hidden="true"></i></button></div><hr></div> ';
         // avoid adding duplicate item if already in cart
         if ($('#cart-box-' + id).length === 0) {
             $('.cart-shoping').append(html);
@@ -39,6 +61,15 @@ $(document).ready(function () {
             }
         })
     });
+        $('body').on('click', '.remov-prodect-stock-btn', function (e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        $('#cart-stock-box-' + id).remove();
+        $('#product-Stock' + id).removeClass('btn-default disabled').addClass('btn-dark');
+
+        calculat();
+
+    });//حذف العنصر من السله
     $('body').on('click', '.remov-prodect-btn', function (e) {
         e.preventDefault();
         var id = $(this).data('id');
@@ -49,16 +80,13 @@ $(document).ready(function () {
 
     });//حذف العنصر من السله
     $('body').on('click', '#add-order-btn', function () {
-    // When user clicks the visual button ensure it's enabled so the form can submit
-    $('#add-order-btn').removeClass('disabled').prop('disabled', false);
+        // When user clicks the visual button ensure it's enabled so the form can submit
+        $('#add-order-btn').removeClass('disabled').prop('disabled', false);
     });//حذف العنصر من السله
-
     $('body').on('change', '.product-quanities', function () {
         var quanities = parseInt($(this).val());
         var price = parseInt($(this).data('price'));
         var totl = quanities * price;
-
-
         $(this).closest('.cart-shop-item').find('.prodcut-price').html($.number(totl, 2));
         calculat();
     });//حصاب قمة عدد من المنتجات و ايجاد  و قيمتها

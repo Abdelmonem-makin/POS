@@ -41,15 +41,15 @@
                     </div>
 
                 </div>
-             @if(Session::has('error'))
-                <div id="alertBox" class="alert  alert-danger " role="alert">
-                    <p class="text-center ">{{Session::get('error')}}</p>
-                </div>
+                @if (Session::has('error'))
+                    <div id="alertBox" class="alert  alert-danger " role="alert">
+                        <p class="text-center ">{{ Session::get('error') }}</p>
+                    </div>
                 @endif
-                @if(Session::has('success'))
-                <div class="alert alert-success d-none " role="alert">
-                    <p class="text-center ">{{Session::get('success')}}</p>
-                </div>
+                @if (Session::has('success'))
+                    <div class="alert alert-success d-none " role="alert">
+                        <p class="text-center ">{{ Session::get('success') }}</p>
+                    </div>
                 @endif
                 <div class="card-body">
                     <div class="table-responsive">
@@ -98,8 +98,8 @@
                                                 {{-- ########################## ############################################## --}}
 
                                                 @if (auth()->user()->hasPermission('Category_delete'))
-                                                    <form action="{{ route('Category.destroy', $Category->id) }}" method="post"
-                                                        class="d-inline">
+                                                    <form action="{{ route('Category.destroy', $Category->id) }}"
+                                                        method="post" class="d-inline">
                                                         {{ csrf_field() }}
                                                         {{ method_field('DELETE') }}
                                                         <button type="submit" class="btn btn-sm btn-outline-danger ">

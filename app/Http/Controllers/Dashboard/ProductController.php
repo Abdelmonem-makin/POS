@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\stock;
 use App\Models\Category;
 use App\Http\Requests\ProductRequest;
 use Illuminate\Support\Str;
@@ -15,12 +16,18 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
+
         $Products = Product::where(function ($q) use ($request) {
             return $q->when($request->filled('search'), function ($query) use ($request) {
                 return $query->where('name', 'like', '%' . $request->search . '%');
             });
         })->latest()->paginate(5);
         return view('Dashboard.Prodect.Index', compact('Products'));
+    }
+    public function show($id)
+    {
+        $product = Product::findOrFail($id);
+        return view('products.show', compact('product'));
     }
 
     public function create()

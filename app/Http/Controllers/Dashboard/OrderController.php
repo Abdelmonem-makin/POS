@@ -54,18 +54,18 @@ class OrderController extends Controller
 
         $revenues = $revenues1->map(function ($group) {
             $first = $group->first();
-            $profit = $group->sum('profit');
+            // $profit = $group->sum('profit');
             $cash = $group->where('payment_method_id', 1)->sum('total_net');
             $bank = $group->where('payment_method_id', 2)->sum('total_net');
 
             return [
-                'order_count'=>$first->order_count,
+                'order_count' => $first->order_count,
                 'shift_name' => $first->shift->name,
                 'employee_name' => $first->employee->name,
                 'revenue_date' => $first->revenue_date,
                 'cash_total' => $cash,
                 'bank_total' => $bank,
-                'profit'=> $profit,
+                // 'profit' => $profit,
                 'total_revenue' => $cash + $bank
             ];
         })->values();
@@ -88,23 +88,24 @@ class OrderController extends Controller
      */
     public function store(Request $request, Order $order)
     {
-        $validator = Validator::make($request->all(), [
-            'transiction_no'=>'required',
-            'payment_id' => 'required|exists:payment_methods,id',
-            'products' => 'required|array|min:1',
-            'products.*.quantity' => 'required|integer|min:1',
-        ], [
-            'payment_id.required' => 'اختر طريقة الدفع',
-            'products.required' => 'لا توجد منتجات في الطلب',
-            'products.*.quantity.required' => 'الكمية مطلوبة لكل منتج',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'message' => 'خطأ في بيانات الطلب', 'errors' => $validator->errors()], 422);
-        }
-
-        DB::beginTransaction();
         try {
+            $validator = Validator::make($request->all(), [
+                'transiction_no' => '',
+                'payment_id' => 'required|exists:payment_methods,id',
+                'products' => 'required|array|min:1',
+                'products.*.quantity' => 'required|integer|min:1',
+            ], [
+                'payment_id.required' => 'اختر طريقة الدفع',
+                'products.required' => 'لا توجد منتجات في الطلب',
+                'products.*.quantity.required' => 'الكمية مطلوبة لكل منتج',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['success' => false, 'message' => 'خطأ في بيانات الطلب', 'errors' => $validator->errors()], 422);
+            }
+
+            DB::beginTransaction();
+
             $total_price = 0;
             $totalprofit = 0;
             $lastInvoice = Order::orderBy('id', 'desc')->first();
@@ -129,16 +130,16 @@ class OrderController extends Controller
                 // validate available stock
                 if ($product->Quantity < $quantities['quantity']) {
                     DB::rollBack();
-                    return response()->json(['success' => false, 'message' => "الكمية المتاحة من المنتج {$product->name} أقل من المطلوب"], 422);
+                    return response()->json(['error' => false, 'message' => "الكمية المتاحة من المنتج {$product->name} أقل من المطلوب"], 422);
                 }
 
                 $lineTotal = $product->sell_price * $quantities['quantity'];
                 $total_price += $lineTotal;
-                $profit = $product->sell_price - $product->price ;
+                $profit = $product->sell_price - $product->price;
                 $totalprofit += $profit * $quantities['quantity'];
                 $attachData[$id] = [
                     'quantity' => $quantities['quantity'],
-                    'sell_price' => $product->sell_price ?? 0,
+                    'sell_price' => $product->sell_price ,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
@@ -151,7 +152,6 @@ class OrderController extends Controller
 
             $code = Order::count() + 1;
             $order->update([
-                'profit' => $totalprofit,
                 'total_price' => $total_price,
             ]);
 
@@ -180,7 +180,7 @@ class OrderController extends Controller
             return response()->json(['success' => true, 'message' => 'تم الشراء بنجاح']);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['success' => false, 'message' => 'حدث خطأ أثناء إنشاء الطلب', 'error' => $e->getMessage()], 500);
+            return response()->json(['error' => false, 'message' => 'حدث خطأ أثناء إنشاء الطلب', 'error' => $e->getMessage()], 500);
         }
     }
 

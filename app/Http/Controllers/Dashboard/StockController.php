@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StockRequest;
 use App\Models\Category;
+use App\Models\payment_methods;
 use App\Models\Product;
 use App\Models\stock;
 use App\Models\supplier;
@@ -24,9 +25,9 @@ class StockController extends Controller
     {
         $Stocks = stock::where(function ($q) use ($request) {
             return $q->when($request->filled('search'), function ($query) use ($request) {
-                return $query->where('name', 'like', '%' . $request->search . '%');
+                return $query->where('product_id', 'like', '%' . $request->search . '%');
             });
-        })->with('User')->latest()->paginate(5);
+        })->with('User', 'Product')->latest()->paginate(5);
         return view('Dashboard.Stock.index', compact('Stocks'));
     }
 
@@ -35,12 +36,18 @@ class StockController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        $payment_methods = payment_methods::get();
+
         $Products = Product::where('status', 1)->get();
         $suppliers = supplier::get();
-
-        return view('Dashboard.Stock.create', compact('Products', 'suppliers'));
+        $Products = Product::where(function ($q) use ($request) {
+            return $q->when($request->filled('search'), function ($query) use ($request) {
+                return $query->where('name', 'like', '%' . $request->search . '%');
+            });
+        })->latest()->get();
+        return view('Dashboard.Stock.create', compact('Products', 'suppliers' ,'payment_methods','Products'));
     }
 
     /**
@@ -119,12 +126,12 @@ class StockController extends Controller
 
         if ($request->Quantity > $Products->Quantity) {
             $r = $Products->Quantity + $request->Quantity;
-            
+
             Product::where('id', $request->product_id)->update(['Quantity' => $r]);
-        }elseif ($request->Quantity < $Products->Quantity) {
-             $r = $Products->Quantity + $request->Quantity;
-            $totle = $Products->Quantity -$r ;
-            Product::where('id', $request->product_id)->update(['Quantity' => abs($totle) ]);
+        } elseif ($request->Quantity < $Products->Quantity) {
+            $r = $Products->Quantity + $request->Quantity;
+            $totle = $Products->Quantity - $r;
+            Product::where('id', $request->product_id)->update(['Quantity' => abs($totle)]);
         }
 
 

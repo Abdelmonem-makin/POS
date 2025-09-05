@@ -3,25 +3,208 @@
 @section('content')
     <div class="card  ">
         <div class="card-header ">
-
-
             <div class="d-flex justify-content-start">
-
                 <a href="{{ route('User.index') }}" class=" nav nav-link me-a">المخزون</a>
                 <h3 class="  me-a">-</h3>
-                <p class="nav  text-dark nav-link me-a"  > اضافة منتج الى المخزون  </p>
-
-
+                <p class="nav  text-dark nav-link me-a"> اضافة منتج الى المخزون </p>
             </div>
         </div>
-
-        <div class="card-body w-75 mt-auto">
+        <div class="card-body   mt-auto">
             @if (Session::has('success'))
                 <div class="alert alert-success" role="alert">
                     <p class="text-center ">{{ Session::get('success') }}</p>
                 </div>
             @endif
-            <form method="POST" action="{{ route('Stock.store') }}" id="selectForm2">
+            @if (Session::has('error'))
+                <div id="alertBox" class="alert  alert-danger " role="alert">
+                    <p class="text-center ">{{ Session::get('error') }}</p>
+                </div>
+            @endif
+            <div class="row ">
+                <div class="col-md-9">
+                    <div class="card-body ">
+                        <div class="table-responsive ">
+                            @if ($Products->count() > 0)
+                                <table class="table table-bordered  text-center table-striped mg-b-0  p-0 text-md-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th> #</th>
+                                            <th> اسم الدواء</th>
+                                            {{-- <th>الصورة</th> --}}
+                                            <th>القسم</th>
+                                            {{-- <th>الوصف</th> --}}
+                                            {{-- <th>سعر الشراء</th> --}}
+                                            <th>الكميه </th>
+                                            <th>الحاله</th>
+                                            <th>الاجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @isset($Products)
+                                            @foreach ($Products as $index => $Product)
+                                                <tr>
+                                                    <th class="pt-4" scope="row">{{ $index + 1 }}</th>
+                                                    <th scope="row">{{ $Product->name }}</th>
+                                                    {{-- <th scope="row"><img height="100" width="100"
+                                                        src="{{ asset($Product->photo) }}"></th> --}}
+                                                    <th scope="row">{{ $Product->Categorie->name }}</th>
+                                                    {{-- <th scope="row">{{ Str::words($Product->discription, 2, ' ...') }}</th> --}}
+                                                    {{-- <th scope="row">{{ $Product->price }}</th> --}}
+                                                    <th scope="row">{{ $Product->Quantity }}</th>
+
+                                                    <th scope="row">
+
+                                                        @if ($Product->status == 1)
+                                                            مفعل
+                                                        @else
+                                                            غير مفعيل
+                                                        @endif
+                                                    </th>
+                                                    <th>
+                                                        <a id = "product-Stock{{ $Product->id }}"
+                                                            data-name="{{ $Product->name }}" data-id="{{ $Product->id }}"
+                                                            class="btn btn-dark my-0 py-0 add-product_Stock-btn px-4 "
+                                                            href="">
+                                                            <i class="fa fa-plus" aria-hidden="true"></i>اضافه
+                                                        </a>
+
+                                                    </th>
+                                                </tr>
+                                            @endforeach
+                                        @endisset
+                                    </tbody>
+                                </table>
+                            @else
+                                <h4 class="text-center">لا توجد سجلات للعرض</h4>
+                            @endif
+                        </div><!-- bd -->
+                        {{-- {!! $Products->appends(request()->search)->links() !!} --}}
+                    </div><!-- bd -->
+                </div>
+                <div class="col-md-3">
+                    <div class="    ">
+                        <!-- Cart Items -->
+                        <div class="row">
+                            <div class="col-12   ">
+                                <h3>الطلبات </h3>
+                                <form id="orderForm"  class="parsley-style-1">
+                                    {{ csrf_field() }}
+                                    {{ method_field('post') }}
+                                    <div class="cart-stock-shoping row">
+                                        <div class="order-list">
+
+                                        </div>
+                                    </div>
+
+
+
+
+
+                                    <!-- Cart Summary -->
+                                    <div class="col-12">
+                                        <div class="cart-summary">
+                                            <div class="row mb-3">
+                                                <label for="compane_name" class="col-md-4 col-form-label  px-0 ">طريقة
+                                                    الدفع</label>
+
+                                                <div class="col-md-8">
+                                                    <select id="payment_id"
+                                                        class="form-control @error('payment_id') is-invalid @enderror"
+                                                        name="payment_id">
+                                                        <option disabled selected value="">اختر طريقة الدفع
+                                                        </option>
+                                                        @foreach ($payment_methods as $payment)
+                                                            <option value="{{ $payment->id }}">
+                                                                {{ $payment->method_name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('compane_name')
+                                                        <span class="text-danger">{{ $message }}*</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <label for="transiction_no" class="col-md-4 col-form-label text-md-end">رقم
+                                                    العمليه </label>
+
+                                                <div class="col-md-8">
+                                                    <input id="transiction_no" type="number" class="form-control  "
+                                                        name="transiction_no" autofocus>
+
+                                                    @error('transiction_no')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="row">
+
+                                                <label for="Supplier_id" class="col-md-4 col-form-label text-md-start  ">اسم
+                                                    المورد</label>
+                                                <div class="col-md-8">
+                                                    <div class="mb-3">
+                                                        <select
+                                                            class="form-select form-select-md @error('Supplier_id') is-invalid @enderror"
+                                                            name="Supplier_id" id="Supplier_id"
+                                                            data-placeholder=" اختار المورد ....." style="width:100%">
+                                                            <option value="1" selected>اسم المورد </option>
+
+                                                            @isset($suppliers)
+                                                                @foreach ($suppliers as $supplier)
+                                                                    <option value="{{ $supplier->id }}">
+                                                                        {{ $supplier->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            @endisset
+
+                                                        </select>
+                                                        @error('TransactionType')
+                                                            <span class="text-danger" role="alert">
+                                                                {{ $message }}
+                                                            </span>
+                                                        @enderror
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label for="expir_data" class="col-md-4 col-form-label"> انتهاءالصلاحيه</label>
+
+                                                <div class="col-md-8">
+                                                    <input id="expir_data" type="date"
+                                                        class="form-control @error('expir_data') is-invalid @enderror"
+                                                        name="expir_data" autocomplete="expir_data">
+                                                    @error('expir_data')
+                                                        <span class="text-danger">{{ $message }}*</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <hr>
+
+                                            <div class="row mb-4">
+                                                <div class="col-md-6">
+                                                    <button type="submit" id="add-order-btn"
+                                                        class="btn w-100 btn-success my-3 disabled text-center">
+                                                        تاكيد الطلب
+                                                    </button>
+                                                    {{-- div> --}}
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- <form method="POST" action="{{ route('Stock.store') }}" id="selectForm2">
                 @csrf
                 <div class="row">
                     <div class="col-6 mb-3">
@@ -173,7 +356,8 @@
                         </button>
                     </div>
                 </div>
-            </form>
+            </form> --}}
         </div>
     </div>
+
 @endsection

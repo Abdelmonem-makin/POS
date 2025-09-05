@@ -17,7 +17,7 @@
             <label>الكمية</label>
             <input name="quantity" type="number" class="form-control" required value="0">
         </div>
-        
+
         <button class="btn btn-success">حفظ الجرد</button>
     </form>
 </div>

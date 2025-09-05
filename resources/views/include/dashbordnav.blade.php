@@ -8,19 +8,54 @@
                 <div class="">
                     <ul class="nav mx-3">
                         @guest
-                            @if (Route::has("login"))
+                            @if (Route::has('login'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route("login") }}">{{ __("Login") }}</a>
+                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                                 </li>
                             @endif
-                            @if (Route::has("register"))
+                            @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route("register") }}">{{ __("Register") }}</a>
+                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                                 </li>
                             @endif
                         @else
+                            <!-- Navbar.blade.php -->
+                            @if ($lowStock->count())
+                                {{-- <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="lowStockDropdown"
+                                        data-toggle="dropdown">
+                                        🔔 تنبيهات المخزون
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        @foreach ($lowStock as $product)
+                                            <a class="dropdown-item text-danger"
+                                                href="{{ route('Product.show', $product->id) }}">
+                                                {{ $product->name }} - الكمية المتبقية: {{ $product->stock }}
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </li> --}}
+                              <li class="nav-item dropdown">
+                                    <div class="btn-group" role="group">
+                                        <a id="dropdownId" type="button" class="nav-link text-danger dropdown-toggle h-100  "
+                                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-bell " aria-hidden="true"></i>
+                                              تنبيهات المخزون
+
+                                    </a>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownId">
+                                            @foreach ($lowStock as $product)
+                                                <a class="dropdown-item text-danger"
+                                                    href="{{ route('Stock.create', $product->id) }}">
+                                                   -  {{ $product->name }}  الكمية المتبقية:  {{ $product->Quantity }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </li>
+                            @endif
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link text-light dropdown-toggle h-100 p-0" href="#"
+                                <a id="navbarDropdown" class="nav-link text-light dropdown-toggle h-100  " href="#"
                                     role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                     v-pre>
                                     {{ Auth::user()->name }}
@@ -36,14 +71,15 @@
 
                                         <a href="" class="dropdown-item text-bold" style='text-align:right;'><i
                                                 class="fa fa-user"></i> الملف الشخصي </a>
-                                        <a href="{{ route("Home") }}" style='text-align:right;' class="dropdown-item"><i
+                                        <a href="{{ route('Home') }}" style='text-align:right;' class="dropdown-item"><i
                                                 class="fa fa-print"></i> الكاشير </a>
-                                        <a href="{{ route("logout") }}" class="dropdown-item" style='text-align:right;'
+                                        <a href="{{ route('logout') }}" class="dropdown-item" style='text-align:right;'
                                             onclick="event.preventDefault();
                                              document.getElementById('logout-form').submit();">
                                             <i class="fa fa-power-off"></i> نسجيل الخروج </a>
                                         </h6>
-                                        <form id="logout-form" action="{{ route("logout") }}" method="POST" class="d-none">
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                            class="d-none">
                                             @csrf
                                         </form>
                                     </div><!-- az-header-profile -->
@@ -67,15 +103,15 @@
             <div class="position-sticky px-2">
                 <ul class="nav flex-column mt-5">
                     <li class="nav-item py-2">
-                        <a class="nav-link active" aria-current="page" href="{{ route("dashboard.index") }}">
+                        <a class="nav-link active" aria-current="page" href="{{ route('dashboard.index') }}">
                             <span data-feather="home"></span>
                             <i class="fa fa-th ms-2"></i>
                             الرئيسية
                         </a>
                     </li>
-                    @if (auth()->user()->hasPermission("Category_read"))
+                    @if (auth()->user()->hasPermission('Category_read'))
                         <li class="nav-item py-2">
-                            <a class="nav-link" href="{{ route("Category.index") }}">
+                            <a class="nav-link" href="{{ route('Category.index') }}">
                                 <span data-feather="users"></span>
                                 <i class="fa fa-th ms-2"></i>
                                 الاقسام
@@ -83,18 +119,18 @@
                         </li>
                     @endif
 
-                    @if (auth()->user()->hasPermission("Product_read"))
+                    @if (auth()->user()->hasPermission('Product_read'))
                         <li class="nav-item py-2">
-                            <a class="nav-link" href="{{ Route("Product.index") }}">
+                            <a class="nav-link" href="{{ Route('Product.index') }}">
                                 <span data-feather="shopping-cart"></span>
                                 <i class="fa fa-th ms-2"></i>
                                 المنتجات
                             </a>
                         </li>
                     @endif
-                    @if (auth()->user()->hasPermission("Order_read"))
+                    @if (auth()->user()->hasPermission('Order_read'))
                         <li class="nav-item py-2">
-                            <a class="nav-link" href="{{ route("Order_incame") }}">
+                            <a class="nav-link" href="{{ route('Order_incame') }}">
                                 <span data-feather="users"></span>
                                 <i class="fa fa-th ms-2"></i>
                                 الايرادات
@@ -102,18 +138,18 @@
                         </li>
                     @endif
 
-                    @if (auth()->user()->hasPermission("Stock_read"))
+                    @if (auth()->user()->hasPermission('Stock_read'))
                         <li class="nav-item py-2">
-                            <a class="nav-link" href="{{ Route("Stock.index") }}">
+                            <a class="nav-link" href="{{ Route('Stock.index') }}">
                                 <span data-feather="shopping-cart"></span>
                                 <i class="fa fa-th ms-2"></i>
                                 المخزون
                             </a>
                         </li>
                     @endif
-                    @if (auth()->user()->hasPermission("Order_read"))
+                    @if (auth()->user()->hasPermission('Order_read'))
                         <li class="nav-item py-2">
-                            <a class="nav-link" href="{{ Route("Order.index") }}">
+                            <a class="nav-link" href="{{ Route('Order.index') }}">
                                 <span data-feather="file"></span>
                                 <i class="fa fa-th ms-2"></i>
                                 الطلبات
@@ -121,27 +157,27 @@
                         </li>
                     @endif
 
-                    @if (auth()->user()->hasPermission("Shift_read"))
+                    @if (auth()->user()->hasPermission('Shift_read'))
                         <li class="nav-item py-2">
-                            <a class="nav-link" href="{{ route("Shift.index") }}">
+                            <a class="nav-link" href="{{ route('Shift.index') }}">
                                 <span data-feather="Shift"></span>
                                 <i class="fa fa-th ms-2"></i>
                                 الورديات
                             </a>
                         </li>
                     @endif
-                    @if (auth()->user()->hasPermission("supplier_read"))
+                    @if (auth()->user()->hasPermission('supplier_read'))
                         <li class="nav-item py-2">
-                            <a class="nav-link" href="{{ route("supplier.index") }}">
+                            <a class="nav-link" href="{{ route('supplier.index') }}">
                                 <span data-feather="users"></span>
                                 <i class="fa fa-th ms-2"></i>
                                 الموردين
                             </a>
                         </li>
                     @endif
-                    @if (auth()->user()->hasPermission("Payment_read"))
+                    @if (auth()->user()->hasPermission('Payment_read'))
                         <li class="nav-item py-2">
-                            <a class="nav-link" href="{{ route("Payment.index") }}">
+                            <a class="nav-link" href="{{ route('Payment.index') }}">
                                 <span data-feather="Payment"></span>
                                 <i class="fa fa-th ms-2"></i>
                                 طرق الدفع
@@ -149,25 +185,25 @@
                         </li>
                     @endif
 
-                    @if (auth()->user()->hasPermission("users_read"))
+                    @if (auth()->user()->hasPermission('users_read'))
                         <li class="nav-item py-2">
-                            <a class="nav-link" href="{{ route("User.index") }}">
+                            <a class="nav-link" href="{{ route('User.index') }}">
                                 <span data-feather="users"></span>
                                 <i class="fa fa-th ms-2"></i>
                                 المشرفين
                             </a>
                         </li>
                     @endif
-                           @if (auth()->user()->hasPermission('Payment_read'))
+                    @if (auth()->user()->hasPermission('Payment_read'))
                         <li class="nav-item py-2">
                             <a class="nav-link" href="{{ route('inventory.index') }}">
                                 <span data-feather="Payment"></span>
                                 <i class="fa fa-th ms-2"></i>
-                                  الجرد
+                                الجرد
                             </a>
                         </li>
                     @endif
-                    {{--                   
+                    {{--
                     <li class="nav-item py-2">
                         <div class="accordion  border-0" id="accordionExample">
                             <div class="accordion-item border-0">
@@ -199,3 +235,24 @@
         </nav>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: '/alertLowProduct',
+            method: 'GET',
+            success: function(response) {
+                if (response.count > 0) {
+                    $('#lowStockAlertbadge').text(response.count).show();
+                    let dropdown = '';
+                    response.product.foreach(function(product) {
+                        dropdown +=
+                            '<li><a class="dropdown-item" href="#">${product.price}-الكميه: ${product.price}</a></li>';
+                    });
+                    $('#lowStockAlert01').html(dropdown);
+                } else {
+                    $('#lowStockAlertbadge').hide();
+                }
+            }
+        })
+    })
+</script>

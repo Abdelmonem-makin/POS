@@ -37,14 +37,10 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="font-weight-bold text-success text-uppercase mb-1 text-xs">
-                                            Earnings (Annual)</div>
-                                        <div class="h5 font-weight-bold mb-0 text-gray-800">$215,000</div>
+                                            عدد اصناف الادويه</div>
+                                        <div class="h5 font-weight-bold mb-0 text-gray-800"> {{$product}} صنف</div>
                                     </div>
-                                    <div class="col-auto">
-                                        <i class="fa fa-address-book" aria-hidden="true"></i>
-                                        <i class="fa fa-dollar" aria-hidden="true"></i>
-                                        <i class="fa fa-dollar-sign fa-2x text-gray-300"></i>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -97,9 +93,9 @@
                     </div>
                 </div><hr>
                 <div class="card-body">
-      
-                      
-                          
+
+
+
                                     <div class="row py-4">
                                         <h2 class="mb-4 text-center">📦 تفاصيل الإيرادات اليومية حسب الورديات</h2>
 
@@ -172,11 +168,11 @@
                                         </div> --}}
 
                                     </div>
-                              
-                          
-                            
-                       
-                   
+
+
+
+
+
                 </div><!-- bd -->
             </div><!-- bd -->
         </div>
