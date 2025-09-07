@@ -15,5 +15,9 @@ class supplier extends Model
     {
         return $this->hasMany(Stock::class, 'product_id', 'id');
     }
+       public function debts()
+    {
+        return  $this->belongsTo(debts::class, 'supplier_id', 'id');
+    }
 
 }

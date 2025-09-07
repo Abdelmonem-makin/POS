@@ -9,14 +9,15 @@ $(document).ready(function () {
         var html = '<div id="cart-stock-box-' + id +
             '" class=" cart-shop-item row"> <div class="col-12"><div class="cart-item-title"><h4>' +
             name +
-            '</h4></div> </div><div class="col-md-12 "><div class="row"> <label for="expir_data" class="col-md-4 my-2 px-0 "> انتهاءالصلاحيه</label> <div class="p-0  col-md-8 my-2"><input class="form-control    product-quanities   p-0" type="date" name="products_stock [' + id + '][expir_data]"></div> <label for="expir_data" class="col-md-4  ">الكميه </label><div class="col-md-8 p-0 "><input name="products_stock[' +
-            id +
-            '][quantity]" type="number" class="form-control col-md-8 product-stock-quanities  p-0" value="1" min="1"> </div></div><button type="button" class="btn my-1 px-4 btn-sm remov-prodect-stock-btn btn-danger " data-id="' +
+            '</h4></div> </div><div class="col-md-12 "><div class="row"> <label for="expir_data" class="col-md-4 my-2 px-0 "> انتهاءالصلاحيه</label> <div class="p-0  col-md-8 my-2"><input class="form-control    product-expir_data   p-0" type="date" name="products_stock[' + id + '][expir_data]"></div> <label for="expir_data" class="col-md-4  ">الكميه </label><div class="col-md-8 p-0 "><input name="products_stock[' +
+            id +'][quantity]" type="number" class="form-control col-md-8 product-stock-quanities  p-0" value="1" min="1"> </div></div><button type="button" class="btn my-1 px-4 btn-sm remov-prodect-stock-btn btn-danger " data-id="' +
             id + '"><i class="fa fa-trash mx-1" aria-hidden="true"></i></button></div><hr></div> ';
         // avoid adding duplicate item if already in cart
         if ($('#cart-stock-box-' + id).length === 0) {
             $('.cart-stock-shoping').append(html);
             $btn.removeClass('btn-dark').addClass('btn-default disabled');
+        $('#add-stock-btn').removeClass('btn-default disabled').addClass('btn-dark');
+
         }
     }); //اضافة المنتج الى السله المخزن
     // delegated handler so buttons added later still work
@@ -83,6 +84,8 @@ $(document).ready(function () {
         // When user clicks the visual button ensure it's enabled so the form can submit
         $('#add-order-btn').removeClass('disabled').prop('disabled', false);
     });//حذف العنصر من السله
+
+
     $('body').on('change', '.product-quanities', function () {
         var quanities = parseInt($(this).val());
         var price = parseInt($(this).data('price'));

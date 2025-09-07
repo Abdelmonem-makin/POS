@@ -8,16 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class payment_methods extends Model
 {
     use HasFactory;
-       protected $fillable = [
+    protected $fillable = [
         'method_name',
 
     ];
-        public function orders()
+    public function orders()
     {
         return $this->belongsTo(Order::class);
     }
-         public function DailyRevenue()
+    public function DailyRevenue()
     {
         return $this->hasMany(DailyRevenue::class, 'payment_method_id', 'id');
+    }
+    public function stock()
+    {
+        return $this->hasMany(stock::class, 'payment_id', 'id');
     }
 }

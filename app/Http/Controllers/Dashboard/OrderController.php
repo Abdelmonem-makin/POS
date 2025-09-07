@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\OrderRequest;
 use App\Models\DailyRevenue;
 use App\Models\Order;
 use App\Models\Product;
@@ -86,19 +87,10 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Order $order)
+    public function store(OrderRequest $request, Order $order)
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'transiction_no' => '',
-                'payment_id' => 'required|exists:payment_methods,id',
-                'products' => 'required|array|min:1',
-                'products.*.quantity' => 'required|integer|min:1',
-            ], [
-                'payment_id.required' => 'اختر طريقة الدفع',
-                'products.required' => 'لا توجد منتجات في الطلب',
-                'products.*.quantity.required' => 'الكمية مطلوبة لكل منتج',
-            ]);
+            $validator = Validator::make($request->all(),[]);
 
             if ($validator->fails()) {
                 return response()->json(['success' => false, 'message' => 'خطأ في بيانات الطلب', 'errors' => $validator->errors()], 422);
@@ -118,8 +110,7 @@ class OrderController extends Controller
                 'payment_id' => $request->payment_id,
                 'shift_id' => $shift->id,
                 'total_price' => $total_price,
-                'name' => $request->name,
-                'phone' => $request->transiction_no,
+                'transiction_no' => $request->transiction_no,
             ]);
 
             // Attach products with explicit pivot data (quantity and sell_price)

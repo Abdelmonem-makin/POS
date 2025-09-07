@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\CategoryController;
+use App\Http\Controllers\Dashboard\DebtController;
 use App\Http\Controllers\Dashboard\UsersController;
 use App\Http\Controllers\Dashboard\OrderController;
 use App\Http\Controllers\Dashboard\PaymentController;
@@ -34,7 +35,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::resource('supplier', SupplierController::class)->except(['show']);
         Route::resource('Shift', ShiftController::class)->except(['show']);
         Route::resource('Payment', PaymentController::class)->except(['show']);
-
+        Route::resource('debt', DebtController::class)->except(['show']);
+        Route::post('/debts/{debt}/settle', [DebtController::class, 'settleDebts'])->name('debts.settle');
         Route::get('Stock_chaneg_Status/{id}', [StockController::class, 'Stock_Status'])->name('Stock_chaneg_Status');
     });
 });

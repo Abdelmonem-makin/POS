@@ -26,10 +26,10 @@
     @include('include.dashbordnav')
     <div class="container-fluid ">
         <div class="row">
-            <main class="col-md-3 col-lg-2 ">
+            <main class="  col-md-2 ">
                 <div class="content  my-5"></div>
             </main>
-            <main class="col-md-6 col-lg-10 ">
+            <main class="col-md-10 ">
                 <div class="content my-4 ">
                     @yield('content')
                 </div>

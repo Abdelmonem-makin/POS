@@ -12,28 +12,45 @@ class Product extends Model
     use HasFactory;
     use HasFactory;
     use SoftDeletes;
-    protected $guarded=[];
+    protected $guarded = [];
 
     protected $fillable = [
-        'id','name','photo','descount','discription','add_by','price','sell_price','Quantity','status','categories_id','slug'
+        'id',
+        'name',
+        'photo',
+        'descount',
+        'discription',
+        'add_by',
+        'price',
+        'sell_price',
+        'Quantity',
+        'status',
+        'categories_id',
+        'slug'
     ];
 
-    public function Categorie(){
-        return $this->belongsTo(Category::class,'categories_id','id');
-    }
-    public function scopeStatus($query){
-        return $query->where('status',1);
-    }
-    public function getStatus(){
-        return $this -> status == 1 ? 'مفعل' : 'غير مفعل';
-    }
-    function orders(){
-    return $this->belongsToMany(order::class ,'product_order')->withPivot('quantity', 'sell_price');
-    }
-       public function Stock()
+    public function Categorie()
     {
-        return $this->hasMany(Stock::class, 'product_id', 'id');
+        return $this->belongsTo(Category::class, 'categories_id', 'id');
     }
+    public function scopeStatus($query)
+    {
+        return $query->where('status', 1);
+    }
+    public function getStatus()
+    {
+        return $this->status == 1 ? 'مفعل' : 'غير مفعل';
+    }
+    function orders()
+    {
+        return $this->belongsToMany(order::class, 'product_order')->withPivot('quantity', 'sell_price');
+    }
+
+    function Stock()
+    {
+        return $this->belongsToMany(Stock::class, 'product_stock')->withPivot('quantity', 'expir_data');
+    }
+
 
     /**
      * آخر سجل جرد لهذا المنتج.
@@ -46,5 +63,4 @@ class Product extends Model
     {
         return $this->hasOne(Inventory::class, 'product_id', 'id')->latestOfMany();
     }
-
 }

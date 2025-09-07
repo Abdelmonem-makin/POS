@@ -24,6 +24,8 @@ return [
             'Shift' => 'c,r,u,d',
             'Payment' => 'c,r,u,d',
             'employe'=>'c,r,u,d',
+            'debt'=>'c,r,u,d',
+
         ],
         'Admin' => [],
         'employe' => [],

@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         $this ->call( CategoriesTableSeeder::class);
         Product::factory(10)->create();
         supplier::factory(10)->create();
-        stock::factory(10)->create();
+        // stock::factory(10)->create();
 
 
         // \App\Models\User::factory()->create([

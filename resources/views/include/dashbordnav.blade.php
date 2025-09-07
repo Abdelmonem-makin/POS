@@ -2,7 +2,7 @@
     <div class="row">
         <header class="navbar navbar-light sticky-top flex-md-nowrap p-0">
             <nav class="navbar navbar-dark bg-dark fixed-top p-0">
-                <a class="navbar-brand col-md-3 col-lg-2 col-4 mx-3 mx-4 my-2 me-5 pe-4" href="#">
+                <a class="navbar-brand col-md-3 col-lg-2   mx-3 mx-4 my-2 me-5 pe-4" href="#">
 
                     صيدلية عروس كردفان</a>
                 <div class="">
@@ -21,33 +21,21 @@
                         @else
                             <!-- Navbar.blade.php -->
                             @if ($lowStock->count())
-                                {{-- <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="lowStockDropdown"
-                                        data-toggle="dropdown">
-                                        🔔 تنبيهات المخزون
-                                    </a>
-                                    <div class="dropdown-menu">
-                                        @foreach ($lowStock as $product)
-                                            <a class="dropdown-item text-danger"
-                                                href="{{ route('Product.show', $product->id) }}">
-                                                {{ $product->name }} - الكمية المتبقية: {{ $product->stock }}
-                                            </a>
-                                        @endforeach
-                                    </div>
-                                </li> --}}
-                              <li class="nav-item dropdown">
-                                    <div class="btn-group" role="group">
-                                        <a id="dropdownId" type="button" class="nav-link text-danger dropdown-toggle h-100  "
-                                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-bell " aria-hidden="true"></i>
-                                              تنبيهات المخزون
 
-                                    </a>
+                                <li class="nav-item dropdown">
+                                    <div class="btn-group" role="group">
+                                        <a id="dropdownId" type="button"
+                                            class="nav-link text-danger dropdown-toggle h-100  " data-bs-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-bell " aria-hidden="true"></i>
+                                            تنبيهات المخزون
+
+                                        </a>
                                         <div class="dropdown-menu" aria-labelledby="dropdownId">
                                             @foreach ($lowStock as $product)
                                                 <a class="dropdown-item text-danger"
                                                     href="{{ route('Stock.create', $product->id) }}">
-                                                   -  {{ $product->name }}  الكمية المتبقية:  {{ $product->Quantity }}
+                                                    - {{ $product->name }} الكمية المتبقية: {{ $product->Quantity }}
                                                 </a>
                                             @endforeach
                                         </div>
@@ -128,16 +116,6 @@
                             </a>
                         </li>
                     @endif
-                    @if (auth()->user()->hasPermission('Order_read'))
-                        <li class="nav-item py-2">
-                            <a class="nav-link" href="{{ route('Order_incame') }}">
-                                <span data-feather="users"></span>
-                                <i class="fa fa-th ms-2"></i>
-                                الايرادات
-                            </a>
-                        </li>
-                    @endif
-
                     @if (auth()->user()->hasPermission('Stock_read'))
                         <li class="nav-item py-2">
                             <a class="nav-link" href="{{ Route('Stock.index') }}">
@@ -156,6 +134,18 @@
                             </a>
                         </li>
                     @endif
+
+                    @if (auth()->user()->hasPermission('Order_read'))
+                        <li class="nav-item py-2">
+                            <a class="nav-link" href="{{ route('Order_incame') }}">
+                                <span data-feather="users"></span>
+                                <i class="fa fa-th ms-2"></i>
+                                الايرادات
+                            </a>
+                        </li>
+                    @endif
+
+
 
                     @if (auth()->user()->hasPermission('Shift_read'))
                         <li class="nav-item py-2">
@@ -194,7 +184,7 @@
                             </a>
                         </li>
                     @endif
-                    @if (auth()->user()->hasPermission('Payment_read'))
+                         @if (auth()->user()->hasPermission('Payment_read'))
                         <li class="nav-item py-2">
                             <a class="nav-link" href="{{ route('inventory.index') }}">
                                 <span data-feather="Payment"></span>
@@ -203,6 +193,16 @@
                             </a>
                         </li>
                     @endif
+                    @if (auth()->user()->hasPermission('debt_read'))
+                        <li class="nav-item py-2">
+                            <a class="nav-link" href="{{ route('debt.index') }}">
+                                <span data-feather="Payment"></span>
+                                <i class="fa fa-th ms-2"></i>
+                                المديونيات
+                            </a>
+                        </li>
+                    @endif
+
                     {{--
                     <li class="nav-item py-2">
                         <div class="accordion  border-0" id="accordionExample">

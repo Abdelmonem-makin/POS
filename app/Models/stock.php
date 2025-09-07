@@ -9,20 +9,28 @@ use Illuminate\Foundation\Auth\User;
 class stock extends Model
 {
     use HasFactory;
-     protected $fillable = [
-        'product_id','supplier_id','user_id','expir_data','TransactionType','price','Quantity'
+    protected $fillable = [
+        'total_price',
+        'supplier_id',
+        'user_id',
+        'transiction_no',
+        'payment_id',
+        'invoice_number'
     ];
     public function Product()
     {
-        return $this->belongsTo(Product::class, 'product_id', 'id');
+        return $this->belongsToMany(product::class, 'product_stocks')->withPivot('quantity', 'expir_data');
     }
     public function Supplier()
     {
         return $this->belongsTo(supplier::class, 'supplier_id', 'id');
     }
-        public function User()
+    public function User()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
-
+    public function payment()
+    {
+        return $this->belongsTo(payment_methods::class, 'payment_id', 'id');
+    }
 }

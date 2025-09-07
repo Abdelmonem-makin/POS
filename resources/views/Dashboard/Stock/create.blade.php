@@ -86,10 +86,10 @@
                         <!-- Cart Items -->
                         <div class="row">
                             <div class="col-12   ">
-                                <h3>الطلبات </h3>
-                                <form id="orderForm"  class="parsley-style-1">
+                                <h3>طلبيات الصيدليه </h3>
+                                <form   method="POST" action="{{ route('Stock.store') }}" class="parsley-style-1">
                                     {{ csrf_field() }}
-                                    {{ method_field('post') }}
+                                    {{-- {{ method_field('post') }} --}}
                                     <div class="cart-stock-shoping row">
                                         <div class="order-list">
 
@@ -104,7 +104,7 @@
                                     <div class="col-12">
                                         <div class="cart-summary">
                                             <div class="row mb-3">
-                                                <label for="compane_name" class="col-md-4 col-form-label  px-0 ">طريقة
+                                                <label for="payment_id" class="col-md-4 col-form-label  px-0 ">طريقة
                                                     الدفع</label>
 
                                                 <div class="col-md-8">
@@ -118,7 +118,7 @@
                                                                 {{ $payment->method_name }}</option>
                                                         @endforeach
                                                     </select>
-                                                    @error('compane_name')
+                                                    @error('payment_id')
                                                         <span class="text-danger">{{ $message }}*</span>
                                                     @enderror
                                                 </div>
@@ -138,9 +138,38 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <div class="row mb-3">
+                                                <label for="total_price" class="col-md-4 col-form-label text-md-end">
+                                                    المبلغ الكلي </label>
 
-                                                <label for="Supplier_id" class="col-md-4 col-form-label text-md-start  ">اسم
+                                                <div class="col-md-8">
+                                                    <input id="total_price" type="number" class="form-control  "
+                                                        name="total_price" autofocus>
+
+                                                    @error('pay_price')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <label for="paid_amount" class="col-md-4 col-form-label text-md-end">
+                                                    المبلغ المدفوع </label>
+
+                                                <div class="col-md-8">
+                                                    <input id="paid_amount" type="number" class="form-control  "
+                                                        name="paid_amount" autofocus>
+
+                                                    @error('paid_amount')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label for="Supplier_id" class="col-md-4 col-form-label text-md-start  ">
                                                     المورد</label>
                                                 <div class="col-md-8">
                                                     <div class="mb-3">
@@ -169,23 +198,12 @@
 
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <label for="expir_data" class="col-md-4 col-form-label"> انتهاءالصلاحيه</label>
 
-                                                <div class="col-md-8">
-                                                    <input id="expir_data" type="date"
-                                                        class="form-control @error('expir_data') is-invalid @enderror"
-                                                        name="expir_data" autocomplete="expir_data">
-                                                    @error('expir_data')
-                                                        <span class="text-danger">{{ $message }}*</span>
-                                                    @enderror
-                                                </div>
-                                            </div>
                                             <hr>
 
                                             <div class="row mb-4">
                                                 <div class="col-md-6">
-                                                    <button type="submit" id="add-order-btn"
+                                                    <button type="submit" id="add-stock-btn"
                                                         class="btn w-100 btn-success my-3 disabled text-center">
                                                         تاكيد الطلب
                                                     </button>
@@ -359,5 +377,56 @@
             </form> --}}
         </div>
     </div>
+   <script>
+            (function() {
+                const form = document.getElementById('stockForm');
+                const submitBtn = document.getElementById('add-stock-btn');
 
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    submitBtn.disabled = true;
+
+                    const formData = new FormData(form);
+
+                    try {
+                        const res = await fetch('{{ route('Stock.store') }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: formData
+                        });
+
+                        const data = await res.json();
+
+                        if (data.success) {
+                            // Clear cart items
+                            var id = $(this).data('id');
+
+                            document.querySelectorAll('.cart-shoping').forEach(el => el.innerHTML = '');
+                            // Reset form fields (payment, transiction_no, etc.)
+                            form.reset();
+                            // Disable submit since cart is empty (visual + property)
+                            submitBtn.classList.add('disabled');
+                            submitBtn.disabled = true; // keep for direct DOM compatibility
+                            $(submitBtn).prop('disabled', true);
+                            // Optionally re-enable product buttons if you disabled them earlier
+                            $('.add-product_Stock-btn').removeClass('btn-default disabled').addClass('btn-dark');
+                            // ensure the global calculat() logic sees the button as disabled
+                            $('#add-stock-btn').prop('disabled', true);
+
+                            // Show success feedback
+                            alert(data.message || 'تم اضافة الفاتور بنجاج  بنجاح');
+                        } else {
+                            alert(data.message || 'حدث خطأ أثناء إنشاء الطلب');
+                            // Keep the submit button enabled so user can retry
+                            submitBtn.disabled = false;
+                        }
+                    } catch (err) {
+                        alert('خطأ في الاتصال بالخادم');
+                        submitBtn.disabled = false;
+                    }
+                });
+            })();
+        </script>
 @endsection

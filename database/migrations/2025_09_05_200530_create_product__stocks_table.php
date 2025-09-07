@@ -15,13 +15,12 @@ return new class extends Migration
     {
         Schema::create('product_stocks', function (Blueprint $table) {
             $table->id();
-            $table->id();
             $table->unsignedBigInteger('product_id')->nullable();
             $table->foreign('product_id')->references('id')->on('products')->ondelete('set null');
-            $table->unsignedBigInteger('Stock_id')->nullable();
-            $table->foreign('Stock_id')->references('id')->on('stodks')->ondelete('set null');
+            $table->unsignedBigInteger('stock_id')->nullable();
+            $table->foreign('stock_id')->references('id')->on('stocks')->ondelete('set null');
             $table->integer('quantity');
-            $table->decimal('sell_price', 18, 2)->default(0);
+            $table->date('expir_data');
             $table->timestamps();
         });
     }

@@ -24,7 +24,7 @@
                 @isset($orders_pro)
                 <span>رقم الفاتوره: {{ $orders->invoice_number }}</span><br>
                 <span>تاريخ الطلب: {{ $orders->created_at->format('Y-m-d') }}</span><br>
-                <span>رقم الطلب: {{ $orders->products->count() }}</span>
+                <span>  عدد الطلبات: {{ $orders->products->count() }}</span>
                     @foreach ($orders_pro as $product)
                     <tr>
                             <th scope="row">{{ $product->name }}</th>
@@ -51,8 +51,7 @@
 <!--  Modal trigger button  -->
 
 
-<a href="http://" class="btn print-order-btn btn-success   w-100">
-    طباعه</a>
+
 
 </body>
 </html>

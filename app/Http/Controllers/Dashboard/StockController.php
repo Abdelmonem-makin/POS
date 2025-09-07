@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StockRequest;
 use App\Models\Category;
+use App\Models\debts;
 use App\Models\payment_methods;
 use App\Models\Product;
 use App\Models\stock;
@@ -13,14 +14,11 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class StockController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index(Request $request)
     {
         $Stocks = stock::where(function ($q) use ($request) {
@@ -31,11 +29,6 @@ class StockController extends Controller
         return view('Dashboard.Stock.index', compact('Stocks'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create(Request $request)
     {
         $payment_methods = payment_methods::get();
@@ -47,35 +40,61 @@ class StockController extends Controller
                 return $query->where('name', 'like', '%' . $request->search . '%');
             });
         })->latest()->get();
-        return view('Dashboard.Stock.create', compact('Products', 'suppliers' ,'payment_methods','Products'));
+        return view('Dashboard.Stock.create', compact('Products', 'suppliers', 'payment_methods', 'Products'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(StockRequest $request)
     {
-        // dd($request);
-        // DB::beginTransaction();
-        $Stocks = stock::create([
-            'product_id' => $request->product_id,
-            'supplier_id' => $request->Supplier_id,
-            'user_id' => Auth::user()->id,
-            'expir_data' => $request->expir_data,
-            'TransactionType' => $request->TransactionType,
-            'price' => $request->price,
-            'Quantity' => $request->Quantity
-        ]);
-        $Products = Product::findOrFail($request->product_id);
-        $r = $Products->Quantity + $request->Quantity;
-        Product::where('id', $request->product_id)->update(['Quantity' => $r]);
+        // dd($request->all());
+        // try {
+        $validator = Validator::make($request->all(), []);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => 'خطأ في بيانات الطلب', 'errors' => $validator->errors()], 422);
+        }
 
+        DB::transaction(function () use ($request) {
+            // إنشاء الفاتورة
+            $lastInvoice = stock::orderBy('id', 'desc')->first();
+            $nextId = $lastInvoice ? $lastInvoice->id + 1 : 1;
+            $invoice_number = 'INVBUY-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+            $stock = stock::create([
+                'supplier_id' => $request->Supplier_id,
+                'invoice_number' => $invoice_number,
+                'payment_id' => $request->payment_id,
+                'transiction_no' => $request->transiction_no,
+                'user_id' => Auth::user()->id,
+                'total_price' => $request->total_price,
+            ]);
+            $attachData = [];
 
-        // DB::commit();
-        return  redirect()->route('Stock.store')->with('success', 'تم الحفط بنجاح');
+            // إضافة تفاصيل المنتجات إلى الفاتورة
+            foreach ($request->products_stock as $id => $product) {
+                $stock->Product()->attach($id, [
+                    'quantity' => $product['quantity'],
+                    'expir_data' => $product['expir_data'],
+
+                ]);
+                $Products = Product::findOrFail($id);
+                $r = $Products->Quantity +  $product['quantity'];
+                Product::where('id', $id)->update(['Quantity' => $r]);
+                // 🔹 تسجيل المديونية إذا كان الدفع جزئي
+                if ($request->paid_amount < $stock->total_price) {
+                   $debts= debts::create([
+                        'supplier_id' => $request->Supplier_id,
+                        'due_date' => '2022-1-1',
+                        'amount' => $stock->total_price,
+                        'paid' => $request->paid_amount,
+                        'remaining' => $stock->total_price - $request->paid_amount,
+                        'notes' => 'فاتورة شراء رقم ' . $stock->invoice_number,
+                    ]);
+
+                }
+            }
+        });
+        return  redirect()->route('Stock.create')->with('success', 'تم الحفط بنجاح');
+        // } catch (\Throwable $th) {
+        // }
     }
 
     /**

@@ -16,15 +16,14 @@ return new class extends Migration
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
               //  , ProductID, SupplierID (إن وجدت), , TransactionType (إضافة أو صرف), UserID, Date
-            $table->unsignedBigInteger('product_id')->unsigned();
-            $table->unsignedBigInteger('supplier_id')->unsigned();
-            $table->unsignedBigInteger('user_id')->unsigned();
-            $table->date('expir_data');
-            $table->char('TransactionType');
-            $table->decimal('price',18)->unsigned();
-            $table->integer('Quantity');
-            $table->foreign('product_id')->references('id')->on('products')->ondelete('cascade');
+            $table->string('invoice_number');
+            $table->unsignedBigInteger('payment_id');
+            $table->unsignedBigInteger('supplier_id');
+            $table->unsignedBigInteger('user_id') ;
+            $table->integer('transiction_no')->nullable();
+            $table->decimal('total_price',18);
             $table->foreign('supplier_id')->references('id')->on('suppliers')->ondelete('cascade');
+            $table->foreign('payment_id')->references('id')->on('payment_methods')->ondelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->ondelete('cascade');
             $table->timestamps();
         });

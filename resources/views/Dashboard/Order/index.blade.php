@@ -11,15 +11,15 @@
 
                     <div class="d-flex justify-content-between">
                         <h3 class=" my-2 me-a"> الطلبات </h3>
-                        <form class="row g-3 h-25 mt-1  needs-validation" action="{{ route('Category.index') }}"
+                        <form class="row g-3 h-25 mt-1  needs-validation" action="{{ route('Order.index') }}"
                             method="get">
                             <div class="col-md-6 m-0">
-                                <input type="text" class="form-control  " value="{{ request()->search }}"
+                                <input  value="INV-0" type="text" class="form-control  " value="{{ request()->search }}"
                                     id="validationCustom01" name="search">
 
                             </div>
                             <div class="col-md-6 m-0">
-                                <button class="btn px-1 btn-primary" type="submit"><i class="fa mx-1 fa-search"
+                                <button  class="btn px-1 btn-primary" type="submit"><i class="fa mx-1 fa-search"
                                         aria-hidden="true"></i>بحث</button>
 
 
@@ -44,12 +44,12 @@
                                 <tr>
                                     <th> رقم الفاتوره</th>
                                     {{-- <th> اسم الزبون</th> --}}
-                                    <th>   رقم العمليه</th>
+                                    <th> رقم العمليه</th>
                                     <th>طريقة الدفع</th>
                                     <th> اجمالي الطلبات</th>
-                                    <th> تاريخ الطلب </th>
                                     <th> اجمالي المبلغ</th>
-                                    <th>  الربح</th>
+                                    <th> تاريخ الطلب </th>
+                                    {{-- <th>  الربح</th> --}}
                                     {{-- <th> </th> --}}
                                     <th>الاجراءات</th>
                                 </tr>
@@ -60,12 +60,12 @@
                                         <tr>
                                             <th scope="row">{{ $order->invoice_number ? $order->invoice_number : '-' }}</th>
                                             {{-- <th scope="row">{{ $order->name ? $order->name : '-' }}</th> --}}
-                                            <th scope="row">{{ $order->phone ? $order->phone : '-' }}</th>
+                                            <th scope="row">{{ $order->transiction_no ? $order->transiction_no : '-' }}</th>
                                             <th scope="row">{{ $order->paymentMethod->method_name }}</th>
                                             <th scope="row">{{ $order->products->count() }}</th>
-                                            <th scope="row">{{ $order->created_at }}</th>
                                             <th scope="row">{{ number_format($order->total_price, 2) }}</th>
-                                            <th scope="row">{{  $order->profit }}</th>
+                                            <th scope="row">{{ $order->created_at }}</th>
+                                            {{-- <th scope="row">{{  $order->profit }}</th> --}}
 
                                             <th>
                                                 <!-- Modal trigger button -->
@@ -74,9 +74,10 @@
                                                     data-bs-target="#modalId">
                                                     Launch
                                                 </button> --}}
-                                                <button class="Show-product btn btn-sm  my-1 btn-outline-primary"  data-bs-toggle="modal"
-                                                    data-url="{{ route('show-product-order', $order->id) }}"  data-bs-target="#modalId"
-                                                    data-method="get">عرض الطلب</button>
+                                                <button class="Show-product btn btn-sm  my-1 btn-outline-primary"
+                                                    data-bs-toggle="modal"
+                                                    data-url="{{ route('show-product-order', $order->id) }}"
+                                                    data-bs-target="#modalId" data-method="get">عرض الطلب</button>
                                                 <!-- Modal Body -->
                                                 <!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
                                                 <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static"
@@ -87,10 +88,10 @@
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title" id="modalTitleId">
-                                                                    Modal title
+                                                                    قائمة الطلبات
                                                                 </h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                    aria-label="Close"></button>
+                                                                {{-- <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                    aria-label="Close"></button> --}}
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="col-md-12">
@@ -103,9 +104,11 @@
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary"
                                                                     data-bs-dismiss="modal">
-                                                                    Close
+                                                                    رجوع
                                                                 </button>
-                                                                <button type="button" class="btn btn-primary">Save</button>
+                                                                <a href="http://"
+                                                                    class="btn print-order-btn btn-success    ">
+                                                                    طباعه</a>
                                                             </div>
                                                         </div>
                                                     </div>

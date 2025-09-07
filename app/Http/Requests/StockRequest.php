@@ -24,12 +24,13 @@ class StockRequest extends FormRequest
     public function rules()
     {
         return [
-            'product_id' => 'required|exists:products,id',
-            'Supplier_id' => 'required',
-            'expir_data' => 'required',
-            'TransactionType' => 'required',
-            'price' => 'required',
-            'Quantity' => 'required'
+
+            'Supplier_id' => ' ',
+            'payment_id' => ' ',
+            'transiction_no' => ' ',
+            'total_price' => ' ',
+            'user_id' => ' ',
+            'products_stock.*' => ' ',
         ];
     }
 }

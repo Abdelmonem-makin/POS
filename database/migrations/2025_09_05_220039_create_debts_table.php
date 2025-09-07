@@ -15,6 +15,13 @@ return new class extends Migration
     {
         Schema::create('debts', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('supplier_id');
+            $table->decimal('amount', 10, 2);
+            $table->decimal('paid', 10, 2)->default(0);
+            $table->decimal('remaining', 10, 2);
+            $table->date('due_date')->nullable();
+            $table->text('notes')->nullable();
+            $table->foreign('supplier_id')->references('id')->on('suppliers')->ondelete('cascade');
             $table->timestamps();
         });
     }
