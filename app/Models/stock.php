@@ -4,11 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User;
 
 class stock extends Model
 {
     use HasFactory;
+    protected $guarded=[];
+
     protected $fillable = [
         'total_price',
         'supplier_id',
@@ -33,4 +36,10 @@ class stock extends Model
     {
         return $this->belongsTo(payment_methods::class, 'payment_id', 'id');
     }
+    function debt()
+    {
+        return $this->hasMany(debts::class, 'stock_id', 'id');
+
+    }
+
 }

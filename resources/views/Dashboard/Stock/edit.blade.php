@@ -21,7 +21,79 @@
                     <p class="text-center ">{{ Session::get('success') }}</p>
                 </div>
             @endif
-            <form method="POST" action="{{ route('Stock.update', ['Stock'=>$editID->id] ) }}" id="selectForm2">
+
+            <div class="container">
+                <h2>تعديل بيانات المخزون</h2>
+
+               
+                <form action="{{ route('Stock.update', ['Stock'=>$stock->id]  ) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="form-group">
+                        <label for="supplier_id">المورد</label>
+                        <select name="supplier_id" class="form-control">
+                            @foreach ($suppliers as $supplier)
+                                <option  @if ($supplier->id == $stock->supplier_id) selected @endif value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_id">اختر طريقة الدفع</label>
+                        <select name="payment_id" class="form-control">
+                            @foreach ($payment_methods as $payment)
+                                <option value="{{ $payment->id }}" @if ($payment->id == $stock->payment_id) selected @endif>
+                                    {{ $payment->method_name }}</option>
+                            @endforeach
+
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="transiction_no">رقم العملية</label>
+                        <input value="{{ $stock->transiction_no}}" type="number" name="transiction_no" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label  for="total_price">المبلغ الكلي</label>
+                        <input value="{{ $stock->total_price}}" type="number" name="total_price" class="form-control" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="paid">المبلغ المدفوع</label>
+                        <input value="{{ $stock->debt->first()->paid}}" type="number" name="paid" class="form-control" step="0.01">
+                    </div>
+
+                    <h4>المنتجات المرتبطة</h4>
+                    @foreach ($allProducts as $product)
+                        @php
+                            $pivot = $stock->Product->find($product->id)?->pivot;
+                        @endphp
+
+                        <div class="form-group">
+                            <label>{{ $product->name }}</label>
+
+                            <div class="row">
+                                <div class="col-md-6">الكمية
+                                    <input type="number" name="products_stock[{{ $product->id }}][quantity]"
+                                        class="form-control" placeholder="الكمية"
+                                        value="{{ old("products.$product->id.quantity", $pivot?->quantity) }}">
+                                </div>
+
+                                <div class="col-md-6">الصلاحية
+                                    <input type="date" name="products_stock[{{ $product->id }}][expir_data]"
+                                        class="form-control" placeholder="تاريخ الصلاحية"
+                                        value="{{ old("products.$product->id.expir_data", $pivot?->expir_data) }}">
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+
+
+                    <button type="submit" class="btn btn-primary">تحديث</button>
+                </form>
+            </div>
+            {{-- <form method="POST" action="{{ route('Stock.update', ['Stock'=>$editID->id] ) }}" id="selectForm2">
                 @csrf
                 @method('PATCH')
 
@@ -44,13 +116,7 @@
                                                 </option>
                                             @endforeach
                                         @endisset
-                                        {{-- @isset($Products)
-                                            @foreach ($Products as $Product)
-                                                <option value="{{ $Product->id }}" >
-                                                    {{ $Product->name }}
-                                                </option>
-                                            @endforeach
-                                        @endisset --}}
+
 
                                     </select>
                                     @error('TransactionType')
@@ -110,7 +176,7 @@
 
                                         @isset($suppliers)
                                             @foreach ($suppliers as $supplier)
-                                                <option value="{{ $supplier->id }}"  @if ($supplier->id  == $editID->Supplier_id) selected @endif
+                                                <option value="{{ $supplier->id }}"  @if ($supplier->id == $editID->Supplier_id) selected @endif
                                                     >
                                                     {{ $supplier->name }}
                                                 </option>
@@ -184,7 +250,7 @@
                         </button>
                     </div>
                 </div>
-            </form>
+            </form> --}}
         </div>
     </div>
 @endsection

@@ -69,7 +69,7 @@
                                                 <th scope="row">{{ $Stock->transiction_no }}</th>
                                                 <th scope="row">{{ $Stock->user->name }}</th>
                                                 <th scope="row">{{ $Stock->total_price }}</th>
-                                                <th scope="row">{{ $Stock->Quantity }}</th>
+                                                <th scope="row">{{ $Stock->debt->first()->paid }}</th>
 
 
 

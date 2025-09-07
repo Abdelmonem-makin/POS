@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Inventory;
 use App\Models\Product;
@@ -12,15 +13,15 @@ class InventoryController extends Controller
 {
     public function index(Request $request)
     {
-        $products = Product::orderBy('name')->get();
+        $Product = Product::orderBy('name')->get();
 
         $inventories = Inventory::with('product','user')->latest()->paginate(20);
-        return view('Dashboard.inventory.index', compact('inventories' ,'products'));
+        return view('Dashboard.inventory.index', compact('inventories' ,'Product'));
     }
 
     public function create()
     {
-        $products = Product::orderBy('name')->get();
+        $products = Category::all();
         return view('Dashboard.inventory.create', compact('products'));
     }
 

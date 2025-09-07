@@ -124,14 +124,14 @@
 
 
 
-                                                @if (auth()->user()->hasPermission('Order_update'))
+                                                {{-- @if (auth()->user()->hasPermission('Order_update'))
                                                     <a href="{{ route('Order.edit', $order->id) }}"
                                                         class="btn btn-sm my-1 btn-outline-primary"> تعديل<i class="fa fa-edit"
                                                             aria-hidden="true"></i></a>
                                                 @else
                                                     <a href="#" class="btn btn-sm my-1 btn-outline-primary disabled">
                                                         تعديل<i class="fa fa-edit" aria-hidden="true"></i></a>
-                                                @endif
+                                                @endif --}}
 
                                                 {{-- ########################## ############################################## --}}
 

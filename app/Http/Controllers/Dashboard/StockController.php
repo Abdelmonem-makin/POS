@@ -25,7 +25,7 @@ class StockController extends Controller
             return $q->when($request->filled('search'), function ($query) use ($request) {
                 return $query->where('product_id', 'like', '%' . $request->search . '%');
             });
-        })->with('User', 'Product')->latest()->paginate(5);
+        })->with('User', 'Product', 'debt')->latest()->paginate(5);
         return view('Dashboard.Stock.index', compact('Stocks'));
     }
 
@@ -47,54 +47,55 @@ class StockController extends Controller
     public function store(StockRequest $request)
     {
         // dd($request->all());
-        // try {
-        $validator = Validator::make($request->all(), []);
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'message' => 'خطأ في بيانات الطلب', 'errors' => $validator->errors()], 422);
-        }
-
-        DB::transaction(function () use ($request) {
-            // إنشاء الفاتورة
-            $lastInvoice = stock::orderBy('id', 'desc')->first();
-            $nextId = $lastInvoice ? $lastInvoice->id + 1 : 1;
-            $invoice_number = 'INVBUY-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
-            $stock = stock::create([
-                'supplier_id' => $request->Supplier_id,
-                'invoice_number' => $invoice_number,
-                'payment_id' => $request->payment_id,
-                'transiction_no' => $request->transiction_no,
-                'user_id' => Auth::user()->id,
-                'total_price' => $request->total_price,
-            ]);
-            $attachData = [];
-
-            // إضافة تفاصيل المنتجات إلى الفاتورة
-            foreach ($request->products_stock as $id => $product) {
-                $stock->Product()->attach($id, [
-                    'quantity' => $product['quantity'],
-                    'expir_data' => $product['expir_data'],
-
-                ]);
-                $Products = Product::findOrFail($id);
-                $r = $Products->Quantity +  $product['quantity'];
-                Product::where('id', $id)->update(['Quantity' => $r]);
-                // 🔹 تسجيل المديونية إذا كان الدفع جزئي
-                if ($request->paid_amount < $stock->total_price) {
-                   $debts= debts::create([
-                        'supplier_id' => $request->Supplier_id,
-                        'due_date' => '2022-1-1',
-                        'amount' => $stock->total_price,
-                        'paid' => $request->paid_amount,
-                        'remaining' => $stock->total_price - $request->paid_amount,
-                        'notes' => 'فاتورة شراء رقم ' . $stock->invoice_number,
-                    ]);
-
-                }
+        try {
+            $validator = Validator::make($request->all(), []);
+            if ($validator->fails()) {
+                return response()->json(['success' => false, 'message' => 'خطأ في بيانات الطلب', 'errors' => $validator->errors()], 422);
             }
-        });
-        return  redirect()->route('Stock.create')->with('success', 'تم الحفط بنجاح');
-        // } catch (\Throwable $th) {
-        // }
+
+            DB::transaction(function () use ($request) {
+                // إنشاء الفاتورة
+                $lastInvoice = stock::orderBy('id', 'desc')->first();
+                $nextId = $lastInvoice ? $lastInvoice->id + 1 : 1;
+                $invoice_number = 'INVBUY-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+                $stock = stock::create([
+                    'supplier_id' => $request->Supplier_id,
+                    'invoice_number' => $invoice_number,
+                    'payment_id' => $request->payment_id,
+                    'transiction_no' => $request->transiction_no,
+                    'user_id' => Auth::user()->id,
+                    'total_price' => $request->total_price,
+                ]);
+                $attachData = [];
+
+                // إضافة تفاصيل المنتجات إلى الفاتورة
+                foreach ($request->products_stock as $id => $product) {
+                    $stock->Product()->attach($id, [
+                        'quantity' => $product['quantity'],
+                        'expir_data' => $product['expir_data'],
+
+                    ]);
+                    $Products = Product::findOrFail($id);
+                    $r = $Products->Quantity +  $product['quantity'];
+                    Product::where('id', $id)->update(['Quantity' => $r]);
+                    // 🔹 تسجيل المديونية إذا كان الدفع جزئي
+                    if ($request->paid_amount < $stock->total_price) {
+                        $debts = debts::create([
+                            'supplier_id' => $request->Supplier_id,
+                            'stock_id' => $stock->id,
+                            'due_date' => '2022-1-1',
+                            'amount' => $stock->total_price,
+                            'paid' => $request->paid_amount,
+                            'remaining' => $stock->total_price - $request->paid_amount,
+                            'notes' => 'فاتورة شراء رقم ' . $stock->invoice_number,
+                            'is_closed' => false
+                        ]);
+                    }
+                }
+            });
+            return  redirect()->route('Stock.create')->with('success', 'تم الحفط بنجاح');
+        } catch (\Throwable $th) {
+        }
     }
 
     /**
@@ -113,10 +114,18 @@ class StockController extends Controller
      */
     public function edit($id)
     {
-        $editID = stock::findOrFail($id);
+        $payment_methods = payment_methods::get();
+
+        $stock = Stock::with('Product', 'debt')->findOrFail($id);
+
+        $allProducts = $stock->Product; // لعرض كل المنتجات للاختيار منها
+
+        if (!$stock) {
+            return redirect()->route('stock.index')->with(['error' => 'هذا العنصور غير موجود']);
+        }
         $Products = Product::where('status', 1)->get();
         $suppliers = supplier::get();
-        return view('Dashboard.Stock.edit', compact('editID', 'suppliers', 'Products'));
+        return view('Dashboard.Stock.edit', compact('payment_methods', 'stock', 'allProducts', 'suppliers', 'Products'));
     }
 
     /**
@@ -127,39 +136,161 @@ class StockController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
+    // {
+
+    //     $Stock = stock::findOrFail($id);
+    //     if (!$Stock) {
+    //         return redirect()->route('stock.edite', ['Stock'=>$stock->id])->with(['error' => 'هذا العنصور غير موجود']);
+    //     }
+    //     // try {
+    //         $validator = Validator::make($request->all(), []);
+    //         if ($validator->fails()) {
+    //             return response()->json(['success' => false, 'message' => 'خطأ في بيانات الطلب', 'errors' => $validator->errors()], 422);
+    //         }
+    //         // return $request;
+
+    //         // DB::beginTransaction();
+    //             // إنشاء الفاتورة
+    //             $lastInvoice = stock::orderBy('id', 'desc')->first();
+    //             $nextId = $lastInvoice ? $lastInvoice->id + 1 : 1;
+    //             $invoice_number = 'INVBUY-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+    //             // /** @var stock $stock */
+    //             $productData = [];
+    //             $stock = Stock::with('Product', 'debt')->findOrFail($id);
+    //             // return $stock;
+    //             // return $request;
+    //             // تحديث بيانات الفاتورة
+    //             // return $Stock;
+    //             $stock->update([
+    //                 'supplier_id' => $request->supplier_id,
+    //                 // 'invoice_number' => $invoice_number,
+    //                 'payment_id' => $request->payment_id,
+    //                 'transiction_no' => $request->transiction_no,
+    //                 'user_id' => Auth::user()->id,
+    //                 'total_price' => $request->total_price,
+    //             ]);
+    //             // إضافة تفاصيل المنتجات إلى الفاتورة
+    // foreach ($request->products_stock as $productId => $data) {
+    //     if (!empty($data['quantity']) && !empty($data['expir_data'])) {
+    //         $productData[$productId] = [
+    //             'quantity' => $data['quantity'],
+    //             'expir_data' => $data['expir_data'],
+    //         ];
+    //     }
+    //     $Products = Product::findOrFail($productId);
+
+    //     if ($request->Quantity > $Products->Quantity) {
+    //         $r = $Products->Quantity + $request->Quantity;
+
+    //         Product::where('id', $productId)->update(['Quantity' => $r]);
+    //     } elseif ($request->Quantity < $Products->Quantity) {
+    //         $r = $Products->Quantity + $request->Quantity;
+    //         $totle = $Products->Quantity - $r;
+    //         Product::where('id', $productId)->update(['Quantity' => abs($totle)]);
+    //     }
+    // }
+    // $stock->Product()->sync($productData);
+
+    //             // 🔹 تسجيل المديونية إذا كان الدفع جزئي
+    //             if ($request->paid < $stock->total_price) {
+    //                 $debts = debts::first()->update([
+    //                     'supplier_id' => $request->Supplier_id,
+    //                     'stock_id' => $stock->id,
+    //                     'due_date' => '2022-1-1',
+    //                     'amount' => $stock->total_price,
+    //                     'paid' => $request->paid,
+    //                     'remaining' => $stock->total_price - $request->paid_amount,
+    //                     // 'notes' => 'فاتورة شراء رقم ' . $stock->invoice_number,
+    //                     'is_closed' => false
+    //                 ]);
+    //             }
+    //     //   DB::commit();
+
+    //         return  redirect()->back()->with('success', 'تم التعديل بنجاح');
+    //     // } catch (\Throwable $th) {
+    //     // }
+
+
+
+
+
+    //     // DB::commit();
+    // }
     {
-        $stock = stock::find($id);
-        if (!$stock) {
-            return redirect()->route('stock.edite')->with(['error' => 'هذا العنصور غير موجود']);
-        }
-        $Stocks = stock::where('id', $id)->update([
-            'product_id' => $request->product_id,
-            'supplier_id' => $request->Supplier_id,
-            'user_id' => Auth::user()->id,
-            'expir_data' => $request->expir_data,
-            'TransactionType' => $request->TransactionType,
-            'price' => $request->price,
-            'Quantity' => $request->Quantity
+        $stock = Stock::with('Product', 'debt')->findOrFail($id);
+
+        $stock->update([
+            'supplier_id' => $request->supplier_id,
+            'payment_id' => $request->payment_id,
+            'transiction_no' => $request->transiction_no,
+            'user_id' => Auth::id(),
+            'total_price' => $request->total_price,
         ]);
-        $Products = Product::findOrFail($request->product_id);
 
-        if ($request->Quantity > $Products->Quantity) {
-            $r = $Products->Quantity + $request->Quantity;
+        $productData = [];
+        foreach ($request->products_stock as $productId => $data) {
+            if (!empty($data['quantity']) && !empty($data['expir_data'])) {
+                $productData[$productId] = [
+                    'quantity' => $data['quantity'],
+                    'expir_data' => $data['expir_data'],
+                ];
+            }
+            // المنتج الحالي
+            $product = Product::findOrFail($productId);
 
-            Product::where('id', $request->product_id)->update(['Quantity' => $r]);
-        } elseif ($request->Quantity < $Products->Quantity) {
-            $r = $Products->Quantity + $request->Quantity;
-            $totle = $Products->Quantity - $r;
-            Product::where('id', $request->product_id)->update(['Quantity' => abs($totle)]);
+            // الكمية الحالية في جدول المنتجات
+            $currentQuantity = $product->Quantity;
+
+            // الكمية السابقة التي كانت مضافة في جدول pivot
+            $previousPivot = $stock->Product->find($productId)?->pivot;
+            $oldAddedQuantity = $previousPivot?->quantity ?? 0;
+
+            // الكمية الجديدة التي يريد المستخدم إضافتها
+            $newAddedQuantity = $data['quantity'];
+
+            // الفرق بين القديم والجديد
+            $difference = $newAddedQuantity - $oldAddedQuantity;
+
+            // الشرط الثلاثي
+            if ($difference > 0) {
+                // إضافة الفرق
+                $product->update(['Quantity' => $currentQuantity + $difference]);
+            } elseif ($difference < 0) {
+                // خصم الفرق
+                $product->update(['Quantity' => max(0, $currentQuantity + $difference)]);
+            }
+        }
+        $stock->Product()->sync($productData);
+        // foreach ($request->products_stock as $productId => $data) {
+        //     if (!empty($data['quantity']) && !empty($data['expiry_date'])) {
+        //         $productData[$productId] = [
+        //             'quantity' => $data['quantity'],
+        //             'expir_data' => $data['expir_data'],
+        //         ];
+
+        //         $product = Product::findOrFail($productId);
+        //         $product->update(['Quantity' => $product->Quantity + $data['quantity']]);
+        //     }
+        // }
+
+        $stock->Product()->sync($productData);
+
+        // تحديث أو إنشاء المديونية
+        if ($request->paid < $stock->total_price) {
+            debts::updateOrCreate(
+                ['supplier_id' => $request->supplier_id, 'stock_id' => $stock->id],
+                [
+                    'amount' => $stock->total_price,
+                    'paid' => $request->paid,
+                    'remaining' => $stock->total_price - $request->paid,
+                    'due_date' => '2022-01-01',
+                    'is_closed' => false,
+                ]
+            );
         }
 
-
-
-
-        // DB::commit();
-        return  redirect()->route('Stock.index')->with('success', 'تم التعديل بنجاح');
+        return redirect()->back()->with('success', 'تم التعديل بنجاح');
     }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -168,8 +299,14 @@ class StockController extends Controller
      */
     public function destroy($id)
     {
-        $resource = stock::findOrFail($id);
+        $resource = stock::with('Product')->findOrFail($id);
+        $stock =  $resource->Product;
+        foreach ($stock as $sorder) {
+            $sorder->pivot->delete();
+            //    dd($sorder);
+        }
         $resource->delete();
+
         return redirect()->route('Stock.index')->with('success', 'Resource deleted successfully.');
     }
 }

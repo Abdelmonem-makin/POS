@@ -15,12 +15,12 @@
                             @csrf
                             <div class="col-4 mb-3">
                                 <div class="row">
-                                    <label for="quantity" class="col-md-3 col-form-label text-md-start "> المنتج</label>
+                                    <label for="product_id" class="col-md-3 col-form-label text-md-start "> المنتج</label>
                                     <div class="col-md-9">
 
                                         <select name="product_id" class="form-control">
-                                            <option value="">اختر المنتج</option>
-                                            @foreach ($products as $p)
+                                            <option selected disabled value="">اختر المنتج</option>
+                                            @foreach ($Product as $p)
                                                 <option value="{{ $p->id }}">{{ $p->name }}</option>
                                             @endforeach
                                         </select>

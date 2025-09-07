@@ -20,8 +20,34 @@
                             @endif
                         @else
                             <!-- Navbar.blade.php -->
-                            @if ($lowStock->count())
+                            {{-- @php
+                                $expiringItems = \App\Models\Product::expiringSoon(7)->get();
+                            @endphp --}}
 
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                    data-bs-toggle="dropdown">
+                                    🔔 إشعارات
+                                    @if ($products->count())
+                                        <span class="badge bg-danger">{{ $products->count() }}</span>
+                                    @endif
+                                </a>
+                                <ul class="dropdown-menu">
+                                    @forelse($products as $product)
+                                        <li>
+                                            <a class="dropdown-item" href=" ">
+                                                {{ $product->name }} - ينتهي في -
+                                                {{ $product->pivot->expir_data}}
+                                            </a>
+                                        </li>
+                                    @empty
+                                        <li><span class="dropdown-item">لا توجد إشعارات حالياً</span></li>
+                                    @endforelse
+                                </ul>
+                            </li>
+
+                            @if ($lowStock->count())
                                 <li class="nav-item dropdown">
                                     <div class="btn-group" role="group">
                                         <a id="dropdownId" type="button"
@@ -184,15 +210,6 @@
                             </a>
                         </li>
                     @endif
-                         @if (auth()->user()->hasPermission('Payment_read'))
-                        <li class="nav-item py-2">
-                            <a class="nav-link" href="{{ route('inventory.index') }}">
-                                <span data-feather="Payment"></span>
-                                <i class="fa fa-th ms-2"></i>
-                                الجرد
-                            </a>
-                        </li>
-                    @endif
                     @if (auth()->user()->hasPermission('debt_read'))
                         <li class="nav-item py-2">
                             <a class="nav-link" href="{{ route('debt.index') }}">
@@ -202,6 +219,25 @@
                             </a>
                         </li>
                     @endif
+                    @if (auth()->user()->hasPermission('Expense_read'))
+                        <li class="nav-item py-2">
+                            <a class="nav-link" href="{{ route('Expense.index') }}">
+                                <span data-feather="Payment"></span>
+                                <i class="fa fa-th ms-2"></i>
+                                المصرفات
+                            </a>
+                        </li>
+                    @endif
+                    @if (auth()->user()->hasPermission('Payment_read'))
+                        <li class="nav-item py-2">
+                            <a class="nav-link" href="{{ route('inventory.index') }}">
+                                <span data-feather="Payment"></span>
+                                <i class="fa fa-th ms-2"></i>
+                                الجرد
+                            </a>
+                        </li>
+                    @endif
+
 
                     {{--
                     <li class="nav-item py-2">

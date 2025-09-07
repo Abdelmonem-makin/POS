@@ -25,6 +25,7 @@ return [
             'Payment' => 'c,r,u,d',
             'employe'=>'c,r,u,d',
             'debt'=>'c,r,u,d',
+            'Expense'=>'c,r,u,d',
 
         ],
         'Admin' => [],

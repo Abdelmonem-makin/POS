@@ -8,7 +8,7 @@
 .shoping-card{
       position: fixed;
     left: 0px;
- 
+
     padding-right: 34px;
 }
     .custom-alert {
@@ -75,8 +75,10 @@ label{
 }
 
 
+
 .carousel-item {
   height: 32rem;
+  background-color: yell;
 }
 .navbar .navbar-toggler {
   top: .25rem;

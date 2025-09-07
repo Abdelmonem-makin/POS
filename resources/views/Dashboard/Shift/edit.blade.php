@@ -67,7 +67,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-6 mb-3">
+                    {{-- <div class="col-6 mb-3">
                         <div class="row">
                             <label for="start_time" class="col-md-3 col-form-label    "> بداية الورديه
                             </label>
@@ -95,7 +95,7 @@
                                 @enderror
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
 
 

@@ -17,11 +17,11 @@ class Product extends Model
     protected $fillable = [
         'id',
         'name',
-        'photo',
+        // 'photo',
         'descount',
-        'discription',
+        // 'discription',
         'add_by',
-        'price',
+        // 'price',
         'sell_price',
         'Quantity',
         'status',
@@ -48,7 +48,7 @@ class Product extends Model
 
     function Stock()
     {
-        return $this->belongsToMany(Stock::class, 'product_stock')->withPivot('quantity', 'expir_data');
+        return $this->belongsToMany(Stock::class, 'product_stocks')->withPivot('quantity', 'expir_data');
     }
 
 

@@ -54,8 +54,8 @@
                                             <div class="az-img-user" style="font-size: 30px;">
                                                 <i class="fa fa-user-secret"></i>
                                             </div><!-- az-img-user -->
-                                            <a href="" class="dropdown-item text-bold" style='text-align:right;'><i
-                                                    class="fa fa-user"></i> الملف الشخصي </a>
+                                            <a href="{{ route('expanses') }}" class="dropdown-item text-bold" style='text-align:right;'><i
+                                                    class="fa fa-user"></i>   مصروفات </a>
                                             <a href="{{ route("dashboard.index") }}" style='text-align:right;'
                                                 class="dropdown-item"><i class="fa fa-tachometer"></i> لوحة التحكم </a>
                                             <a href="{{ route("logout") }}" class="dropdown-item" style='text-align:right;'
@@ -84,8 +84,8 @@
                                             <div class="az-img-user" style="font-size: 30px;">
                                                 <i class="fa fa-user-secret"></i>
                                             </div><!-- az-img-user -->
-                                            <a href="" class="dropdown-item text-bold" style='text-align:right;'><i
-                                                    class="fa fa-user"></i> الملف الشخصي </a>
+                                            <a href="{{ route('expanses') }}" class="dropdown-item text-bold" style='text-align:right;'><i
+                                                    class="fa fa-user"></i>   مصروفات </a>
 
                                             <a href="{{ route("logout") }}" class="dropdown-item" style='text-align:right;'
                                                 onclick="event.preventDefault();
@@ -108,7 +108,7 @@
                                 <a href="{{ route('register') }}"
                                     class=" text-sm text-light  nav-link d-inline p-1 mx-2  ">تسجيل جديد</a>
                             @endif --}}
-                          
+
                         @endauth
 
         @endif

@@ -50,8 +50,12 @@ class User extends Authenticatable
         return $this->hasMany(Stock::class, 'user_id', 'id');
     }
 
-      public function DailyRevenue()
+    public function DailyRevenue()
     {
         return $this->hasMany(DailyRevenue::class, 'employee_id', 'id');
+    }
+    public function expenses()
+    {
+        return $this->hasMany(expenses::class);
     }
 }

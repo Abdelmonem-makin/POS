@@ -6,11 +6,10 @@
         @csrf
         <div class="mb-3">
             <label>المنتج</label>
+
             <select name="product_id" class="form-control">
-                <option value="">اختر المنتج</option>
-                @foreach($products as $p)
-                    <option value="{{ $p->id }}">{{ $p->name }}</option>
-                @endforeach
+                <option disabled  selected value="">اختر المنتج</option>
+               
             </select>
         </div>
         <div class="mb-3">

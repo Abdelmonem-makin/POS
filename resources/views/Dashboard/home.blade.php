@@ -15,11 +15,20 @@
     <div class="mx-5">
         <div class="card ">
             <div class="card-header py-0 ">
+                <div class="row mb-3">
 
-                <div class="d-flex ">
-                    <h3 class=" my-1 me-a"> <i class="fa fa-print" aria-hidden="true"></i> الكاشير </h3>
+                    <div class="   col-md-4">
+                        <h3 class=" my-1 me-a"> <i class="fa fa-print" aria-hidden="true"></i> الكاشير </h3>
+                    </div>
+                    <div class="col-md-6  ">
+                        <div class="mb-4">
+                            <input type="text" id="productSearch" class="form-control" placeholder="ابحث عن منتج...">
+                        </div>
+
+                    </div>
                 </div>
             </div>
+
 
             <div class="card-body">
                 <div class="row ">
@@ -49,7 +58,8 @@
                                         role="tabpanel" aria-labelledby="home-tab{{ $index }}">
                                         <div class="row gx-3 gx-lg-4 ">
                                             @foreach ($Category->Product as $product)
-                                                <div class="col-sm-12 col-md-3 col-xl-4 mb-5">
+                                                <div class="col-sm-12 col-md-3 col-xl-4 mb-5 product-card"
+                                                    data-name="{{ strtolower($product->name) }}">
                                                     <div class="card ">
                                                         <!-- Product image-->
                                                         <div class=" my-3"
@@ -65,7 +75,8 @@
                                                             <!-- Product name-->
                                                             <h5 class="fw-bolder m-2 h-25">{{ $product->name }}</h5>
                                                             <!-- Product price-->
-                                                            <p class="m-0"> {{ number_format($product->sell_price) }}</p>
+                                                            <p class="m-0"> {{ number_format($product->sell_price) }}
+                                                            </p>
                                                         </div>
                                                         <!-- Product actions-->
                                                         <div class="card-footer  pt-0 border-top-0 bg-transparent">
@@ -119,7 +130,8 @@
                                             <div class="cart-summary">
                                                 <div class="row">
                                                     <label for="compane_name"
-                                                        class="col-md-3 col-form-label text-md-start ">طريقة الدفع</label>
+                                                        class="col-md-3 col-form-label text-md-start ">طريقة
+                                                        الدفع</label>
 
                                                     <div class="col-md-9">
                                                         <select id="payment_id"
@@ -138,7 +150,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="row mb-4">
-                                                    <label for="transiction_no" class="col-md-4 col-form-label text-md-end">رقم
+                                                    <label for="transiction_no"
+                                                        class="col-md-4 col-form-label text-md-end">رقم
                                                         العمليه </label>
 
                                                     <div class="col-md-8">
@@ -242,6 +255,20 @@
                     }
                 });
             })();
+
+            document.getElementById('productSearch').addEventListener('input', function() {
+                let searchValue = this.value.toLowerCase();
+                let cards = document.querySelectorAll('.product-card');
+
+                cards.forEach(card => {
+                    let name = card.getAttribute('data-name');
+                    if (name.includes(searchValue)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
         </script>
 
     @endsection

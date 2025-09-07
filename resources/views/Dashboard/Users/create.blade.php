@@ -114,7 +114,8 @@
                                     'Shift',
                                     'Payment',
                                     'employe',
-                                    'debt'
+                                    'debt',
+                                    'Expense'
                                 ];
                                 $Roles = ['create', 'read', 'update', 'delete'];
                             @endphp

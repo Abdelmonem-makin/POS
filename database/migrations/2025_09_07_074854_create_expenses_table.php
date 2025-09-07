@@ -15,6 +15,13 @@ return new class extends Migration
     {
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
+            $table->string('title'); // عنوان المصروف
+            $table->text('description')->nullable(); // وصف تفصيلي
+            $table->decimal('amount', 10, 2); // قيمة المصروف
+            $table->date('expense_date'); // تاريخ المصروف
+            $table->string('category')->nullable(); // نوع المصروف (اختياري)
+            $table->unsignedBigInteger('user_id') ;
+            $table->foreign('user_id')->references('id')->on('users')->ondelete('cascade');
             $table->timestamps();
         });
     }

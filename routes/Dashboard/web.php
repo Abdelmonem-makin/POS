@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\DebtController;
+use App\Http\Controllers\Dashboard\ExpenseController;
 use App\Http\Controllers\Dashboard\UsersController;
 use App\Http\Controllers\Dashboard\OrderController;
 use App\Http\Controllers\Dashboard\PaymentController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Dashboard\SupplierController;
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/', [Controller::class, 'index'])->name('Home');
+    Route::get('/expanses', [Controller::class, 'expanses'])->name('expanses');
     Route::resource('dashboard', DashboardController::class)->except(['show']);
     route::group(['prefix' => 'dashboard'], function () {
         Route::get('Order/{id}/show_product_order', [OrderController::class, 'show_product_order'])->name('show-product-order');
@@ -37,6 +39,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::resource('Payment', PaymentController::class)->except(['show']);
         Route::resource('debt', DebtController::class)->except(['show']);
         Route::post('/debts/{debt}/settle', [DebtController::class, 'settleDebts'])->name('debts.settle');
+        Route::resource('Expense', ExpenseController::class)->except(['show']);
         Route::get('Stock_chaneg_Status/{id}', [StockController::class, 'Stock_Status'])->name('Stock_chaneg_Status');
     });
 });

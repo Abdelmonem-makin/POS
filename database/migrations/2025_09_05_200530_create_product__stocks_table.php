@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('product_stocks', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id')->nullable();
-            $table->foreign('product_id')->references('id')->on('products')->ondelete('set null');
+            $table->foreign('product_id')->references('id')->on('products')->ondelete('cascade');
             $table->unsignedBigInteger('stock_id')->nullable();
-            $table->foreign('stock_id')->references('id')->on('stocks')->ondelete('set null');
+            $table->foreign('stock_id')->references('id')->on('stocks')->ondelete('cascade');
             $table->integer('quantity');
             $table->date('expir_data');
             $table->timestamps();

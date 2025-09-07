@@ -21,7 +21,10 @@ return new class extends Migration
             $table->decimal('remaining', 10, 2);
             $table->date('due_date')->nullable();
             $table->text('notes')->nullable();
+            $table->boolean('is_closed')->default(false);
             $table->foreign('supplier_id')->references('id')->on('suppliers')->ondelete('cascade');
+            $table->unsignedBigInteger('stock_id')->nullable();
+            $table->foreign('stock_id')->references('id')->on('stocks')->ondelete('cascade');
             $table->timestamps();
         });
     }
