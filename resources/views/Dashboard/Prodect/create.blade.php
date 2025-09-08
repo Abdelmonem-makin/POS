@@ -90,7 +90,7 @@
 
                 <div class="row mb-3">
 
-                    <label for="price" class="col-md-4 col-form-label text-md-start mx-5">سعر الشراء</label>
+                    <label for="price" class="col-md-4 col-form-label text-md-start mx-5">الحد الادناء للمخزون  </label>
 
                     <div class="col-md-6">
                         <input id="price" type="number" class="form-control @error('price') is-invalid @enderror"

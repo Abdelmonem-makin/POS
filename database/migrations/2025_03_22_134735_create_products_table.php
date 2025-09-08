@@ -20,7 +20,7 @@ return new class extends Migration
             // $table->string('photo');
             $table->string('descount')->default(0);
             // $table->string('discription');
-            $table->decimal('price',18)->unsigned();
+            // $table->decimal('price',18)->unsigned();
             $table->decimal('sell_price',18)->unsigned();
             $table->integer('Quantity');
             $table->integer('minimum_Quantity');

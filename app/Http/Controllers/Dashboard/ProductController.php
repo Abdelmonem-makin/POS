@@ -51,7 +51,7 @@ class ProductController extends Controller
             // 'discription' => $request->discription,
             'categories_id' => $request->categories_id,
             // 'photo' => $photoPath,
-            'price' => $request->price,
+            'minimum_Quantity' => $request->price,
             'sell_price' => $request->sell_price,
             'add_by' => 'Admin',
             'Quantity' => 0,

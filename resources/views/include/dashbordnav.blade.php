@@ -156,7 +156,7 @@
                             <a class="nav-link" href="{{ Route('Order.index') }}">
                                 <span data-feather="file"></span>
                                 <i class="fa fa-th ms-2"></i>
-                                الطلبات
+                                المبيعات
                             </a>
                         </li>
                     @endif

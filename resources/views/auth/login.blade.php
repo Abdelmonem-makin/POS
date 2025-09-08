@@ -4,7 +4,7 @@
     <div class="row py-5 justify-content-center">
         <div class="col-md-8">
             <div class="card  text-center">
-                <div class="card-header">   <h2>  صيدلية عروس الرمال </h2></div>
+                <div class="card-header">   <h2>  صيدلية عروس كردفان </h2></div>
 
                 <div class="card-body my-auto   ">
                     <form method="POST" action="{{ route('login') }}">
@@ -38,7 +38,7 @@
                             </div>
                         </div>
 
-               
+
 
                         <div class="row mb-0">
                             <div class="col-md-12 offset-md-4">
@@ -46,7 +46,7 @@
                                     {{ __('Login') }}
                                 </button>
 
-                        
+
                             </div>
                         </div>
                     </form>

@@ -48,7 +48,7 @@ class ShiftController extends Controller
 
         Shift::create($dataRequest);
 
-        return redirect()->route('Shift.create')->with('success', __('trans.Category_Saved'));
+        return redirect()->route('Shift.create')->with('success', ' تم الحفظ بنجاح');
     }
 
     /**

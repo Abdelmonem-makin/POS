@@ -15,7 +15,7 @@ class DebtController extends Controller
      */
     public function index(Request $request)
     {
-       $debts = debts::where(function ($q) use ($request) {
+        $debts = debts::where(function ($q) use ($request) {
             return $q->when($request->search, function ($query) use ($request) {
                 return $query->where('supplier_id', 'like', '%' . $request->search . '%');
             });
@@ -62,10 +62,10 @@ class DebtController extends Controller
      * @param  \App\Models\debts  $debts
      * @return \Illuminate\Http\Response
      */
-    public function edit(debts $debts ,$id)
+    public function edit(debts $debts, $id)
     {
         $debts = debts::findOrFail($id);
-       return view('Dashboard.debts.edit' ,compact('debts'));
+        return view('Dashboard.debts.edit', compact('debts'));
     }
 
     /**
@@ -77,7 +77,7 @@ class DebtController extends Controller
      */
     public function update(Request $request, debts $debt)
     {
-               $request->validate([
+        $request->validate([
             'payment' => 'required|numeric|min:1'
         ]);
 
@@ -102,8 +102,16 @@ class DebtController extends Controller
      * @param  \App\Models\debts  $debts
      * @return \Illuminate\Http\Response
      */
-    public function destroy(debts $debts)
+    public function destroy(debts $id)
     {
-        //
+        $resource = debts::with('stock')->findOrFail($id);
+        // foreach ($stock as $sorder) {
+        //     $sorder->pivot->delete();
+        //     //    dd($sorder);
+        // }
+        // $resource->delete();
+
+        // $debts->stock->delete();
+        return redirect()->route('debts.index')->with('success', '  تم الحذف لنجاح.');
     }
 }

@@ -307,6 +307,6 @@ class StockController extends Controller
         }
         $resource->delete();
 
-        return redirect()->route('Stock.index')->with('success', 'Resource deleted successfully.');
+        return redirect()->route('Stock.index')->with('success', '  تم الحذف لنجاح.');
     }
 }

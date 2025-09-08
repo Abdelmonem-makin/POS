@@ -21,8 +21,9 @@
                         <h3 class=" my-1 me-a"> <i class="fa fa-print" aria-hidden="true"></i> الكاشير </h3>
                     </div>
                     <div class="col-md-6  ">
-                        <div class="mb-4">
-                            <input type="text" id="productSearch" class="form-control" placeholder="ابحث عن منتج...">
+                        <div class="">
+                            <title>بحث عن دواء</title>
+                            <input type="text" id="productSearch" class="form-control mt-2" placeholder="ابحث عن منتج...">
                         </div>
 
                     </div>

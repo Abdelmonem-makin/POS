@@ -1,5 +1,5 @@
 @extends('master.adminMaster')
-@section('title', 'الطلبات')
+@section('title', 'المبيعات')
 @section('content')
 
     <div class="row row-sm">
@@ -10,7 +10,7 @@
                 <div class="card-header py-0">
 
                     <div class="d-flex justify-content-between">
-                        <h3 class=" my-2 me-a"> الطلبات </h3>
+                        <h3 class=" my-2 me-a"> المبيعات </h3>
                         <form class="row g-3 h-25 mt-1  needs-validation" action="{{ route('Order.index') }}"
                             method="get">
                             <div class="col-md-6 m-0">
@@ -30,7 +30,7 @@
                         <ol class="breadcrumb my-2">
                             <li><a class="py-0 text-dark px-2 nav-link" href="{{ route('dashboard.index') }}"><i
                                         class="fa fa-home " aria-hidden="true"></i> الرئيسيه</a></li>
-                            <<li class="active mx-2"> الطلبات</a></li>
+                            <<li class="active mx-2"> المبيعات</a></li>
                         </ol>
                         {{-- <a class="btn btn-primary my-2 ms-a"href="{{ route('order.create') }}">   </a> --}}
                     </div>

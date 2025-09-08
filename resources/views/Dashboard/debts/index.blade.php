@@ -7,8 +7,8 @@
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-header py-0">
-
-                    <div class="d-flex justify-content-between">
+lo
+                    <div style="ba" class="d-flex justify-content-between">
                         <h3 class=" my-2 me-a"> المديونيات </h3>
                         <form class="row g-3 h-25 mt-1  needs-validation" action="{{ route('debt.index') }}" method="get">
                             <div class="col-md-6 m-0">

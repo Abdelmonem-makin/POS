@@ -21,7 +21,7 @@ class Product extends Model
         'descount',
         // 'discription',
         'add_by',
-        // 'price',
+        'minimum_Quantity',
         'sell_price',
         'Quantity',
         'status',
