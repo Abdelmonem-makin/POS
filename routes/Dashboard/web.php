@@ -10,6 +10,7 @@ use App\Http\Controllers\Dashboard\UsersController;
 use App\Http\Controllers\Dashboard\OrderController;
 use App\Http\Controllers\Dashboard\PaymentController;
 use App\Http\Controllers\Dashboard\ProductController;
+use App\Http\Controllers\Dashboard\returnBayController;
 use App\Http\Controllers\Dashboard\ShiftController;
 use App\Http\Controllers\Dashboard\StockController;
 use App\Http\Controllers\Dashboard\SupplierController as DashboardSupplierController;
@@ -34,12 +35,23 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('Category_chaneg_Status/{id}', [CategoryController::class, 'chaneg_Status'])->name('Category_chaneg_Status');
 
         Route::resource('Stock', StockController::class)->except(['show']);
-        Route::resource('supplier', SupplierController::class)->except(['show']);
-        Route::resource('Shift', ShiftController::class)->except(['show']);
-        Route::resource('Payment', PaymentController::class)->except(['show']);
-        Route::resource('debt', DebtController::class)->except(['show']);
-        Route::post('/debts/{debt}/settle', [DebtController::class, 'settleDebts'])->name('debts.settle');
-        Route::resource('Expense', ExpenseController::class)->except(['show']);
         Route::get('Stock_chaneg_Status/{id}', [StockController::class, 'Stock_Status'])->name('Stock_chaneg_Status');
+
+        Route::resource('supplier', SupplierController::class)->except(['show']);
+
+        Route::resource('Shift', ShiftController::class)->except(['show']);
+
+        Route::resource('Payment', PaymentController::class)->except(['show']);
+
+        Route::resource('debt', DebtController::class)->except(['show']);
+        Route::get('/debts/showDebts/{id}', [DebtController::class, 'showDebts'])->name('debts.showDebts');
+
+        Route::resource('Expense', ExpenseController::class)->except(['show']);
+        Route::post('/Expenses/empExpenses',[ExpenseController::class , 'empExpenses'])->name('empExpenses');
+
+        Route::get('/return',[returnBayController::class ,'index'])->name('return');
+        Route::get('/return/{id}/show',[returnBayController::class ,'show'])->name('show-return');
+        Route::post('/return/store',[returnBayController::class ,'store'])->name('return-store');
+        Route::get('/return/insex',[returnBayController::class ,'sales_return'])->name('sales_return');
     });
 });

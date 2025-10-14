@@ -10,10 +10,12 @@ return new class extends Migration
     {
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
-
-            $table->unsignedBigInteger('product_id')->nullable();
-            $table->integer('quantity')->default(0);
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreignId('product_id')->constrained();
+            $table->foreignId('user_id')->constrained();
+            $table->integer('system_quantity');
+            $table->integer('actual_quantity');
+            $table->decimal('cost_price', 10, 2);
+            $table->date('inventory_date');
             $table->timestamps();
         });
     }

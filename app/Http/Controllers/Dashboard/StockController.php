@@ -47,7 +47,7 @@ class StockController extends Controller
     public function store(StockRequest $request)
     {
         // dd($request->all());
-        try {
+        // try {
             $validator = Validator::make($request->all(), []);
             if ($validator->fails()) {
                 return response()->json(['success' => false, 'message' => 'خطأ في بيانات الطلب', 'errors' => $validator->errors()], 422);
@@ -82,10 +82,12 @@ class StockController extends Controller
                     if ($request->paid_amount < $stock->total_price) {
                         $debts = debts::create([
                             'supplier_id' => $request->Supplier_id,
+                            'invoice_number' => $invoice_number,
                             'stock_id' => $stock->id,
                             'due_date' => '2022-1-1',
                             'amount' => $stock->total_price,
                             'paid' => $request->paid_amount,
+                            'type' => 'supplier',
                             'remaining' => $stock->total_price - $request->paid_amount,
                             'notes' => 'فاتورة شراء رقم ' . $stock->invoice_number,
                             'is_closed' => false
@@ -94,8 +96,8 @@ class StockController extends Controller
                 }
             });
             return  redirect()->route('Stock.create')->with('success', 'تم الحفط بنجاح');
-        } catch (\Throwable $th) {
-        }
+        // } catch (\Throwable $th) {
+        // }
     }
 
     /**
@@ -136,89 +138,8 @@ class StockController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    // {
-
-    //     $Stock = stock::findOrFail($id);
-    //     if (!$Stock) {
-    //         return redirect()->route('stock.edite', ['Stock'=>$stock->id])->with(['error' => 'هذا العنصور غير موجود']);
-    //     }
-    //     // try {
-    //         $validator = Validator::make($request->all(), []);
-    //         if ($validator->fails()) {
-    //             return response()->json(['success' => false, 'message' => 'خطأ في بيانات الطلب', 'errors' => $validator->errors()], 422);
-    //         }
-    //         // return $request;
-
-    //         // DB::beginTransaction();
-    //             // إنشاء الفاتورة
-    //             $lastInvoice = stock::orderBy('id', 'desc')->first();
-    //             $nextId = $lastInvoice ? $lastInvoice->id + 1 : 1;
-    //             $invoice_number = 'INVBUY-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
-    //             // /** @var stock $stock */
-    //             $productData = [];
-    //             $stock = Stock::with('Product', 'debt')->findOrFail($id);
-    //             // return $stock;
-    //             // return $request;
-    //             // تحديث بيانات الفاتورة
-    //             // return $Stock;
-    //             $stock->update([
-    //                 'supplier_id' => $request->supplier_id,
-    //                 // 'invoice_number' => $invoice_number,
-    //                 'payment_id' => $request->payment_id,
-    //                 'transiction_no' => $request->transiction_no,
-    //                 'user_id' => Auth::user()->id,
-    //                 'total_price' => $request->total_price,
-    //             ]);
-    //             // إضافة تفاصيل المنتجات إلى الفاتورة
-    // foreach ($request->products_stock as $productId => $data) {
-    //     if (!empty($data['quantity']) && !empty($data['expir_data'])) {
-    //         $productData[$productId] = [
-    //             'quantity' => $data['quantity'],
-    //             'expir_data' => $data['expir_data'],
-    //         ];
-    //     }
-    //     $Products = Product::findOrFail($productId);
-
-    //     if ($request->Quantity > $Products->Quantity) {
-    //         $r = $Products->Quantity + $request->Quantity;
-
-    //         Product::where('id', $productId)->update(['Quantity' => $r]);
-    //     } elseif ($request->Quantity < $Products->Quantity) {
-    //         $r = $Products->Quantity + $request->Quantity;
-    //         $totle = $Products->Quantity - $r;
-    //         Product::where('id', $productId)->update(['Quantity' => abs($totle)]);
-    //     }
-    // }
-    // $stock->Product()->sync($productData);
-
-    //             // 🔹 تسجيل المديونية إذا كان الدفع جزئي
-    //             if ($request->paid < $stock->total_price) {
-    //                 $debts = debts::first()->update([
-    //                     'supplier_id' => $request->Supplier_id,
-    //                     'stock_id' => $stock->id,
-    //                     'due_date' => '2022-1-1',
-    //                     'amount' => $stock->total_price,
-    //                     'paid' => $request->paid,
-    //                     'remaining' => $stock->total_price - $request->paid_amount,
-    //                     // 'notes' => 'فاتورة شراء رقم ' . $stock->invoice_number,
-    //                     'is_closed' => false
-    //                 ]);
-    //             }
-    //     //   DB::commit();
-
-    //         return  redirect()->back()->with('success', 'تم التعديل بنجاح');
-    //     // } catch (\Throwable $th) {
-    //     // }
-
-
-
-
-
-    //     // DB::commit();
-    // }
     {
         $stock = Stock::with('Product', 'debt')->findOrFail($id);
-
         $stock->update([
             'supplier_id' => $request->supplier_id,
             'payment_id' => $request->payment_id,
@@ -226,7 +147,6 @@ class StockController extends Controller
             'user_id' => Auth::id(),
             'total_price' => $request->total_price,
         ]);
-
         $productData = [];
         foreach ($request->products_stock as $productId => $data) {
             if (!empty($data['quantity']) && !empty($data['expir_data'])) {
@@ -261,20 +181,6 @@ class StockController extends Controller
             }
         }
         $stock->Product()->sync($productData);
-        // foreach ($request->products_stock as $productId => $data) {
-        //     if (!empty($data['quantity']) && !empty($data['expiry_date'])) {
-        //         $productData[$productId] = [
-        //             'quantity' => $data['quantity'],
-        //             'expir_data' => $data['expir_data'],
-        //         ];
-
-        //         $product = Product::findOrFail($productId);
-        //         $product->update(['Quantity' => $product->Quantity + $data['quantity']]);
-        //     }
-        // }
-
-        $stock->Product()->sync($productData);
-
         // تحديث أو إنشاء المديونية
         if ($request->paid < $stock->total_price) {
             debts::updateOrCreate(

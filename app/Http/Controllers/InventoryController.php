@@ -7,36 +7,50 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Inventory;
 use App\Models\Product;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class InventoryController extends Controller
 {
     public function index(Request $request)
     {
+        $months =  Inventory::selectRaw('DATE_FORMAT(inventory_date, "%Y-%m-01") as month')
+            ->distinct()
+            ->orderBy('month', 'desc')
+            ->get()
+            ->map(function ($item) {
+                return Carbon::parse($item->month);
+            });
+
         $Product = Product::orderBy('name')->get();
-
-        $inventories = Inventory::with('product','user')->latest()->paginate(20);
-        return view('Dashboard.inventory.index', compact('inventories' ,'Product'));
+        // $inventories = Inventory::with('product', 'user')->latest()->paginate(20);
+        return view('Dashboard.inventory.index', compact('months'));
     }
-
     public function create()
     {
-        $products = Category::all();
-        return view('Dashboard.inventory.create', compact('products'));
+        $Product = Product::all();
+        return view('Dashboard.inventory.create', compact('Product'));
     }
-
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer',
-        ]);
+        foreach ($request->actual_quantity as $productId => $actualQty) {
+            $product = Product::find($productId);
+            // return $product;
+            $request->validate([
+                'actual_quantity' => 'required|array',
+                'actual_quantity.*' => 'required|integer|min:0',
+            ]);
+            Inventory::create([
+                'product_id' => $productId,
+                'system_quantity' => $product->Quantity,
+                'actual_quantity' => $actualQty,
+                'cost_price' => $product->sell_price,
+                'inventory_date' => now(),
+                'user_id' => auth()->id(),
+            ]);
+        }
 
-        $data['user_id'] = auth()->id();
-
-        Inventory::create($data);
-
-        return redirect()->route('inventory.index')->with('success', 'تم إنشاء جرد بنجاح');
+        return redirect()->back()->with('success', 'تم حفظ الجرد الشهري بنجاح');
     }
 
     /**
@@ -55,62 +69,59 @@ class InventoryController extends Controller
      * - profit_per_unit: هامش الربح للوحدة = sell_price - price
      * - profit_diff: أثر الفرق على الربح = diff * profit_per_unit
      */
-    public function report()
+    public function report(Request $request)
     {
-        // نستخدم Eloquent: نحمّل كل المنتجات مع آخر سجل جرد لها (إن وجد)
-        $products = Product::with('latestInventory')->orderBy('id')->get();
+        $month = $request->input('month')
+            ? Carbon::parse($request->month)->startOfMonth()
+            : Carbon::now()->startOfMonth();
 
-        // نحول كل منتج إلى صف تقرير يحتوي الحقول المطلوبة
-        $report = $products->map(function ($p) {
-            $counted = $p->latestInventory?->quantity ?? 0;
-            $countedAt = $p->latestInventory?->created_at ?? null;
-            $systemQty = (int) $p->Quantity;
-            $diff = $counted - $systemQty; // counted - system
-            $sell = (float) $p->sell_price;
-            $cost = (float) $p->price;
-            $valueDiff = $diff * $sell; // قيمة الفرق بحسب سعر البيع
-            $base = $counted * $sell; //راس المال داخل الصيدليه
-            // $profitPerUnit = $sell - $cost; // هامش الربح
-            $profitDiff = $diff * $sell; // إجمالي أثر الفرق على الربح
+        // جلب بيانات الجرد من قاعدة البيانات
+        $inventories = Inventory::with(['product', 'user'])
+            ->whereMonth('inventory_date', $month->month)
+            ->whereYear('inventory_date', $month->year)
+            ->get()
+            ->map(function ($item) {
+                $difference = $item->actual_quantity - $item->system_quantity;
+                $totalDifference = $difference * $item->cost_price;
 
-            return (object) [
-                'id' => $p->id,
-                'name' => $p->name,
-                'system_qty' => $systemQty,
-                'counted_qty' => $counted,
-                'counted_at' => $countedAt,
-                'sell_price' => $sell,
-                'cost_price' => $cost,
-                'diff' => $diff,
-                'base' => $base,
-                'value_diff' => $valueDiff,
-                // 'profit_per_unit' => $profitPerUnit,
-                'profit_diff' => $profitDiff,
-            ];
+                return [
+                    'product_name' => $item->product->name,
+                    'system_quantity' => $item->system_quantity,
+                    'actual_quantity' => $item->actual_quantity,
+                    'cost_price' => $item->cost_price*$item->actual_quantity,
+                    'difference' => $difference,
+                    'total_difference' => $totalDifference,
+                    'inventory_date' => $item->inventory_date,
+                    'user_id' => $item->user->name,
+                ];
+            });
+        // حساب الإجماليات
+        $total_system_qty = $inventories->sum('system_quantity');
+        $total_counted_qty = $inventories->sum('actual_quantity');
+        $total_base = $inventories->sum('cost_price');
+
+        $total_system_value = $inventories->sum(function ($item) {
+            return $item['system_quantity']  * $item['cost_price'];
         });
 
-        // حساب مجاميع التقرير لتعرض في الواجهة (كمية، قيمة، ربح)
-        $total_system_qty = $report->sum('system_qty');
-        $total_counted_qty = $report->sum('counted_qty');
-        $total_base = $report->sum('base');
-        $total_system_value = $report->sum(function ($r) {
-            return $r->system_qty * $r->sell_price;
+        $total_counted_value = $inventories->sum(function ($item) {
+            return$item['actual_quantity'] * $item['cost_price'];
         });
-        $total_counted_value = $report->sum(function ($r) {
-            return $r->counted_qty * $r->sell_price;
-        });
-        $total_value_diff = $report->sum('value_diff');
-        $total_profit_diff = $report->sum('profit_diff');
 
-        return view('Dashboard.inventory.report', compact(
-            'report',
-            'total_system_qty',
-            'total_counted_qty',
-            'total_system_value',
-            'total_counted_value',
-            'total_value_diff',
-            'total_profit_diff',
-            'total_base'
-        ));
+        $total_profit_diff = $total_counted_value - $total_system_value;
+
+
+        // إرسال البيانات إلى واجهة العرض
+        return view('Dashboard.inventory.report', [
+            'inventories' => $inventories,
+            'month' => $month->translatedFormat('F Y'),
+            'total_system_qty' => $total_system_qty,
+            'total_counted_value' => $total_counted_value,
+            'total_base' => $total_base,
+            'total_system_value' => $total_system_value,
+            'total_profit_diff' => $total_profit_diff,
+
+            'month' => $month->translatedFormat('F Y'),
+        ]);
     }
 }

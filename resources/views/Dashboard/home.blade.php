@@ -17,13 +17,15 @@
             <div class="card-header py-0 ">
                 <div class="row mb-3">
 
-                    <div class="   col-md-4">
-                        <h3 class=" my-1 me-a"> <i class="fa fa-print" aria-hidden="true"></i> الكاشير </h3>
+                    <div class="   col-md-2">
+                        <h3 class=" my-1 me-5"> <i class="fa fa-print" aria-hidden="true"></i> الكاشير </h3>
                     </div>
-                    <div class="col-md-6  ">
-                        <div class="">
-                            <title>بحث عن دواء</title>
-                            <input type="text" id="productSearch" class="form-control mt-2" placeholder="ابحث عن منتج...">
+                    <div class="col-md-10  mt-2">
+                        <div class="row">
+                            <label for="name" class="col-md-2 form-label text-md-start">اسم الدواء</label>
+                            <div class="col-md-10">
+                            <input type="text" id="productSearch" class="form-control w-50" placeholder="ابحث عن دواء...">
+                            </div>
                         </div>
 
                     </div>

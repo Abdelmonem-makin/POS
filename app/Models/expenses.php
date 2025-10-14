@@ -11,6 +11,7 @@ class expenses extends Model
     use HasFactory;
     protected $fillable = [
         'title',
+        'shift_id',
         'description',
         'amount',
         'expense_date',
@@ -27,5 +28,9 @@ class expenses extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+      public function shift(): BelongsTo
+    {
+        return $this->belongsTo(shift::class);
     }
 }

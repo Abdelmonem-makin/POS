@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="card-body w-50 mt-auto  mx-auto">
-      
+
 
 
             <form method="POST" action="{{ route('debt.update', $debts->id) }}" class="parsley-style-1"
@@ -42,7 +42,7 @@
 
 
                     <div>
-                        <input class="btn btn-primary  my-3 mx-auto py-x-20" name="submit" type="submit" value="تعديل">
+                        <input class="btn btn-primary  my-3 mx-auto py-x-20" name="submit" type="submit" value="تسوية">
                     </div>
             </form>
         </div>

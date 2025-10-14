@@ -51,7 +51,11 @@ class OrderController extends Controller
         $revenues1 = DailyRevenue::with(['employee', 'shift', 'paymentMethod'])
             ->orderBy('revenue_date', 'desc')
             ->get()
-            ->groupBy('shift_id');
+            ->groupBy(function ($item) {
+                return $item->revenue_date; // تجميع حسب تاريخ اليوم فقط
+            });
+
+
 
         $revenues = $revenues1->map(function ($group) {
             $first = $group->first();
@@ -66,7 +70,7 @@ class OrderController extends Controller
                 'revenue_date' => $first->revenue_date,
                 'cash_total' => $cash,
                 'bank_total' => $bank,
-                // 'profit' => $profit,
+                'total_expenses' => $first->total_expenses,
                 'total_revenue' => $cash + $bank
             ];
         })->values();
@@ -90,7 +94,7 @@ class OrderController extends Controller
     public function store(OrderRequest $request, Order $order)
     {
         try {
-            $validator = Validator::make($request->all(),[]);
+            $validator = Validator::make($request->all(), []);
 
             if ($validator->fails()) {
                 return response()->json(['success' => false, 'message' => 'خطأ في بيانات الطلب', 'errors' => $validator->errors()], 422);
@@ -106,6 +110,7 @@ class OrderController extends Controller
             $shift = Shift::where('user_id', auth()->id())->first();
 
             $order = Order::create([
+                'user_id' => $shift->user_id,
                 'invoice_number' => $invoiceNumber,
                 'payment_id' => $request->payment_id,
                 'shift_id' => $shift->id,
@@ -130,7 +135,7 @@ class OrderController extends Controller
                 $totalprofit += $profit * $quantities['quantity'];
                 $attachData[$id] = [
                     'quantity' => $quantities['quantity'],
-                    'sell_price' => $product->sell_price ,
+                    'sell_price' => $product->sell_price,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
@@ -138,10 +143,7 @@ class OrderController extends Controller
                 // decrement stock
                 $product->decrement('Quantity', $quantities['quantity']);
             }
-
             $order->products()->attach($attachData);
-
-            $code = Order::count() + 1;
             $order->update([
                 'total_price' => $total_price,
             ]);
@@ -157,9 +159,7 @@ class OrderController extends Controller
 
             $revenue->order_count = ($revenue->order_count ?? 0) + 1;
             $revenue->total_net = ($revenue->total_net ?? 0) + $total_price;
-            $revenue->profit = ($revenue->profit ?? 0) + $totalprofit;
-
-
+            // $revenue->profit = ($revenue->profit ?? 0) + $totalprofit;
             // توليد رقم الإيراد إذا جديد
             if (!$revenue->exists) {
                 $revenue->revenue_number = 'REV-' . str_pad(DailyRevenue::count() + 1, 5, '0', STR_PAD_LEFT);
@@ -168,6 +168,7 @@ class OrderController extends Controller
             $revenue->save();
 
             DB::commit();
+
             return response()->json(['success' => true, 'message' => 'تم الشراء بنجاح']);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -218,7 +219,7 @@ class OrderController extends Controller
         $orders_pro = $orders->products;
         foreach ($orders_pro as $sorder) {
             $sorder->pivot->delete();
-               dd($sorder);
+            dd($sorder);
         }
         $orders->delete();
         // dd('done');

@@ -17,7 +17,7 @@ class supplier extends Model
     }
        public function debts()
     {
-        return  $this->belongsTo(debts::class, 'supplier_id', 'id');
+        return  $this->hasMany(debts::class, 'supplier_id', 'id');
     }
 
 }

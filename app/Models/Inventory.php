@@ -9,7 +9,14 @@ class Inventory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['product_id', 'quantity',  'user_id'];
+    protected $fillable = [
+        'product_id',
+        'system_quantity',
+        'actual_quantity',
+        'cost_price',
+        'inventory_date',
+        'user_id',
+    ];
 
     public function product()
     {

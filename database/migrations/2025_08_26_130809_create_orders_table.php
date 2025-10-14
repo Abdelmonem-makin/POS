@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('payment_id');
             $table->unsignedBigInteger('shift_id');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->ondelete('cascade');
             $table->string('invoice_number')->nullable();
             $table->integer('transiction_no')->nullable();
             $table->double('total_price');

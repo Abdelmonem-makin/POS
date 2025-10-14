@@ -46,8 +46,10 @@
                                     <th> الورديه</th>
                                     <th> عدد الطلبات</th>
                                     {{-- <th> عدد الطلبات</th> --}}
-                                     <th>بنكك</th>
                                     <th>كاش</th>
+                                     <th>بنكك</th>
+                                     <th>المنصرفات</th>
+
                                     <th>إجمالي الإيراد</th>
                                     {{-- <th> الارباح </th> --}}
                                     <th> التاريخ </th>
@@ -62,6 +64,7 @@
                                         <td>{{ $rev['order_count'] }}</td>
                                         <td>{{ number_format($rev['cash_total'], 0) }} SDG</td>
                                         <td>{{ number_format($rev['bank_total'], 0) }} SDG</td>
+                                        <td>{{ number_format($rev['total_expenses'], 0) }} SDG</td>
                                         <td>{{ number_format($rev['total_revenue'], 0) }} SDG</td>
                                         {{-- <td>{{ number_format($rev['profit'], 0) }} SDG</td> --}}
                                         <td>{{ $rev['revenue_date'] }}</td>

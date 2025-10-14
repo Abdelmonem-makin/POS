@@ -175,10 +175,7 @@
             </div><!-- bd -->
             </div><!-- bd -->
         </div>
-        <!--/div-->
-
-        <!--div-->
-        {{-- {!! $MainCategories->links() !!} --}}
+ 
 
     </div>
 @stop

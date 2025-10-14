@@ -15,7 +15,8 @@ class DailyRevenue extends Model
         'profit',
         'revenue_date',
         'order_count',
-        'total_net'
+        'total_net',
+        'total_expenses'
     ];
     public function employee()
     {

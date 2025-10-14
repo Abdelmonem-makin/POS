@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\DailyRevenue;
 use App\Models\expenses;
+use App\Models\Shift;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +35,7 @@ class ExpenseController extends Controller
      */
     public function create()
     {
-     return view('Dashboard.Expenses.create');
+        return view('Dashboard.Expenses.create');
     }
 
     /**
@@ -48,14 +50,38 @@ class ExpenseController extends Controller
             'title' => 'required|string',
             'amount' => 'required|numeric',
         ]);
-        $request['user_id']= Auth::user()->id;
-        $request['expense_date']= Carbon::today();
-
+        $request['user_id'] = Auth::user()->id;
+        $request['expense_date'] = Carbon::today();
         expenses::create($request->all());
+        return redirect()->back()->with('success', 'تم تسجيل المصروف بنجاح');
+    }
+    public function empExpenses(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string',
+            'amount' => 'required|numeric',
+        ]);
+        $request['user_id'] = Auth::user()->id;
+        $request['expense_date'] = Carbon::today();
+        $expenses = expenses::create($request->all());
+        $shift = Shift::where('user_id', auth()->id())->first();
+        $today = Carbon::today();
+        // تحديث أو إنشاء الإيراد اليومي
+        $revenue = DailyRevenue::firstOrNew([
+            'shift_id' => $shift->user_id,
+            'payment_method_id' =>1,
+            'employee_id' => Auth::user()->id,
+            'revenue_date' => $expenses->expense_date,
+        ]);
+        $revenue->total_expenses = ($revenue->total_net ?? 0) + $expenses->amount;
+        // توليد رقم الإيراد إذا جديد
+        if (!$revenue->exists) {
+            $revenue->revenue_number = 'REV-' . str_pad(DailyRevenue::count() + 1, 5, '0', STR_PAD_LEFT);
+        }
+        $revenue->save();
 
         return redirect()->back()->with('success', 'تم تسجيل المصروف بنجاح');
     }
-
     /**
      * Display the specified resource.
      *

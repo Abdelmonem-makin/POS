@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\debts;
+use App\Models\supplier;
 use Illuminate\Http\Request;
 
 class DebtController extends Controller
@@ -15,14 +16,38 @@ class DebtController extends Controller
      */
     public function index(Request $request)
     {
-        $debts = debts::where(function ($q) use ($request) {
-            return $q->when($request->search, function ($query) use ($request) {
-                return $query->where('supplier_id', 'like', '%' . $request->search . '%');
-            });
-        })->where('remaining', '>', 0)->with('supplier')->latest()->paginate(5);
-        return view('Dashboard.debts.index', compact('debts'));
+        $suppliers = supplier::with('debts')->get()->map(function ($supplier) {
+            $total_amount = $supplier->debts->sum('amount');
+            $total_paid = $supplier->debts->sum('paid');
+            $total_remaining = $total_amount - $total_paid;
+
+            return [
+                'supplier' => $supplier,
+                'total_amount' => $total_amount,
+                'total_paid' => $total_paid,
+                'total_remaining' => $total_remaining,
+            ];
+        }) ->filter(function ($data) {
+            return $data['total_remaining'] > 0;
+        });
+
+
+        // $debts = debts::where(function ($q) use ($request) {
+        //     return $q->when($request->search, function ($query) use ($request) {
+        //         return $query->where('supplier_id', 'like', '%' . $request->search . '%');
+        //     });
+        // })->where('remaining', '>', 0)->with('supplier')->latest()->paginate(5);
+        return view('Dashboard.debts.index', compact(  'suppliers'));
     }
 
+    public function showDebts($customerId)
+    {
+        $supplier = supplier::findOrFail($customerId);
+
+        // جلب كل ديون هذا العميل
+        $debts = debts::where('supplier_id', $customerId)->where('remaining', '>', 0)->get();
+        return view('Dashboard.debts.debts_show', compact( 'supplier', 'debts'));
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -75,7 +100,7 @@ class DebtController extends Controller
      * @param  \App\Models\debts  $debts
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, debts $debt)
+    public function update(Request $request, debts $debt )
     {
         $request->validate([
             'payment' => 'required|numeric|min:1'
@@ -93,7 +118,7 @@ class DebtController extends Controller
 
         $debt->save();
 
-        return redirect()->route('debt.index')->with('success', 'تمت تسوية المديونية بنجاح');
+        return redirect()->route('debts.showDebts', $debt->supplier_id)->with('success', 'تمت تسوية المديونية بنجاح');
     }
 
     /**

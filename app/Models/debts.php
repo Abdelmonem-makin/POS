@@ -13,10 +13,12 @@ class debts extends Model
         'supplier_id',
         'stock_id',
         'amount',
+        'invoice_number',
         'paid',
         'remaining',
         'due_date',
         'notes',
+        'type',
         'is_closed'
     ];
 

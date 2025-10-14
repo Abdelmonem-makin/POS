@@ -38,7 +38,7 @@
                                         <li>
                                             <a class="dropdown-item" href=" ">
                                                 {{ $product->name }} - ينتهي في -
-                                                {{ $product->pivot->expir_data}}
+                                                {{ $product->pivot->expir_data }}
                                             </a>
                                         </li>
                                     @empty
@@ -61,7 +61,7 @@
                                             @foreach ($lowStock as $product)
                                                 <a class="dropdown-item text-danger"
                                                     href="{{ route('Stock.create', $product->id) }}">
-                                                    - {{ $product->name }} الكمية المتبقية: {{ $product->Quantity }}
+                                                    {{ $product->name }} - الكمية المتبقية {{ $product->Quantity }}
                                                 </a>
                                             @endforeach
                                         </div>
@@ -228,6 +228,14 @@
                             </a>
                         </li>
                     @endif
+
+                        <li class="nav-item py-2">
+                            <a class="nav-link" href="{{ route('sales_return') }}">
+                                <span data-feather="Payment"></span>
+                                <i class="fa fa-th ms-2"></i>
+                                الاسترجاعات
+                            </a>
+                        </li>
                     @if (auth()->user()->hasPermission('Payment_read'))
                         <li class="nav-item py-2">
                             <a class="nav-link" href="{{ route('inventory.index') }}">

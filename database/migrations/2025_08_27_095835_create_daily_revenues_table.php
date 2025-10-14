@@ -17,11 +17,12 @@ return new class extends Migration
             $table->id();
             // رقم الإيراد (توليد تلقائي مثل REV-00001)
             $table->string('revenue_number')->unique();
- 
+
             $table->unsignedBigInteger('payment_method_id');
             $table->unsignedBigInteger('shift_id');
             $table->integer('order_count')->default(0);
             $table->decimal('total_net', 12, 2)->default(0);
+            $table->decimal('total_expenses', 12, 2)->default(0);
             $table->date('revenue_date');
             $table->integer('profit')->default(0);
             $table->unsignedBigInteger('employee_id')->unsigned();

@@ -2,12 +2,9 @@
 @section('title', 'المديونيات')
 @section('content')
     <div class="row row-sm">
-        <!--/div-->
-        <!--div-->
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-header py-0">
-lo
                     <div style="ba" class="d-flex justify-content-between">
                         <h3 class=" my-2 me-a"> المديونيات </h3>
                         <form class="row g-3 h-25 mt-1  needs-validation" action="{{ route('debt.index') }}" method="get">
@@ -36,96 +33,49 @@ lo
                         </ol>
                     </div>
 
-                </div>
-
-                <div class="card-body">
-                    <div class="table-responsive">
-                        @if (Session::has('success'))
+                </div>  
+                     @if (Session::has('success'))
                             <div class="alert alert-success" role="alert">
                                 <p class="text-center ">{{ Session::get('success') }}</p>
                             </div>
                         @endif
-                        @if ($debts->count() > 0)
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered  text-center table-striped mg-b-0 p-0 text-md-nowrap">
 
-                            <table class="table table-bordered  text-center table-striped mg-b-0 p-0 text-md-nowrap">
-                                <thead>
+                            <thead>
+                                <tr>
+                                    <th>المورد</th>
+                                    <th>إجمالي الفواتير</th>
+                                    <th>إجمالي المدفوع</th>
+                                    <th>المتبقي</th>
+                                    <th>إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($suppliers as $data)
                                     <tr>
-                                        <th> #</th>
-                                        <th> اسماء المورد </th>
-                                        <th> اجمالي المبلغ </th>
-                                        <th>تم دفع </th>
-                                        <th> المتبقي </th>
-                                        <th> ملاحظه </th>
-                                        <th>الاجراءات</th>
+                                        <td>{{ $data['supplier']->name }}</td>
+                                        <td>{{ number_format($data['total_amount'], 2) }}</td>
+                                        <td>{{ number_format($data['total_paid'], 2) }}</td>
+                                        <td>{{ number_format($data['total_remaining'], 2) }}</td>
+                                        <td>
+                                            <a href="{{ route('debts.showDebts', $data['supplier']->id) }}"
+                                                class="btn btn-info btn-sm">
+                                                عرض التفاصيل
+                                            </a>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-
-                                    @isset($debts)
-                                        @foreach ($debts as $index => $debt)
-                                            <tr>
-
-                                                <th class="pt-4" scope="row">{{ $index + 1 }}</th>
-                                                <th scope="row">{{ $debt->supplier->name }}</th>
-                                                <th scope="row">{{ $debt->amount }}</th>
-                                                <th scope="row">{{ $debt->paid }}</th>
-                                                <th scope="row">{{ $debt->remaining }}</th>
-                                                <th scope="row">{{ $debt->notes }}</th>
-
-                                                </th>
-
-                                                <th>
-
-                                                    @if (auth()->user()->hasPermission('debt_update'))
-                                                        <a href="{{ route('debt.edit', $debt->id) }}"
-                                                            class="btn btn-sm  m-1 btn-info"><i class="fa fa-edit"
-                                                                aria-hidden="true"></i> نسويه</a>
-                                                    @else
-                                                        <a href="{{ route('debt.edit', $debt->id) }}"
-                                                            class="btn btn-sm  disabled m-1 btn-info"><i class="fa fa-edit"
-                                                                aria-hidden="true"></i> نسويه</a>
-                                                    @endif
-
-                                                    @if (auth()->user()->hasPermission('debt_delete'))
-                                                        <form action="{{ route('debt.destroy', $debt->id) }}" method="post"
-                                                            class="d-inline">
-                                                            {{ csrf_field() }}
-                                                            {{ method_field('delete') }}
-                                                            <button type="submit" class="btn btn-sm btn-outline-danger ">
-                                                                <i class="fa fa-trash mx-1" aria-hidden="true"></i> حذف
-                                                            </button>
-                                                        </form>
-                                                    @else
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger disabled">
-                                                            <i class="fa fa-trash mx-1" aria-hidden="true"></i> حذف </button>
-                                                    @endif
+                                @endforeach
+                            </tbody>
+                        </table>
 
 
 
-
-                                                </th>
-
-                                            </tr>
-                                        @endforeach
-                                    @endisset
-
-
-
-
-                                </tbody>
-                            </table>
-                        @else
-                            <h4 class="text-center">لا توجد سجلات للعرض</h4>
-                        @endif
                     </div><!-- bd -->
-                    {!! $debts->appends(request()->search)->links() !!}
+                    {{-- {!! $suppliers->links() !!} --}}
                 </div><!-- bd -->
             </div><!-- bd -->
         </div>
-        <!--/div-->
-
-        <!--div-->
-        {{-- {!! $MainCategories->links() !!} --}}
-
     </div>
 @stop

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ str_replace("_", "-", app()->getLocale()) }}" dir="rtl">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="rtl">
 
 <head>
     <meta charset="utf-8">
@@ -8,18 +8,18 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config("app.name", "Laravel") }}</title>
+    <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="" rel="stylesheet">
-    <link href="{{ asset("/css/font-awesome.min.css") }}"rel="stylesheet">
-    <link href="{{ asset("/css/bootstrap.min.css") }}" rel="stylesheet">
+    <link href="{{ asset('/css/font-awesome.min.css') }}"rel="stylesheet">
+    <link href="{{ asset('/css/bootstrap.min.css') }}" rel="stylesheet">
 
     {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
         integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous"> --}}
     <!-- Scripts -->
-    @vite(["resources/sass/app.scss", "resources/js/app.js"])
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <style>
         body {
             font-family: "Cairo", sans-serif;
@@ -29,10 +29,10 @@
 
 <body>
     <div id="app">
-        @if (Route::has("login"))
+        @if (Route::has('login'))
             @auth
                 <nav class="navbar navbar-dark bg-dark shadow-sm">
-                    <a class="navbar-brand col-md-3 col-lg-2 col-4 mx-3 me-5" href="#">
+                    <a class="navbar-brand col-md-3 col-lg-2 col-4 mx-3 me-5" href="{{ route('Home') }}">
                         <i class="fas fa-syringe"></i>
 
                         صيدلية عروس كردفان
@@ -54,16 +54,19 @@
                                             <div class="az-img-user" style="font-size: 30px;">
                                                 <i class="fa fa-user-secret"></i>
                                             </div><!-- az-img-user -->
-                                            <a href="{{ route('expanses') }}" class="dropdown-item text-bold" style='text-align:right;'><i
-                                                    class="fa fa-user"></i>   مصروفات </a>
-                                            <a href="{{ route("dashboard.index") }}" style='text-align:right;'
+                                            <a href="{{ route('expanses') }}" class="dropdown-item text-bold"
+                                                style='text-align:right;'><i class="fa fa-user"></i> مصروفات </a>
+                                            <a href="{{ route('return') }}" class="dropdown-item text-bold"
+                                                style='text-align:right;'><i class="fa fa-backward" aria-hidden="true"></i>
+                                                استرجاع دواء</a>
+                                            <a href="{{ route('dashboard.index') }}" style='text-align:right;'
                                                 class="dropdown-item"><i class="fa fa-tachometer"></i> لوحة التحكم </a>
-                                            <a href="{{ route("logout") }}" class="dropdown-item" style='text-align:right;'
+                                            <a href="{{ route('logout') }}" class="dropdown-item" style='text-align:right;'
                                                 onclick="event.preventDefault();
                                                 document.getElementById('logout-form').submit();"><i
                                                     class="fa fa-power-off">
                                                 </i> نسجيل الخروج </a>
-                                            <form id="logout-form" action="{{ route("logout") }}" method="POST"
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
                                                 class="d-none">
                                                 @csrf
                                             </form>
@@ -84,15 +87,17 @@
                                             <div class="az-img-user" style="font-size: 30px;">
                                                 <i class="fa fa-user-secret"></i>
                                             </div><!-- az-img-user -->
-                                            <a href="{{ route('expanses') }}" class="dropdown-item text-bold" style='text-align:right;'><i
-                                                    class="fa fa-user"></i>   مصروفات </a>
-
-                                            <a href="{{ route("logout") }}" class="dropdown-item" style='text-align:right;'
+                                            <a href="{{ route('expanses') }}" class="dropdown-item text-bold"
+                                                style='text-align:right;'><i class="fa fa-user"></i> مصروفات </a>
+                                            <a href="{{ route('return') }}" class="dropdown-item text-bold"
+                                                style='text-align:right;'><i class="fa fa-backward" aria-hidden="true"></i>
+                                                استرجاع دواء</a>
+                                            <a href="{{ route('logout') }}" class="dropdown-item" style='text-align:right;'
                                                 onclick="event.preventDefault();
                                                 document.getElementById('logout-form').submit();"><i
                                                     class="fa fa-power-off">
                                                 </i> نسجيل الخروج </a>
-                                            <form id="logout-form" action="{{ route("logout") }}" method="POST"
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
                                                 class="d-none">
                                                 @csrf
                                             </form>
@@ -104,7 +109,7 @@
                             <a href="{{ route('login') }}" class="text-sm nav-link text-light   d-inline p-1">تسجيل
                                 دخول</a>
 
-                            @if (Route::has("register"))
+                            @if (Route::has('register'))
                                 <a href="{{ route('register') }}"
                                     class=" text-sm text-light  nav-link d-inline p-1 mx-2  ">تسجيل جديد</a>
                             @endif --}}
@@ -116,7 +121,7 @@
         </ul>
         </nav>
         <main class="py-4">
-            @yield("content")
+            @yield('content')
         </main>
     </div>
     <script>
@@ -135,10 +140,10 @@
         }
     </script>
     {{-- <script src="{{asset("js/bootstrap.min.js")}}"></script> --}}
-    <script src="{{ asset("js/jquery-3.5.1.min.js") }}"></script>
-    <script src="{{ asset("js/jquery-number-master/jquery.number.min.js") }}"></script>
-    <script src="{{ asset("js/printThis.js") }}"></script>
-    <script src="{{ asset("js/order.js") }}"></script>
+    <script src="{{ asset('js/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ asset('js/jquery-number-master/jquery.number.min.js') }}"></script>
+    <script src="{{ asset('js/printThis.js') }}"></script>
+    <script src="{{ asset('js/order.js') }}"></script>
 
 </body>
 

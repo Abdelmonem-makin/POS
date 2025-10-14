@@ -1,79 +1,65 @@
 @extends('layouts.app')
 @section('content')
-    <div class="container">
-        <h3>تقرير   الجرد</h3>
-        <a href="{{ route('inventory.index') }}" class="btn btn-secondary mb-3">عودة لقائمة الجرد</a>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>المنتج</th>
-                    <th>الكمية في النظام</th>
-                    <th> الجرد</th>
-                    <th> راس المال</th>
-                    <th>الفرق</th>
-                    <th>إجمالي الفرق</th>
-                    <th>تاريخ آخر جرد</th>
-                    <!-- الفرق المحسوب = كمية الجرد - كمية النظام -->
-                    <!-- آخر كمية تم تسجيلها في جدول inventories لهذا المنتج -->
-                    <!-- الكمية المسجلة في النظام (حقل products.Quantity) -->
+@section('title', 'تقرير الجرد الشهري')
+<div class="container">
+    <h3>تقرير الجرد لشهر {{ $month }}</h3>
 
-                    <!-- قيمة الفرق بحسب سعر البيع (تأثير الإيراد) -->
-                    {{-- <th>قيمة الفرق --}}
-                    {{-- (سعر البيع) --}}
-                    {{-- </th> --}}
-                    <!-- هامش الربح للوحدة = sell_price - price -->
-                    {{-- <th>ربح الوحدة (سعر البيع - التكلفة)</th> --}}
-                    <!-- إجمالي أثر الفرق على الربح = diff * هامش الربح -->
 
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($report as $r)
-                    <tr>
-                        <td>{{ $r->id }}</td>
-                        <td>
-                            {{ $r->name }}
-                            @if (!empty($r->is_low))
-                                <span class="badge bg-danger ms-2">منتهي/منخفض</span>
-                            @endif
-                        </td>
-                        <td>{{ $r->system_qty }}</td>
-                        <!-- إذا لم يوجد سجل جرد، نعرض 0 -->
-                        <td>{{ $r->counted_qty ?? 0 }}</td>
-                        {{-- راس المال في الصيدليه --}}
-                        <td>{{ $r->base }}</td>
-                        <!-- الفرق يمكن أن يكون موجب (زيادة) أو سالب (نقص) -->
-                        <td>{{ $r->diff }}</td>
-                        <!-- قيمة الفرق تعرض برقم عشري بثانيتين -->
-                        {{-- <td>{{ number_format($r->value_diff, 2) }}</td> --}}
-                        <!-- هامش الربح لكل وحدة -->
-                        {{-- <td>{{ number_format($r->profit_per_unit, 2) }}</td> --}}
-                        <!-- إجمالي ربح/خسارة ناتجة عن الفرق -->
-                        <td>{{ number_format($r->profit_diff, 2) }}</td>
-                        <td>{{ $r->counted_at ? \Carbon\Carbon::parse($r->counted_at)->format('Y-m-d') : '-' }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-            <tfoot>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>المنتج</th>
+                <th>الكمية في النظام</th>
+                <th>الجرد الفعلي</th>
+                <th>رأس المال</th>
+                <th>الفرق</th>
+                <th>إجمالي الفرق</th>
+                <th>تاريخ الجرد</th>
+                <th>الموظف</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($inventories as $item)
                 <tr>
-                    <th colspan="2">الإجمالي</th>
-                    <th>{{ $total_system_qty ?? 0 }}</th>
-                    <th>{{ number_format($total_counted_value ?? 0, 2) }}</th>
-                    <th>{{ $total_base ?? 0 }}</th>
-                    {{-- <th></th>   --}}
-                    {{-- <th>{{ number_format($total_value_diff ?? 0, 2) }}</th> --}}
-                    <th></th>
-                    {{-- اجمالي الارباح --}}
-                    <th>{{ number_format($total_profit_diff ?? 0, 2) }}</th>
-                    <th></th>
+                    <td>{{ $item['product_name'] }}</td>
+                    <td>{{ $item['system_quantity'] }}</td>
+                    <td>{{ $item['actual_quantity'] }}</td>
+                    <td>{{ number_format($item['cost_price'], 2) }}</td>
+                    <td class="{{ $item['difference'] != 0 ? 'text-danger' : 'text-success' }}">
+                        {{ $item['difference'] }}
+                    </td>
+                    <td>{{ number_format($item['total_difference'], 2) }}</td>
+                    <td>{{ $item['inventory_date'] }}</td>
+                    <td>{{ $item['user_id'] }}</td>
                 </tr>
+            @empty
                 <tr>
-                    <th colspan="9"> إجمالية قيمة الادويه في النظام => {{ number_format($total_system_value ?? 0, 2) }}
-                        &nbsp; | &nbsp;إجمالية قيمة الادويه بعد الجرد: {{ number_format($total_counted_value ?? 0, 2) }}
-                    </th>
+                    <td colspan="8" class="text-center">لا توجد بيانات جرد لهذا الشهر</td>
                 </tr>
-            </tfoot>
-        </table>
-    </div>
+            @endforelse
+        </tbody>
+        <tfoot class="bg-light">
+            <tr class="fw-bold text-primary">
+                <th colspan="1">الإجمالي</th>
+                <th>{{ $total_system_qty ?? 0 }}</th>
+                <th></th>
+                <th>{{ number_format($total_counted_value ?? 0, 2) }}</th>
+                <th></th>
+                <th>{{ number_format($total_base ?? 0, 2) }}</th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <th colspan="9" class="text-center text-dark">
+                    💊 إجمالية قيمة الأدوية في النظام :
+                    <span class="text-danger">{{ number_format($total_system_value ?? 0, 2) }}</span>
+                    &nbsp; | &nbsp;
+                    💰 اجمالية قيمة الأدوية بعد  الجرد :
+                     <span class="text-success">{{ number_format($total_counted_value ?? 0, 2) }}</span>
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
 @endsection

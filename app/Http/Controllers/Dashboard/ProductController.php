@@ -119,7 +119,7 @@ class ProductController extends Controller
             'slug' => $slug,
             'name' => $request->name,
             'categories_id' => $request->categories_id,
-            'price' => $request->price,
+            'minimum_Quantity' => $request->price,
             'sell_price' => $request->sell_price,
             // 'discription' => $request->discription,
             'status' => $request->status,

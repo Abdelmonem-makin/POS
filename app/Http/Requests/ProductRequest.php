@@ -27,7 +27,7 @@ class ProductRequest extends FormRequest
             // 'photo'=>'mimes:jpg,png,jpeg',
             'name'=>'required|string|max:50',
             // 'discription'=>'required|max:5000',
-            'price'=>'required',
+            // 'price'=>'required',
             'sell_price'=>'required',
             'categories_id'=>'required|exists:categories,id',
 

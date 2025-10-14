@@ -21,7 +21,7 @@ class ProductFactory extends Factory
             'name' => fake()->name(),
             // 'photo' => fake()->imageUrl(300,400),
             // 'discription'=> fake()->sentence(6 ,false),
-            'price'=> fake()->numberBetween(500,800),
+            // 'price'=> fake()->numberBetween(500,800),
             'Quantity'=> fake()->numberBetween(10,20),
             'minimum_Quantity'=> fake()->numberBetween(5,10),
             'sell_price'=> fake()->numberBetween(1000,2000),

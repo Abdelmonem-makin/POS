@@ -1,0 +1,40 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('sales_returns', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('order_id'); // رقم الفاتورة الأصلية
+            $table->unsignedBigInteger('pharmacist_id'); // رقم الفاتورة الأصلية
+            $table->unsignedBigInteger('product_id');
+            $table->integer('quantity');
+            $table->decimal('price', 10, 2);
+            $table->string('reason')->nullable();
+            $table->enum('status', ['restocked', 'discarded'])->default('restocked');
+
+
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('sales_returns');
+    }
+};
