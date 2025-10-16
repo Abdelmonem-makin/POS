@@ -48,54 +48,54 @@ class StockController extends Controller
     {
         // dd($request->all());
         // try {
-            $validator = Validator::make($request->all(), []);
-            if ($validator->fails()) {
-                return response()->json(['success' => false, 'message' => 'خطأ في بيانات الطلب', 'errors' => $validator->errors()], 422);
-            }
+        $validator = Validator::make($request->all(), []);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => 'خطأ في بيانات الطلب', 'errors' => $validator->errors()], 422);
+        }
 
-            DB::transaction(function () use ($request) {
-                // إنشاء الفاتورة
-                $lastInvoice = stock::orderBy('id', 'desc')->first();
-                $nextId = $lastInvoice ? $lastInvoice->id + 1 : 1;
-                $invoice_number = 'INVBUY-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
-                $stock = stock::create([
-                    'supplier_id' => $request->Supplier_id,
-                    'invoice_number' => $invoice_number,
-                    'payment_id' => $request->payment_id,
-                    'transiction_no' => $request->transiction_no,
-                    'user_id' => Auth::user()->id,
-                    'total_price' => $request->total_price,
+        DB::transaction(function () use ($request) {
+            // إنشاء الفاتورة
+            $lastInvoice = stock::orderBy('id', 'desc')->first();
+            $nextId = $lastInvoice ? $lastInvoice->id + 1 : 1;
+            $invoice_number = 'INVBUY-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+            $stock = stock::create([
+                'supplier_id' => $request->Supplier_id,
+                'invoice_number' => $invoice_number,
+                'payment_id' => $request->payment_id,
+                'transiction_no' => $request->transiction_no,
+                'user_id' => Auth::user()->id,
+                'total_price' => $request->total_price,
+            ]);
+            $attachData = [];
+
+            // إضافة تفاصيل المنتجات إلى الفاتورة
+            foreach ($request->products_stock as $id => $product) {
+                $stock->Product()->attach($id, [
+                    'quantity' => $product['quantity'],
+                    'expir_data' => $product['expir_data'],
+
                 ]);
-                $attachData = [];
-
-                // إضافة تفاصيل المنتجات إلى الفاتورة
-                foreach ($request->products_stock as $id => $product) {
-                    $stock->Product()->attach($id, [
-                        'quantity' => $product['quantity'],
-                        'expir_data' => $product['expir_data'],
-
+                $Products = Product::findOrFail($id);
+                $r = $Products->Quantity +  $product['quantity'];
+                Product::where('id', $id)->update(['Quantity' => $r]);
+                // 🔹 تسجيل المديونية إذا كان الدفع جزئي
+                if ($request->paid_amount < $stock->total_price) {
+                    $debts = debts::create([
+                        'supplier_id' => $request->Supplier_id,
+                        'invoice_number' => $invoice_number,
+                        'stock_id' => $stock->id,
+                        'due_date' => '2022-1-1',
+                        'amount' => $stock->total_price,
+                        'paid' => $request->paid_amount,
+                        'type' => 'supplier',
+                        'remaining' => $stock->total_price - $request->paid_amount,
+                        'notes' => 'فاتورة شراء رقم ' . $stock->invoice_number,
+                        'is_closed' => false
                     ]);
-                    $Products = Product::findOrFail($id);
-                    $r = $Products->Quantity +  $product['quantity'];
-                    Product::where('id', $id)->update(['Quantity' => $r]);
-                    // 🔹 تسجيل المديونية إذا كان الدفع جزئي
-                    if ($request->paid_amount < $stock->total_price) {
-                        $debts = debts::create([
-                            'supplier_id' => $request->Supplier_id,
-                            'invoice_number' => $invoice_number,
-                            'stock_id' => $stock->id,
-                            'due_date' => '2022-1-1',
-                            'amount' => $stock->total_price,
-                            'paid' => $request->paid_amount,
-                            'type' => 'supplier',
-                            'remaining' => $stock->total_price - $request->paid_amount,
-                            'notes' => 'فاتورة شراء رقم ' . $stock->invoice_number,
-                            'is_closed' => false
-                        ]);
-                    }
                 }
-            });
-            return  redirect()->route('Stock.create')->with('success', 'تم الحفط بنجاح');
+            }
+        });
+        return  redirect()->route('Stock.create')->with('success', 'تم الحفط بنجاح');
         // } catch (\Throwable $th) {
         // }
     }
@@ -207,9 +207,11 @@ class StockController extends Controller
     {
         $resource = stock::with('Product')->findOrFail($id);
         $stock =  $resource->Product;
-        foreach ($stock as $sorder) {
+        foreach ($stock as $id => $sorder) {
             $sorder->pivot->delete();
-            //    dd($sorder);
+            $Products = Product::find($id);
+            $r = $Products->Quantity +  $sorder->pivot->quantity ;
+            Product::where('id', $id)->update(['Quantity' => $r]);
         }
         $resource->delete();
 

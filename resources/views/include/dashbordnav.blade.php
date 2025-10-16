@@ -116,7 +116,7 @@
         <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse overflow-auto">
             <div class="position-sticky px-2">
                 <ul class="nav flex-column mt-5">
-                    <li class="nav-item py-2">
+                    <li class="nav-item py-1">
                         <a class="nav-link active" aria-current="page" href="{{ route('dashboard.index') }}">
                             <span data-feather="home"></span>
                             <i class="fa fa-th ms-2"></i>
@@ -124,7 +124,7 @@
                         </a>
                     </li>
                     @if (auth()->user()->hasPermission('Category_read'))
-                        <li class="nav-item py-2">
+                        <li class="nav-item py-1">
                             <a class="nav-link" href="{{ route('Category.index') }}">
                                 <span data-feather="users"></span>
                                 <i class="fa fa-th ms-2"></i>
@@ -134,7 +134,7 @@
                     @endif
 
                     @if (auth()->user()->hasPermission('Product_read'))
-                        <li class="nav-item py-2">
+                        <li class="nav-item py-1">
                             <a class="nav-link" href="{{ Route('Product.index') }}">
                                 <span data-feather="shopping-cart"></span>
                                 <i class="fa fa-th ms-2"></i>
@@ -143,7 +143,7 @@
                         </li>
                     @endif
                     @if (auth()->user()->hasPermission('Stock_read'))
-                        <li class="nav-item py-2">
+                        <li class="nav-item py-1">
                             <a class="nav-link" href="{{ Route('Stock.index') }}">
                                 <span data-feather="shopping-cart"></span>
                                 <i class="fa fa-th ms-2"></i>
@@ -152,7 +152,7 @@
                         </li>
                     @endif
                     @if (auth()->user()->hasPermission('Order_read'))
-                        <li class="nav-item py-2">
+                        <li class="nav-item py-1">
                             <a class="nav-link" href="{{ Route('Order.index') }}">
                                 <span data-feather="file"></span>
                                 <i class="fa fa-th ms-2"></i>
@@ -162,7 +162,7 @@
                     @endif
 
                     @if (auth()->user()->hasPermission('Order_read'))
-                        <li class="nav-item py-2">
+                        <li class="nav-item py-1">
                             <a class="nav-link" href="{{ route('Order_incame') }}">
                                 <span data-feather="users"></span>
                                 <i class="fa fa-th ms-2"></i>
@@ -174,7 +174,7 @@
 
 
                     @if (auth()->user()->hasPermission('Shift_read'))
-                        <li class="nav-item py-2">
+                        <li class="nav-item py-1">
                             <a class="nav-link" href="{{ route('Shift.index') }}">
                                 <span data-feather="Shift"></span>
                                 <i class="fa fa-th ms-2"></i>
@@ -183,7 +183,7 @@
                         </li>
                     @endif
                     @if (auth()->user()->hasPermission('supplier_read'))
-                        <li class="nav-item py-2">
+                        <li class="nav-item py-1">
                             <a class="nav-link" href="{{ route('supplier.index') }}">
                                 <span data-feather="users"></span>
                                 <i class="fa fa-th ms-2"></i>
@@ -192,7 +192,7 @@
                         </li>
                     @endif
                     @if (auth()->user()->hasPermission('Payment_read'))
-                        <li class="nav-item py-2">
+                        <li class="nav-item py-1">
                             <a class="nav-link" href="{{ route('Payment.index') }}">
                                 <span data-feather="Payment"></span>
                                 <i class="fa fa-th ms-2"></i>
@@ -202,7 +202,7 @@
                     @endif
 
                     @if (auth()->user()->hasPermission('users_read'))
-                        <li class="nav-item py-2">
+                        <li class="nav-item py-1">
                             <a class="nav-link" href="{{ route('User.index') }}">
                                 <span data-feather="users"></span>
                                 <i class="fa fa-th ms-2"></i>
@@ -211,7 +211,7 @@
                         </li>
                     @endif
                     @if (auth()->user()->hasPermission('debt_read'))
-                        <li class="nav-item py-2">
+                        <li class="nav-item py-1">
                             <a class="nav-link" href="{{ route('debt.index') }}">
                                 <span data-feather="Payment"></span>
                                 <i class="fa fa-th ms-2"></i>
@@ -220,7 +220,7 @@
                         </li>
                     @endif
                     @if (auth()->user()->hasPermission('Expense_read'))
-                        <li class="nav-item py-2">
+                        <li class="nav-item py-1">
                             <a class="nav-link" href="{{ route('Expense.index') }}">
                                 <span data-feather="Payment"></span>
                                 <i class="fa fa-th ms-2"></i>
@@ -229,7 +229,7 @@
                         </li>
                     @endif
 
-                        <li class="nav-item py-2">
+                        <li class="nav-item py-1">
                             <a class="nav-link" href="{{ route('sales_return') }}">
                                 <span data-feather="Payment"></span>
                                 <i class="fa fa-th ms-2"></i>
@@ -237,7 +237,7 @@
                             </a>
                         </li>
                     @if (auth()->user()->hasPermission('Payment_read'))
-                        <li class="nav-item py-2">
+                        <li class="nav-item py-1">
                             <a class="nav-link" href="{{ route('inventory.index') }}">
                                 <span data-feather="Payment"></span>
                                 <i class="fa fa-th ms-2"></i>
@@ -248,7 +248,7 @@
 
 
                     {{--
-                    <li class="nav-item py-2">
+                    <li class="nav-item py-1">
                         <div class="accordion  border-0" id="accordionExample">
                             <div class="accordion-item border-0">
                                 <h2 class="accordion-header" id="headingTwo">

@@ -17,11 +17,11 @@ class ProductController extends Controller
     public function index(Request $request)
     {
 
-        $Products = Product::where(function ($q) use ($request) {
+    $Products = Product::where(function ($q) use ($request) {
             return $q->when($request->filled('search'), function ($query) use ($request) {
                 return $query->where('name', 'like', '%' . $request->search . '%');
             });
-        })->latest()->paginate(5);
+    })->with('Categorie')->latest()->paginate(5);
         return view('Dashboard.Prodect.Index', compact('Products'));
     }
     public function show($id)

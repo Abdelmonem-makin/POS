@@ -22,13 +22,13 @@ class InventoryController extends Controller
                 return Carbon::parse($item->month);
             });
 
-        $Product = Product::orderBy('name')->get();
+    $Product = Product::with('Categorie')->orderBy('name')->get();
         // $inventories = Inventory::with('product', 'user')->latest()->paginate(20);
         return view('Dashboard.inventory.index', compact('months'));
     }
     public function create()
     {
-        $Product = Product::all();
+    $Product = Product::with('Categorie')->all();
         return view('Dashboard.inventory.create', compact('Product'));
     }
     public function store(Request $request)

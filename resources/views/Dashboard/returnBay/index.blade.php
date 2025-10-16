@@ -21,13 +21,13 @@
                             <div class="col-md-6 m-0">
                                 <button class="btn px-1 btn-primary" type="submit"><i class="fa mx-1 fa-search"
                                         aria-hidden="true"></i>بحث</button>
-
+{{-- 
                                 @if (auth()->user()->hasPermission('Product_create'))
                                     <a class="btn btn-primary my-0 ms-a"href="{{ route('Product.create') }}">اضافة منتج</a>
                                 @else
                                     <a class="btn btn-primary my-0 disabled ms-a"href="{{ route('Product.create') }}">اضافة
                                         منتج</a>
-                                @endif
+                                @endif --}}
 
                             </div>
                         </form>
