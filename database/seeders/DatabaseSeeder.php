@@ -23,9 +23,11 @@ class DatabaseSeeder extends Seeder
     {
         $this ->call( LaratrustSeeder::class);
         $this ->call( UserTableSeeder::class);
-        $this ->call( CategoriesTableSeeder::class);
-        Product::factory(10)->create();
-        supplier::factory(10)->create();
+        // $this ->call( CategoriesTableSeeder::class);
+        $this ->call( payment_methods::class);
+        $this ->call( Shift::class);
+        // Product::factory(10)->create();
+        // supplier::factory(10)->create();
         // stock::factory(10)->create();
 
 
