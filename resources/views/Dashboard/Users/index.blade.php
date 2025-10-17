@@ -45,7 +45,7 @@
                             <thead>
                                 <tr>
                                     <th> الاسم</th>
-                                    <th> البريد الاكتروني</th>
+                                    {{-- <th> البريد الاكتروني</th> --}}
 
                                     <th>الوظيفه</th>
                                     {{-- <th>الحاله</th> --}}
@@ -57,11 +57,10 @@
                                     @foreach ($users as $user)
                                         <tr>
                                             <th scope="row">{{ $user->name }}</th>
-                                            <th scope="row">{{ $user->email }}</th>
-                                            <th>
+                                            @foreach ($user->roles as $item)
+                                            <th> {{$item->name}}</th>
+                                            @endforeach
 
-
-                                            </th>
                                             <th>
 
 

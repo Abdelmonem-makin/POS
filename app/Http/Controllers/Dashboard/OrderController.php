@@ -219,7 +219,7 @@ class OrderController extends Controller
         $orders_pro = $orders->products;
         foreach ($orders_pro as $sorder) {
             $sorder->pivot->delete();
-            dd($sorder);
+            // dd($sorder);
         }
         $orders->delete();
         // dd('done');

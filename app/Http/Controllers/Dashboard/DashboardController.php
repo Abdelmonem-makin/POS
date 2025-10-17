@@ -24,27 +24,25 @@ class DashboardController extends Controller
         $today = Carbon::today();
         $product = Product::count();
 
-        $summary = Shift::with(['employee', 'orders'])
-            ->get();
+        // Load shifts and eager-load only today's orders to avoid N+1 and to filter by day
+        $summary = Shift::with(['employee', 'orders' => function ($q) use ($today) {
+            $q->whereDate('created_at', $today);
+        }])->get();
 
+        // Map shifts to aggregates: invoice count and total net for today's orders
         $summarys = $summary->map(function ($shift) {
             return [
                 'shift_name' => $shift->name,
                 'employee' => $shift->employee->name ?? 'غير محدد',
                 'invoice_count' => $shift->orders->count(),
-                'total_net' => $shift->orders->sum('total_price')
+                'total_net' => $shift->orders->sum('total_price'),
             ];
         });
-        $revenues1 = DailyRevenue::get();
-        $totalrevenues1 = $revenues1->map(function ($q) {
-            $profit = $q->profit;
-            return (object) [
-                'total_net' => $profit,
 
-            ];
-        });
-        $totalprofit = $totalrevenues1->sum('profit');
-        return view('Dashboard.index', compact('summary', 'totalprofit','product'));
+        // Simple total profit (sum from DailyRevenue). Adjust filtering if you need today's profit only.
+        $totalprofit = DailyRevenue::sum('profit');
+
+        return view('Dashboard.index', compact('summary', 'summarys', 'totalprofit', 'product'));
     }
 
     /**

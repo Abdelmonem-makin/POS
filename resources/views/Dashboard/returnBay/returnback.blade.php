@@ -52,6 +52,8 @@
             </div>
 
             <button type="submit" class="btn btn-danger">تسجيل الإرجاع</button>
+            <a href="{{ route('return') }}" class="btn my-2 btn-success" style='text-align:right;' class="dropdown-item"> رجوع
+            </a>
         </form>
     @endsection
     @section('scripts')

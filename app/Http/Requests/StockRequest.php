@@ -25,12 +25,22 @@ class StockRequest extends FormRequest
     {
         return [
 
-            'Supplier_id' => ' ',
-            'payment_id' => ' ',
+            'Supplier_id' => 'required|',
+            'payment_id' => 'required|',
             'transiction_no' => ' ',
-            'total_price' => ' ',
+            'total_price' => 'required|numeric|min:0',
             'user_id' => ' ',
-            'products_stock.*' => ' ',
+            'products_stock.*' => 'required',
+        ];
+    }
+
+        public function messages()
+    {
+        return [
+            'Supplier_id.required'=>'اسم المورد مطلوب',
+            'payment_id.required'=>'طريقة الدفع مطلوبه',
+            'total_price.required'=>' المبلغ الكلي مطلوب',
+            //
         ];
     }
 }

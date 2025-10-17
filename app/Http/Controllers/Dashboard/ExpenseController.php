@@ -20,11 +20,11 @@ class ExpenseController extends Controller
      */
     public function index(Request $request)
     {
-        $Expenses = expenses::where(function ($q) use ($request) {
+    $Expenses = expenses::where(function ($q) use ($request) {
             return $q->when($request->filled('search'), function ($query) use ($request) {
                 return $query->where('title', 'like', '%' . $request->search . '%');
             });
-        })->latest()->paginate(5);
+    })->with('user')->latest()->paginate(5);
         return  view('Dashboard.Expenses.index', compact('Expenses'));
     }
 

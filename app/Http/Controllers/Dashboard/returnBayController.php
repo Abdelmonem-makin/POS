@@ -32,8 +32,9 @@ class returnBayController extends Controller
         $Products = $order->products;
         return view('Dashboard.returnBay.returnback', compact('order', 'Products'));
     }
-    function sales_return(){
-        $returns = sales_return::with('product','pharmacist' ,'order')->latest()->paginate(5);
+    function sales_return()
+    {
+        $returns = sales_return::with('product', 'pharmacist', 'order')->latest()->paginate(5);
         return view('Dashboard.returnBay.index', compact('returns'));
     }
     public function store(Request $request)
@@ -60,24 +61,32 @@ class returnBayController extends Controller
         ]);
 
         $order = Order::with('products')->find($request->sale_id);
-        // $products = $order->products;
 
         // تحديث الجرد إذا أعيد للمخزون
         if ($request->status === 'restocked') {
-            // stock::where('product_id', $request->product_id)
-            //     ->increment('quantity', $request->quantity);
+            // تحديث اجمالي سعر الطلب
             $order->decrement('total_price', $request->quantity * $product->sell_price);
-            // $order->products->updateExistingPivot($request->product_id, [
-            //     'quantity' => DB::raw('quantity + ' . $request->quantity)
-            // ]);
-            // تحديث كمية المنتج في جدول المنتجات
+            // تحديث كمية المنتج في الطلب
+
             if ($product) {
                 $product->increment('Quantity', $request->quantity);
                 $order->products()->detach($request->product_id);
             }
-            if ($order->products->count() == 0) {
+            $orders = $order->products()->wherePivot('quantity', '>=', 0)->count();
+
+            if ($orders === 0) {
                 $order->delete();
             }
+        }else {
+            // إذا تم التخلص من المنتج، فقط تحديث سعر الطلب
+            $order->decrement('total_price', $request->quantity * $product->sell_price);
+            $order->products()->detach($request->product_id);
+            $orders = $order->products()->wherePivot('quantity', '>=', 0)->count();
+
+            if ($orders === 0) {
+                $order->delete();
+            }
+            
         }
         // خصم من الإيرادات
         $today = Carbon::today();
@@ -90,7 +99,6 @@ class returnBayController extends Controller
         ]);
         $revenue->decrement('total_net', $request->quantity * $request->price);
         $revenue->save();
-
-        return redirect()->route('show-return', $order->id)->with('success', 'تم تسجيل مردود المبيعات بنجاح');
+        return redirect()->route('return')->with('success', 'تم تسجيل مردود المبيعات بنجاح');
     }
 }

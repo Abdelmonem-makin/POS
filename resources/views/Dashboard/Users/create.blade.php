@@ -38,7 +38,7 @@
                     </div>
                 </div>
 
-                <div class="row mb-3">
+                {{-- <div class="row mb-3">
                     <label for="email" class="col-md-2 col-form-label text-md-end">البريد الاكتروني</label>
 
                     <div class="col-md-6">
@@ -51,7 +51,7 @@
                             </span>
                         @enderror
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="row mb-3">
 

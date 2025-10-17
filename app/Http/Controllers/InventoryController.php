@@ -28,7 +28,7 @@ class InventoryController extends Controller
     }
     public function create()
     {
-    $Product = Product::with('Categorie')->all();
+    $Product = Product::with('Categorie')->get();
         return view('Dashboard.inventory.create', compact('Product'));
     }
     public function store(Request $request)

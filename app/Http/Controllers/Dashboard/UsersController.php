@@ -18,11 +18,11 @@ class UsersController extends Controller
     }
     public function index(Request $request)
     {
-        $users = user::whereRoleIs('admin')->where(function ($q) use ($request) {
+        $users = user::whereRoleIs(['admin' , 'employe'])->where(function ($q) use ($request) {
             return $q->when($request->search,function ($query) use ($request) {
                 return $query->where('name','like','%'.$request->search.'%');
             });
-        })->latest()->paginate(10);
+        })->with('roles')->latest()->paginate(10);
         return view('Dashboard.Users.index',compact('users'));
     }
 

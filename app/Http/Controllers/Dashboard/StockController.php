@@ -47,7 +47,7 @@ class StockController extends Controller
     public function store(StockRequest $request)
     {
         // dd($request->all());
-        // try {
+        try {
         $validator = Validator::make($request->all(), []);
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => 'خطأ في بيانات الطلب', 'errors' => $validator->errors()], 422);
@@ -68,6 +68,7 @@ class StockController extends Controller
             ]);
             $attachData = [];
 
+
             // إضافة تفاصيل المنتجات إلى الفاتورة
             foreach ($request->products_stock as $id => $product) {
                 $stock->Product()->attach($id, [
@@ -79,25 +80,28 @@ class StockController extends Controller
                 $r = $Products->Quantity +  $product['quantity'];
                 Product::where('id', $id)->update(['Quantity' => $r]);
                 // 🔹 تسجيل المديونية إذا كان الدفع جزئي
-                if ($request->paid_amount < $stock->total_price) {
-                    $debts = debts::create([
-                        'supplier_id' => $request->Supplier_id,
-                        'invoice_number' => $invoice_number,
-                        'stock_id' => $stock->id,
-                        'due_date' => '2022-1-1',
-                        'amount' => $stock->total_price,
-                        'paid' => $request->paid_amount,
-                        'type' => 'supplier',
-                        'remaining' => $stock->total_price - $request->paid_amount,
-                        'notes' => 'فاتورة شراء رقم ' . $stock->invoice_number,
-                        'is_closed' => false
-                    ]);
-                }
+
+            }
+            if ($request->paid_amount < $stock->total_price) {
+                $debts = debts::create([
+                    'supplier_id' => $request->Supplier_id,
+                    'invoice_number' => $invoice_number,
+                    'stock_id' => $stock->id,
+                    'due_date' => '2022-1-1',
+                    'amount' => $stock->total_price,
+                    'paid' => $request->paid_amount,
+                    'type' => 'supplier',
+                    'remaining' => $stock->total_price - $request->paid_amount,
+                    'notes' => 'فاتورة شراء رقم ' . $stock->invoice_number,
+                    'is_closed' => false
+                ]);
             }
         });
         return  redirect()->route('Stock.create')->with('success', 'تم الحفط بنجاح');
-        // } catch (\Throwable $th) {
-        // }
+        } catch (\Throwable $th) {
+        return  redirect()->route('Stock.create')->with('error', ' الرجاء ملاء جميع الحقول');
+
+        }
     }
 
     /**
@@ -205,12 +209,13 @@ class StockController extends Controller
      */
     public function destroy($id)
     {
-        $resource = stock::with('Product')->findOrFail($id);
+        $resource = stock::with('Product', 'debt')->findOrFail($id);
+        $debt = $resource->debt;
         $stock =  $resource->Product;
         foreach ($stock as $id => $sorder) {
             $sorder->pivot->delete();
             $Products = Product::find($id);
-            $r = $Products->Quantity +  $sorder->pivot->quantity ;
+            $r = $Products->Quantity +  $sorder->pivot->quantity;
             Product::where('id', $id)->update(['Quantity' => $r]);
         }
         $resource->delete();
