@@ -29,7 +29,7 @@
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                     data-bs-toggle="dropdown">
                                     🔔 إشعارات
-                                    @if ($products->count())
+                                    @if (isset($products) && $products->count())
                                         <span class="badge bg-danger">{{ $products->count() }}</span>
                                     @endif
                                 </a>
@@ -47,7 +47,7 @@
                                 </ul>
                             </li>
 
-                            @if ($lowStock->count())
+                            @if (isset($lowStock) && $lowStock->count())
                                 <li class="nav-item dropdown">
                                     <div class="btn-group" role="group">
                                         <a id="dropdownId" type="button"
